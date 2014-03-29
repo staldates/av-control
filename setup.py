@@ -9,7 +9,7 @@ setup(
     url='https://github.com/staldates/av-control',
     install_requires=["avx>=0.92"],
     dependency_links = [
-        "lib/" # find Affle packages here
+        "lib/" # find local copies of packages here
         ],
     packages=find_packages('src', exclude=["*.tests"]),
     package_dir = {'':'src'},
