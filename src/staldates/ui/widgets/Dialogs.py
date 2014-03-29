@@ -1,6 +1,6 @@
 from PySide.QtGui import QDialog, QGridLayout, QLabel, QMessageBox, QMovie
 from PySide.QtCore import Qt
-from org.staldates.ui.widgets.Buttons import ExpandingButton
+from staldates.ui.widgets.Buttons import ExpandingButton
 import logging
 
 

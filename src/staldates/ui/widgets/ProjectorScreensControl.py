@@ -1,10 +1,10 @@
 from PySide.QtCore import Qt, QSize
 from PySide.QtGui import QButtonGroup, QIcon, QGridLayout
-from org.staldates.ui.widgets.Buttons import ExpandingButton,\
+from staldates.ui.widgets.Buttons import ExpandingButton,\
     IDedButton
 from Pyro4.errors import NamingError, ProtocolError
 from org.muscat.avx.StringConstants import StringConstants
-from org.staldates.ui.widgets.Screens import ScreenWithBackButton
+from staldates.ui.widgets.Screens import ScreenWithBackButton
 
 
 class ProjectorScreensControl(ScreenWithBackButton):

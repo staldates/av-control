@@ -3,8 +3,8 @@ Created on 24 Apr 2013
 
 @author: jrem
 '''
-from org.staldates.ui.tests.GuiTest import GuiTest
-from org.staldates.ui.widgets.OutputsGrid import OutputsGrid
+from staldates.ui.tests.GuiTest import GuiTest
+from staldates.ui.widgets.OutputsGrid import OutputsGrid
 
 
 class TestOutputsGrid(GuiTest):

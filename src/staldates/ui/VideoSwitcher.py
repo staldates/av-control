@@ -1,13 +1,13 @@
 from PySide.QtGui import QLabel, QWidget, QGridLayout, QHBoxLayout, QButtonGroup, QIcon
 from PySide.QtCore import QMetaObject, Qt
-from org.staldates.ui.widgets.Buttons import InputButton, CameraSelectionButton
-from org.staldates.ui.ExtrasSwitcher import ExtrasSwitcher
-from org.staldates.ui.CameraControls import CameraControl, AdvancedCameraControl
+from staldates.ui.widgets.Buttons import InputButton, CameraSelectionButton
+from staldates.ui.ExtrasSwitcher import ExtrasSwitcher
+from staldates.ui.CameraControls import CameraControl, AdvancedCameraControl
 from Pyro4.errors import ProtocolError, NamingError
 from org.muscat.avx.StringConstants import StringConstants
-from org.staldates.ui.EclipseControls import EclipseControls
+from staldates.ui.EclipseControls import EclipseControls
 import logging
-from org.staldates.ui.widgets.OutputsGrid import OutputsGrid
+from staldates.ui.widgets.OutputsGrid import OutputsGrid
 
 
 class VideoSwitcher(QWidget):

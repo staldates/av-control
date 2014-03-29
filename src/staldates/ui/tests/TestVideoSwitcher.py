@@ -6,10 +6,10 @@ Created on 16 Apr 2013
 import unittest
 from org.muscat.avx.controller.Controller import Controller
 from org.muscat.avx.devices.Device import Device
-from org.staldates.ui.VideoSwitcher import VideoSwitcher
-from org.staldates.ui.widgets.OutputsGrid import OutputsGrid
+from staldates.ui.VideoSwitcher import VideoSwitcher
+from staldates.ui.widgets.OutputsGrid import OutputsGrid
 from mock import MagicMock
-from org.staldates.ui.tests.GuiTest import GuiTest
+from staldates.ui.tests.GuiTest import GuiTest
 from PySide.QtTest import QTest
 from PySide.QtCore import Qt
 

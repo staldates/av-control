@@ -3,14 +3,14 @@ Created on 17 Apr 2013
 
 @author: jrem
 '''
-from org.staldates.ui.tests.GuiTest import GuiTest
+from staldates.ui.tests.GuiTest import GuiTest
 from org.muscat.avx.controller.Controller import Controller
-from org.staldates.ui.MainWindow import MainWindow
-from org.staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
+from staldates.ui.MainWindow import MainWindow
+from staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
 from mock import MagicMock
-from org.staldates.ui.VideoSwitcher import VideoSwitcher
-from org.staldates.ui.widgets.LogViewer import LogViewer
-from org.staldates.ui.widgets.ProjectorScreensControl import ProjectorScreensControl
+from staldates.ui.VideoSwitcher import VideoSwitcher
+from staldates.ui.widgets.LogViewer import LogViewer
+from staldates.ui.widgets.ProjectorScreensControl import ProjectorScreensControl
 
 
 class TestMainWindow(GuiTest):

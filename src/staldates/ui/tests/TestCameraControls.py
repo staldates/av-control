@@ -4,15 +4,15 @@ Created on 15 Apr 2013
 @author: jrem
 '''
 from mock import MagicMock
-from org.staldates.ui.CameraControls import CameraControl, AdvancedCameraControl
+from staldates.ui.CameraControls import CameraControl, AdvancedCameraControl
 from org.muscat.avx.controller.Controller import Controller
 from org.muscat.avx.controller.VISCAController import CameraMove, CameraWhiteBalance
 from org.muscat.avx.devices.Device import Device
-from org.staldates.ui.tests.GuiTest import GuiTest
+from staldates.ui.tests.GuiTest import GuiTest
 from PySide.QtTest import QTest
 from PySide.QtCore import Qt
 from org.muscat.avx.CameraPosition import CameraPosition
-from org.staldates.ui.MainWindow import MainWindow
+from staldates.ui.MainWindow import MainWindow
 
 
 class Test(GuiTest):

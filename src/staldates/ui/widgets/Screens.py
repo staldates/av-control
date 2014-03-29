@@ -1,6 +1,6 @@
 from PySide.QtGui import QIcon, QLabel, QGridLayout, QWidget, QVBoxLayout
 from PySide.QtCore import Qt
-from org.staldates.ui.widgets.Buttons import ExpandingButton
+from staldates.ui.widgets.Buttons import ExpandingButton
 
 
 class ScreenWithBackButton(QWidget):

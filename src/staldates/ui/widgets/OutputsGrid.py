@@ -4,7 +4,7 @@ Created on 16 Apr 2013
 @author: jrem
 '''
 from PySide.QtGui import QFrame, QGridLayout
-from org.staldates.ui.widgets.Buttons import IDedButton, OutputButton
+from staldates.ui.widgets.Buttons import IDedButton, OutputButton
 
 
 class OutputsGrid(QFrame):

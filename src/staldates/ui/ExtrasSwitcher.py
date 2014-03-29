@@ -4,10 +4,10 @@ Created on 10 Nov 2012
 @author: james
 '''
 from PySide.QtGui import QWidget, QGridLayout, QButtonGroup, QMessageBox
-from org.staldates.ui.widgets.Buttons import InputButton, OutputButton
+from staldates.ui.widgets.Buttons import InputButton, OutputButton
 from Pyro4.errors import ProtocolError, NamingError
 from org.muscat.avx.StringConstants import StringConstants
-from org.staldates.ui.widgets.ScanConverterControls import OverscanFreezeWidget
+from staldates.ui.widgets.ScanConverterControls import OverscanFreezeWidget
 import logging
 
 

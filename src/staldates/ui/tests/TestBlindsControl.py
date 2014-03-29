@@ -1,8 +1,8 @@
-from org.staldates.ui.tests.GuiTest import GuiTest
+from staldates.ui.tests.GuiTest import GuiTest
 from org.muscat.avx.controller.Controller import Controller
 from org.muscat.avx.devices.Device import Device
-from org.staldates.ui.widgets.BlindsControl import BlindsControl
-from org.staldates.ui.MainWindow import MainWindow
+from staldates.ui.widgets.BlindsControl import BlindsControl
+from staldates.ui.MainWindow import MainWindow
 from mock import MagicMock
 
 

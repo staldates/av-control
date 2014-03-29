@@ -1,6 +1,6 @@
-from org.staldates.ui.widgets.Screens import ScreenWithBackButton
+from staldates.ui.widgets.Screens import ScreenWithBackButton
 from PySide.QtGui import QHBoxLayout, QVBoxLayout
-from org.staldates.ui.widgets.Buttons import ExpandingButton
+from staldates.ui.widgets.Buttons import ExpandingButton
 
 
 class LightingControl(ScreenWithBackButton):

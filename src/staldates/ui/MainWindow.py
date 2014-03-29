@@ -1,15 +1,15 @@
 from PySide.QtGui import QGridLayout, QIcon, QMainWindow, QStackedWidget, QWidget
 from PySide.QtCore import Qt
-from org.staldates.ui.widgets.Buttons import ExpandingButton
-from org.staldates.ui.widgets.Clock import Clock
-from org.staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
-from org.staldates.ui.VideoSwitcher import VideoSwitcher
-from org.staldates.ui.widgets.Dialogs import PowerNotificationDialog
-from org.staldates.ui.widgets.BlindsControl import BlindsControl
-from org.staldates.ui.widgets.ProjectorScreensControl import ProjectorScreensControl
-from org.staldates.ui.widgets.AdvancedMenu import AdvancedMenu
-from org.staldates.ui.widgets import Dialogs
-from org.staldates.ui.widgets.LightingControl import LightingControl
+from staldates.ui.widgets.Buttons import ExpandingButton
+from staldates.ui.widgets.Clock import Clock
+from staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
+from staldates.ui.VideoSwitcher import VideoSwitcher
+from staldates.ui.widgets.Dialogs import PowerNotificationDialog
+from staldates.ui.widgets.BlindsControl import BlindsControl
+from staldates.ui.widgets.ProjectorScreensControl import ProjectorScreensControl
+from staldates.ui.widgets.AdvancedMenu import AdvancedMenu
+from staldates.ui.widgets import Dialogs
+from staldates.ui.widgets.LightingControl import LightingControl
 
 
 class MainWindow(QMainWindow):

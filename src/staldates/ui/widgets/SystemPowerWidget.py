@@ -1,7 +1,10 @@
+from pkg_resources import require
+require("avx>=0.92")
+
 from PySide.QtGui import QIcon, QHBoxLayout
 from PySide.QtCore import Qt, QSize
-from org.staldates.ui.widgets.Buttons import ExpandingButton
-from org.staldates.ui.widgets.Screens import ScreenWithBackButton
+from staldates.ui.widgets.Buttons import ExpandingButton
+from staldates.ui.widgets.Screens import ScreenWithBackButton
 from org.muscat.avx.Sequencer import ControllerEvent, SleepEvent
 
 

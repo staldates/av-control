@@ -1,5 +1,5 @@
 from PySide.QtGui import QWidget, QGridLayout, QVBoxLayout, QIcon
-from org.staldates.ui.widgets.Buttons import OptionButton
+from staldates.ui.widgets.Buttons import OptionButton
 
 
 class OverscanFreezeWidget(QWidget):

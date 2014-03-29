@@ -1,10 +1,10 @@
 from PySide.QtGui import QButtonGroup, QGridLayout, QLabel, QWidget, QIcon, QMessageBox, QSizePolicy
 from PySide.QtCore import QSize, Qt
-from org.staldates.ui.widgets.Buttons import ExpandingButton, OptionButton
+from staldates.ui.widgets.Buttons import ExpandingButton, OptionButton
 from org.muscat.avx.controller.VISCAController import CameraMove, CameraFocus, CameraZoom, CameraWhiteBalance
 from Pyro4.errors import NamingError, ProtocolError
 from org.muscat.avx.StringConstants import StringConstants
-from org.staldates.ui.widgets.Screens import ScreenWithBackButton
+from staldates.ui.widgets.Screens import ScreenWithBackButton
 
 
 class CameraButton(ExpandingButton):

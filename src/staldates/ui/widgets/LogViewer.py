@@ -1,5 +1,5 @@
 from PySide.QtGui import QVBoxLayout, QTableWidget, QTableWidgetItem
-from org.staldates.ui.widgets.Screens import ScreenWithBackButton
+from staldates.ui.widgets.Screens import ScreenWithBackButton
 
 
 class LogViewer(ScreenWithBackButton):

@@ -3,10 +3,10 @@ Created on 18 Apr 2013
 
 @author: james
 '''
-from org.staldates.ui.tests.GuiTest import GuiTest
+from staldates.ui.tests.GuiTest import GuiTest
 from org.muscat.avx.controller.Controller import Controller
 from org.muscat.avx.devices.Device import Device
-from org.staldates.ui.EclipseControls import EclipseControls
+from staldates.ui.EclipseControls import EclipseControls
 from mock import MagicMock
 
 

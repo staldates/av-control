@@ -1,7 +1,7 @@
 from PySide.QtGui import QVBoxLayout
-from org.staldates.ui.widgets.LogViewer import LogViewer
-from org.staldates.ui.widgets.Buttons import ExpandingButton
-from org.staldates.ui.widgets.Screens import ScreenWithBackButton
+from staldates.ui.widgets.LogViewer import LogViewer
+from staldates.ui.widgets.Buttons import ExpandingButton
+from staldates.ui.widgets.Screens import ScreenWithBackButton
 
 
 class AdvancedMenu(ScreenWithBackButton):
