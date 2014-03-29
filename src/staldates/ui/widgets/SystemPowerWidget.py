@@ -1,6 +1,3 @@
-from pkg_resources import require
-require("avx>=0.92")
-
 from PySide.QtGui import QIcon, QHBoxLayout
 from PySide.QtCore import Qt, QSize
 from staldates.ui.widgets.Buttons import ExpandingButton
