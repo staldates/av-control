@@ -78,7 +78,7 @@ if __name__ == "__main__":
             myapp.show()
         sys.exit(app.exec_())
 
-    except (NamingError, CommunicationError):
-        Dialogs.errorBox("Unable to connect to controller. Please check network connections and try again.")
+    except (NamingError, CommunicationError) as e:
+        Dialogs.errorBox("Unable to connect to controller. Please check network connections and try again. (Error details: " + str(e) + ")")
     except VersionMismatchError as e:
         Dialogs.errorBox(str(e))
