@@ -171,16 +171,15 @@ class VideoSwitcher(QWidget):
 
     def handleOutputSelect(self):
         outputChannel = self.sender().ID
-        inputChannel = self.inputs.checkedId()
+        inputChannel = self.inputs.checkedButton().input
 
-        if inputChannel == 5:
-            self.extrasSwitcher.take()
-        try:
-            self.controller.switch("Main", inputChannel, outputChannel)
-        except NamingError:
-            self.mainWindow.errorBox(StringConstants.nameErrorText)
-        except ProtocolError:
-            self.mainWindow.errorBox(StringConstants.protocolErrorText)
+        if inputChannel:
+            try:
+                inputChannel.toMain(self.controller, outputChannel)
+            except NamingError:
+                self.mainWindow.errorBox(StringConstants.nameErrorText)
+            except ProtocolError:
+                self.mainWindow.errorBox(StringConstants.protocolErrorText)
 
     def handlePCMixSelect(self):
         outputChannel = self.sender().ID
