@@ -8,6 +8,7 @@ from org.muscat.avx.StringConstants import StringConstants
 from staldates.ui.EclipseControls import EclipseControls
 import logging
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
+from staldates import VisualsSystem
 
 
 class VideoSwitcher(QWidget):
@@ -30,6 +31,7 @@ class VideoSwitcher(QWidget):
 
         self.btnCamera1 = CameraSelectionButton()
         self.btnCamera1.setText("Camera 1")
+        self.btnCamera1.setInput(VisualsSystem.camera1)
         inputsGrid.addWidget(self.btnCamera1)
         self.inputs.addButton(self.btnCamera1, 1)
         self.btnCamera1.setIcon(QIcon("icons/camera-video.svg"))
@@ -37,6 +39,7 @@ class VideoSwitcher(QWidget):
 
         self.btnCamera2 = CameraSelectionButton()
         self.btnCamera2.setText("Camera 2")
+        self.btnCamera2.setInput(VisualsSystem.camera2)
         inputsGrid.addWidget(self.btnCamera2)
         self.inputs.addButton(self.btnCamera2, 2)
         self.btnCamera2.setIcon(QIcon("icons/camera-video.svg"))
@@ -44,6 +47,7 @@ class VideoSwitcher(QWidget):
 
         self.btnCamera3 = CameraSelectionButton()
         self.btnCamera3.setText("Camera 3")
+        self.btnCamera3.setInput(VisualsSystem.camera3)
         inputsGrid.addWidget(self.btnCamera3)
         self.inputs.addButton(self.btnCamera3, 3)
         self.btnCamera3.setIcon(QIcon("icons/camera-video.svg"))
@@ -51,6 +55,7 @@ class VideoSwitcher(QWidget):
 
         self.btnDVD = InputButton()
         self.btnDVD.setText("DVD")
+        self.btnDVD.setInput(VisualsSystem.dvd)
         inputsGrid.addWidget(self.btnDVD)
         self.inputs.addButton(self.btnDVD, 4)
         self.btnDVD.setIcon(QIcon("icons/media-optical.svg"))
@@ -63,6 +68,7 @@ class VideoSwitcher(QWidget):
 
         self.btnVisualsPC = InputButton()
         self.btnVisualsPC.setText("Visuals PC")
+        self.btnVisualsPC.setInput(VisualsSystem.visualsPC)
         inputsGrid.addWidget(self.btnVisualsPC)
         self.inputs.addButton(self.btnVisualsPC, 6)
         self.btnVisualsPC.setIcon(QIcon("icons/computer.svg"))
@@ -143,13 +149,9 @@ class VideoSwitcher(QWidget):
         logging.debug("Input selected: " + str(inputID))
         if inputID > 0:
             try:
-                # HACK HACK HACK someone wired these up the wrong way around
-                if inputID == 5:
-                    self.controller.switch("Preview", 6, 1)
-                elif inputID == 6:
-                    self.controller.switch("Preview", 5, 1)
-                else:
-                    self.controller.switch("Preview", inputID, 1)
+                myInput = self.inputs.checkedButton().input
+                if myInput:
+                    myInput.preview(self.controller)
             except NamingError:
                 self.mainWindow.errorBox(StringConstants.nameErrorText)
             except ProtocolError:
