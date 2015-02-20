@@ -37,7 +37,7 @@ class TestVideoSwitcher(GuiTest):
 
     def testSendInputsToOutputs(self):
         outputsGrid = self.vs.findChild(OutputsGrid)
-        self.assertTrue(outputsGrid != None)
+        self.assertTrue(outputsGrid is not None)
 
         self.vs.btnCamera1.click()
         self.preview.sendInputToOutput.assert_called_with(1, 1)  # Camera 1 is previewed
