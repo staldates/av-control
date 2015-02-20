@@ -113,6 +113,8 @@ class TestVideoSwitcher(GuiTest):
 
         QTest.keyClick(self.vs, Qt.Key_5)
         self.preview.sendInputToOutput.assert_called_with(6, 1)
+        # Make sure there's an actual channel selected
+        self.vs.extrasSwitcher.inputs.buttons()[3].click()
         QTest.keyClick(self.vs, Qt.Key_Space)
         self.main.sendInputToOutput.assert_called_with(5, 0)
 

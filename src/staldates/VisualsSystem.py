@@ -40,6 +40,18 @@ class MainInput(Input):
         controller.switch("Main", self.sourceChannel, mainChannel)
 
 
+class BlankMainInput(MainInput):
+
+    def __init__(self):
+        super(BlankMainInput, self).__init__(0)
+
+    def toPCMix(self, controller):
+        pass
+
+    def preview(self, controller):
+        pass
+
+
 class ExtrasInput(Input):
 
     def __init__(self, sourceChannel):
@@ -56,11 +68,30 @@ class ExtrasInput(Input):
         controller.switch("Extras", self.sourceChannel, 1)
         controller.switch("Main", 5, mainChannel)
 
+
+class ProxyInput(Input):
+
+    def __init__(self, extrasSwitcher):
+        super(ProxyInput, self).__init__(None)
+        self.extrasSwitcher = extrasSwitcher
+
+    def preview(self, controller):
+        self.extrasSwitcher.takePreview()
+        controller.switch("Preview", 6, 1)
+
+    def toPCMix(self, controller):
+        pass
+
+    def toMain(self, controller):
+        pass
+
+
+blank = BlankMainInput()
 camera1 = MainInput(1)
 camera2 = MainInput(2)
 camera3 = MainInput(3)
 dvd = MainInput(4)
-visualsPC = MainInput(5)
+visualsPC = MainInput(6)
 
 extras1 = ExtrasInput(1)
 extras2 = ExtrasInput(2)

@@ -9,6 +9,7 @@ from staldates.ui.EclipseControls import EclipseControls
 import logging
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
 from staldates import VisualsSystem
+from staldates.VisualsSystem import ProxyInput
 
 
 class VideoSwitcher(QWidget):
@@ -75,12 +76,14 @@ class VideoSwitcher(QWidget):
 
         self.btnBlank = InputButton()
         self.btnBlank.setText("Blank")
+        self.btnBlank.setInput(VisualsSystem.blank)
         inputsGrid.addWidget(self.btnBlank)
         self.inputs.addButton(self.btnBlank, 0)
 
         gridlayout.addLayout(inputsGrid, 0, 0, 1, 7)
 
         self.extrasSwitcher = ExtrasSwitcher(self.controller)
+        self.btnExtras.setInput(ProxyInput(self.extrasSwitcher))
         self.blank = QWidget(self)
         gridlayout.addWidget(self.blank, 1, 0, 1, 5)
 
@@ -147,7 +150,7 @@ class VideoSwitcher(QWidget):
     def handleInputSelect(self):
         inputID = self.inputs.checkedId()
         logging.debug("Input selected: " + str(inputID))
-        if inputID > 0:
+        if inputID >= 0:
             try:
                 myInput = self.inputs.checkedButton().input
                 if myInput:
@@ -173,7 +176,6 @@ class VideoSwitcher(QWidget):
         outputChannel = self.sender().ID
         inputID = self.inputs.checkedId()
         inputChannel = self.extrasSwitcher.inputs.checkedButton().input if inputID == 5 else self.inputs.checkedButton().input
-
         if inputChannel:
             try:
                 inputChannel.toMain(self.controller, outputChannel)
