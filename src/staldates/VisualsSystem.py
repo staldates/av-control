@@ -86,12 +86,38 @@ class ProxyInput(Input):
         pass
 
 
+#
+# Main switcher inputs:
+# 0 - Blank
+# 1 - Camera 1
+# 2 - Camera 2
+# 3 - Camera 3
+# 4 - DVD player
+# 5 - Extras switcher out 1
+# 6 - Visuals PC via scan converter
+# 7 - empty (former RGBHV)
+# 8 - empty (former RGBHV)
+#
+
 blank = BlankMainInput()
 camera1 = MainInput(1)
 camera2 = MainInput(2)
 camera3 = MainInput(3)
 dvd = MainInput(4)
+# Extras switcher not an explicit input
 visualsPC = MainInput(6)
+
+#
+# Extras switcher inputs:
+# 1 - Extras 1
+# 2 - Extras 2
+# 3 - Extras 3
+# 4 - Extras 4
+# 5 - empty
+# 6 - empty
+# 7 - empty
+# 8 - Visuals PC video
+#
 
 extras1 = ExtrasInput(1)
 extras2 = ExtrasInput(2)
