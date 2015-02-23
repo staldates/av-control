@@ -48,7 +48,7 @@ class BlankMainInput(MainInput):
     def toPCMix(self, controller):
         pass
 
-    def preview(self, controller, mainChannel):
+    def preview(self, controller):
         pass
 
 
