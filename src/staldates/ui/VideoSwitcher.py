@@ -175,7 +175,8 @@ class VideoSwitcher(QWidget):
     def handleOutputSelect(self):
         outputChannel = self.sender().ID
         inputID = self.inputs.checkedId()
-        inputChannel = self.extrasSwitcher.inputs.checkedButton().input if inputID == 5 else self.inputs.checkedButton().input
+        checkedExtrasButton = self.extrasSwitcher.inputs.checkedButton()
+        inputChannel = checkedExtrasButton.input if (inputID == 5 and checkedExtrasButton) else self.inputs.checkedButton().input
         if inputChannel:
             try:
                 inputChannel.toMain(self.controller, outputChannel)
