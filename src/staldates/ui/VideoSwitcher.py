@@ -101,14 +101,14 @@ class VideoSwitcher(QWidget):
 
     def configureInnerControlPanels(self):
         self.panels = [
-                       QWidget(),  # Blank
-                       CameraControl(self.controller, "Camera 1") if self.controller.hasDevice("Camera 1") else QLabel(StringConstants.noDevice),
-                       CameraControl(self.controller, "Camera 2") if self.controller.hasDevice("Camera 2") else QLabel(StringConstants.noDevice),
-                       CameraControl(self.controller, "Camera 3") if self.controller.hasDevice("Camera 3") else QLabel(StringConstants.noDevice),
-                       QLabel(StringConstants.noDevice),  # DVD - no controls
-                       self.extrasSwitcher if self.controller.hasDevice("Extras") else QLabel(StringConstants.noDevice),  # Extras
-                       EclipseControls(self.controller, "Main Scan Converter") if self.controller.hasDevice("Main Scan Converter") else QLabel(StringConstants.noDevice),  # Visuals PC
-                       ]
+            QWidget(),  # Blank
+            CameraControl(self.controller, "Camera 1") if self.controller.hasDevice("Camera 1") else QLabel(StringConstants.noDevice),
+            CameraControl(self.controller, "Camera 2") if self.controller.hasDevice("Camera 2") else QLabel(StringConstants.noDevice),
+            CameraControl(self.controller, "Camera 3") if self.controller.hasDevice("Camera 3") else QLabel(StringConstants.noDevice),
+            QLabel(StringConstants.noDevice),  # DVD - no controls
+            self.extrasSwitcher if self.controller.hasDevice("Extras") else QLabel(StringConstants.noDevice),  # Extras
+            EclipseControls(self.controller, "Main Scan Converter") if self.controller.hasDevice("Main Scan Converter") else QLabel(StringConstants.noDevice),  # Visuals PC
+        ]
 
     def setInputClickHandlers(self):
         self.btnCamera1.clicked.connect(self.handleInputSelect)
