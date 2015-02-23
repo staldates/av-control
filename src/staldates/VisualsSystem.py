@@ -9,7 +9,7 @@ class Input(object):
     def toPCMix(self, controller):
         pass
 
-    def toMain(self, controller):
+    def toMain(self, controller, mainChannel):
         pass
 
 
@@ -48,7 +48,7 @@ class BlankMainInput(MainInput):
     def toPCMix(self, controller):
         pass
 
-    def preview(self, controller):
+    def preview(self, controller, mainChannel):
         pass
 
 
@@ -82,7 +82,7 @@ class ProxyInput(Input):
     def toPCMix(self, controller):
         pass
 
-    def toMain(self, controller):
+    def toMain(self, controller, mainChannel):
         pass
 
 
