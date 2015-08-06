@@ -7,7 +7,7 @@ setup(
     author='James Muscat',
     author_email='jamesremuscat@gmail.com',
     url='https://github.com/staldates/av-control',
-    install_requires=['avx>=0.93', 'PySide', 'mock', 'nose', 'nosexcover'],
+    install_requires=['avx>=0.93', 'mock', 'nose', 'nosexcover'],
     dependency_links = [
         "lib/" # find local copies of packages here
         ],
