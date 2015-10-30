@@ -17,6 +17,10 @@ class InputButton(ExpandingButton):
         super(InputButton, self).__init__(parent)
         self.setCheckable(True)
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+        self.input = None
+
+    def setInput(self, myInput):
+        self.input = myInput
 
 
 class IDedButton(ExpandingButton):

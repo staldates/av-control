@@ -27,7 +27,7 @@ class TestMainWindow(GuiTest):
 
     def testSystemPower(self):
         spcButton = self.findButton(self.main, "Power")
-        self.assertFalse(spcButton == None)
+        self.assertFalse(spcButton is None)
 
         spcButton.click()
         spc = self.getCurrentScreen()

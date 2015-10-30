@@ -9,6 +9,7 @@ from Pyro4.errors import ProtocolError, NamingError
 from org.muscat.avx.StringConstants import StringConstants
 from staldates.ui.widgets.ScanConverterControls import OverscanFreezeWidget
 import logging
+from staldates import VisualsSystem
 
 
 class ExtrasSwitcher(QWidget):
@@ -29,26 +30,31 @@ class ExtrasSwitcher(QWidget):
 
         btnE1 = InputButton(self)
         btnE1.setText("Extras 1")
+        btnE1.setInput(VisualsSystem.extras1)
         layout.addWidget(btnE1, 0, 0)
         inputs.addButton(btnE1, 1)
 
         btnE2 = InputButton(self)
         btnE2.setText("Extras 2")
+        btnE2.setInput(VisualsSystem.extras2)
         layout.addWidget(btnE2, 0, 1)
         inputs.addButton(btnE2, 2)
 
         btnE3 = InputButton(self)
         btnE3.setText("Extras 3")
+        btnE3.setInput(VisualsSystem.extras3)
         layout.addWidget(btnE3, 0, 2)
         inputs.addButton(btnE3, 3)
 
         btnE4 = InputButton(self)
         btnE4.setText("Extras 4")
+        btnE4.setInput(VisualsSystem.extras4)
         layout.addWidget(btnE4, 0, 3)
         inputs.addButton(btnE4, 4)
 
         btnEVideo = InputButton(self)
         btnEVideo.setText("Visuals PC video")
+        btnEVideo.setInput(VisualsSystem.visualsPCVideo)
         layout.addWidget(btnEVideo, 0, 4)
         inputs.addButton(btnEVideo, 8)
 
@@ -71,13 +77,15 @@ class ExtrasSwitcher(QWidget):
 
     def take(self, output=1):
         '''Send the currently selected input to the main switcher's input. '''
-        try:
-            logging.debug("Extras: " + str(self.inputs.checkedId()) + " => " + str(output))
-            self.controller.switch("Extras", self.inputs.checkedId(), output)
-        except NamingError:
-            self.errorBox(StringConstants.nameErrorText)
-        except ProtocolError:
-            self.errorBox(StringConstants.protocolErrorText)
+        inChannel = self.inputs.checkedId()
+        if inChannel >= 0:
+            try:
+                logging.debug("Extras: " + str(inChannel) + " => " + str(output))
+                self.controller.switch("Extras", inChannel, output)
+            except NamingError:
+                self.errorBox(StringConstants.nameErrorText)
+            except ProtocolError:
+                self.errorBox(StringConstants.protocolErrorText)
 
     def toggleOverscan(self):
         try:

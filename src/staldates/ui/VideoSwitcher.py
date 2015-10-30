@@ -8,6 +8,8 @@ from org.muscat.avx.StringConstants import StringConstants
 from staldates.ui.EclipseControls import EclipseControls
 import logging
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
+from staldates import VisualsSystem
+from staldates.VisualsSystem import ProxyInput
 
 
 class VideoSwitcher(QWidget):
@@ -30,6 +32,7 @@ class VideoSwitcher(QWidget):
 
         self.btnCamera1 = CameraSelectionButton()
         self.btnCamera1.setText("Camera 1")
+        self.btnCamera1.setInput(VisualsSystem.camera1)
         inputsGrid.addWidget(self.btnCamera1)
         self.inputs.addButton(self.btnCamera1, 1)
         self.btnCamera1.setIcon(QIcon("icons/camera-video.svg"))
@@ -37,6 +40,7 @@ class VideoSwitcher(QWidget):
 
         self.btnCamera2 = CameraSelectionButton()
         self.btnCamera2.setText("Camera 2")
+        self.btnCamera2.setInput(VisualsSystem.camera2)
         inputsGrid.addWidget(self.btnCamera2)
         self.inputs.addButton(self.btnCamera2, 2)
         self.btnCamera2.setIcon(QIcon("icons/camera-video.svg"))
@@ -44,6 +48,7 @@ class VideoSwitcher(QWidget):
 
         self.btnCamera3 = CameraSelectionButton()
         self.btnCamera3.setText("Camera 3")
+        self.btnCamera3.setInput(VisualsSystem.camera3)
         inputsGrid.addWidget(self.btnCamera3)
         self.inputs.addButton(self.btnCamera3, 3)
         self.btnCamera3.setIcon(QIcon("icons/camera-video.svg"))
@@ -51,6 +56,7 @@ class VideoSwitcher(QWidget):
 
         self.btnDVD = InputButton()
         self.btnDVD.setText("DVD")
+        self.btnDVD.setInput(VisualsSystem.dvd)
         inputsGrid.addWidget(self.btnDVD)
         self.inputs.addButton(self.btnDVD, 4)
         self.btnDVD.setIcon(QIcon("icons/media-optical.svg"))
@@ -63,18 +69,21 @@ class VideoSwitcher(QWidget):
 
         self.btnVisualsPC = InputButton()
         self.btnVisualsPC.setText("Visuals PC")
+        self.btnVisualsPC.setInput(VisualsSystem.visualsPC)
         inputsGrid.addWidget(self.btnVisualsPC)
         self.inputs.addButton(self.btnVisualsPC, 6)
         self.btnVisualsPC.setIcon(QIcon("icons/computer.svg"))
 
         self.btnBlank = InputButton()
         self.btnBlank.setText("Blank")
+        self.btnBlank.setInput(VisualsSystem.blank)
         inputsGrid.addWidget(self.btnBlank)
         self.inputs.addButton(self.btnBlank, 0)
 
         gridlayout.addLayout(inputsGrid, 0, 0, 1, 7)
 
         self.extrasSwitcher = ExtrasSwitcher(self.controller)
+        self.btnExtras.setInput(ProxyInput(self.extrasSwitcher))
         self.blank = QWidget(self)
         gridlayout.addWidget(self.blank, 1, 0, 1, 5)
 
@@ -92,14 +101,14 @@ class VideoSwitcher(QWidget):
 
     def configureInnerControlPanels(self):
         self.panels = [
-                       QWidget(),  # Blank
-                       CameraControl(self.controller, "Camera 1") if self.controller.hasDevice("Camera 1") else QLabel(StringConstants.noDevice),
-                       CameraControl(self.controller, "Camera 2") if self.controller.hasDevice("Camera 2") else QLabel(StringConstants.noDevice),
-                       CameraControl(self.controller, "Camera 3") if self.controller.hasDevice("Camera 3") else QLabel(StringConstants.noDevice),
-                       QLabel(StringConstants.noDevice),  # DVD - no controls
-                       self.extrasSwitcher if self.controller.hasDevice("Extras") else QLabel(StringConstants.noDevice),  # Extras
-                       EclipseControls(self.controller, "Main Scan Converter") if self.controller.hasDevice("Main Scan Converter") else QLabel(StringConstants.noDevice),  # Visuals PC
-                       ]
+            QWidget(),  # Blank
+            CameraControl(self.controller, "Camera 1") if self.controller.hasDevice("Camera 1") else QLabel(StringConstants.noDevice),
+            CameraControl(self.controller, "Camera 2") if self.controller.hasDevice("Camera 2") else QLabel(StringConstants.noDevice),
+            CameraControl(self.controller, "Camera 3") if self.controller.hasDevice("Camera 3") else QLabel(StringConstants.noDevice),
+            QLabel(StringConstants.noDevice),  # DVD - no controls
+            self.extrasSwitcher if self.controller.hasDevice("Extras") else QLabel(StringConstants.noDevice),  # Extras
+            EclipseControls(self.controller, "Main Scan Converter") if self.controller.hasDevice("Main Scan Converter") else QLabel(StringConstants.noDevice),  # Visuals PC
+        ]
 
     def setInputClickHandlers(self):
         self.btnCamera1.clicked.connect(self.handleInputSelect)
@@ -141,15 +150,11 @@ class VideoSwitcher(QWidget):
     def handleInputSelect(self):
         inputID = self.inputs.checkedId()
         logging.debug("Input selected: " + str(inputID))
-        if inputID > 0:
+        if inputID >= 0:
             try:
-                # HACK HACK HACK someone wired these up the wrong way around
-                if inputID == 5:
-                    self.controller.switch("Preview", 6, 1)
-                elif inputID == 6:
-                    self.controller.switch("Preview", 5, 1)
-                else:
-                    self.controller.switch("Preview", inputID, 1)
+                myInput = self.inputs.checkedButton().input
+                if myInput:
+                    myInput.preview(self.controller)
             except NamingError:
                 self.mainWindow.errorBox(StringConstants.nameErrorText)
             except ProtocolError:
@@ -169,16 +174,16 @@ class VideoSwitcher(QWidget):
 
     def handleOutputSelect(self):
         outputChannel = self.sender().ID
-        inputChannel = self.inputs.checkedId()
-
-        if inputChannel == 5:
-            self.extrasSwitcher.take()
-        try:
-            self.controller.switch("Main", inputChannel, outputChannel)
-        except NamingError:
-            self.mainWindow.errorBox(StringConstants.nameErrorText)
-        except ProtocolError:
-            self.mainWindow.errorBox(StringConstants.protocolErrorText)
+        inputID = self.inputs.checkedId()
+        checkedExtrasButton = self.extrasSwitcher.inputs.checkedButton()
+        inputChannel = checkedExtrasButton.input if (inputID == 5 and checkedExtrasButton) else self.inputs.checkedButton().input
+        if inputChannel:
+            try:
+                inputChannel.toMain(self.controller, outputChannel)
+            except NamingError:
+                self.mainWindow.errorBox(StringConstants.nameErrorText)
+            except ProtocolError:
+                self.mainWindow.errorBox(StringConstants.protocolErrorText)
 
     def handlePCMixSelect(self):
         outputChannel = self.sender().ID
