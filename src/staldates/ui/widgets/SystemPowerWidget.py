@@ -36,13 +36,13 @@ class SystemPowerWidget(ScreenWithBackButton):
     def powerOn(self):
         self.controller.sequence(
             ControllerEvent("showPowerOnDialogOnClients"),
+            ControllerEvent("turnOn", "Power", 1),
+            SleepEvent(3),
             ControllerEvent("turnOn", "Power", 2),
             SleepEvent(3),
-            ControllerEvent("turnOn", "Power", 5),
+            ControllerEvent("turnOn", "Power", 3),
             SleepEvent(3),
-            ControllerEvent("turnOn", "Power", 6),
-            SleepEvent(3),
-            ControllerEvent("turnOn", "Power", 1),
+            ControllerEvent("turnOn", "Power", 4),
             ControllerEvent("initialise"),  # By this time all things we care about to initialise will have been switched on
             ControllerEvent("hidePowerDialogOnClients")
         )
@@ -50,12 +50,12 @@ class SystemPowerWidget(ScreenWithBackButton):
     def powerOff(self):
         self.controller.sequence(
             ControllerEvent("showPowerOffDialogOnClients"),
-            ControllerEvent("turnOff", "Power", 1),
+            ControllerEvent("turnOff", "Power", 4),
             SleepEvent(3),
-            ControllerEvent("turnOff", "Power", 6),
-            SleepEvent(3),
-            ControllerEvent("turnOff", "Power", 5),
+            ControllerEvent("turnOff", "Power", 3),
             SleepEvent(3),
             ControllerEvent("turnOff", "Power", 2),
+            SleepEvent(3),
+            ControllerEvent("turnOff", "Power", 1),
             ControllerEvent("hidePowerDialogOnClients"),
         )
