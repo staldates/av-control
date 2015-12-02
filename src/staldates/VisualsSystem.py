@@ -21,23 +21,23 @@ class MainInput(Input):
     def preview(self, controller):
         # 5 and 6 are wired opposite ways around on preview and main switchers
         if self.sourceChannel == 5:
-            controller.switch("Preview", 6, 1)
+            controller["Preview"].sendInputToOutput(6, 1)
         elif self.sourceChannel == 6:
-            controller.switch("Preview", 5, 1)
+            controller["Preview"].sendInputToOutput(5, 1)
         else:
-            controller.switch("Preview", self.sourceChannel, 1)
+            controller["Preview"].sendInputToOutput(self.sourceChannel, 1)
 
     def toPCMix(self, controller):
         # 5 and 6 are wired opposite ways around on preview and main switchers
         if self.sourceChannel == 5:
-            controller.switch("Preview", 6, 2)
+            controller["Preview"].sendInputToOutput(6, 2)
         elif self.sourceChannel == 6:
-            controller.switch("Preview", 5, 2)
+            controller["Preview"].sendInputToOutput(5, 2)
         else:
-            controller.switch("Preview", self.sourceChannel, 2)
+            controller["Preview"].sendInputToOutput(self.sourceChannel, 2)
 
     def toMain(self, controller, mainChannel):
-        controller.switch("Main", self.sourceChannel, mainChannel)
+        controller["Main"].sendInputToOutput(self.sourceChannel, mainChannel)
 
 
 class BlankMainInput(MainInput):
@@ -58,15 +58,15 @@ class ExtrasInput(Input):
         super(ExtrasInput, self).__init__(sourceChannel)
 
     def preview(self, controller):
-        controller.switch("Extras", self.sourceChannel, 2)
-        controller.switch("Preview", 6, 1)
+        controller["Extras"].sendInputToOutput(self.sourceChannel, 2)
+        controller["Preview"].sendInputToOutput(6, 1)
 
     def toPCMix(self, controller):
-        controller.switch("Preview", self.sourceChannel, 2)
+        controller["Preview"].sendInputToOutput(self.sourceChannel, 2)
 
     def toMain(self, controller, mainChannel):
-        controller.switch("Extras", self.sourceChannel, 1)
-        controller.switch("Main", 5, mainChannel)
+        controller["Extras"].sendInputToOutput(self.sourceChannel, 1)
+        controller["Main"].sendInputToOutput(5, mainChannel)
 
 
 class ProxyInput(Input):
@@ -77,7 +77,7 @@ class ProxyInput(Input):
 
     def preview(self, controller):
         self.extrasSwitcher.takePreview()
-        controller.switch("Preview", 6, 1)
+        controller["Preview"].sendInputToOutput(6, 1)
 
     def toPCMix(self, controller):
         pass
