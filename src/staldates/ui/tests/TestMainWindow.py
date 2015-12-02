@@ -3,12 +3,12 @@ Created on 17 Apr 2013
 
 @author: jrem
 '''
-from staldates.ui.tests.GuiTest import GuiTest
-from avx.controller.Controller import Controller
-from staldates.ui.MainWindow import MainWindow
-from staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
 from mock import MagicMock
+from staldates.ui.MainWindow import MainWindow
+from staldates.ui.tests.GuiTest import GuiTest
+from staldates.ui.tests.TestUtils import MockController
 from staldates.ui.VideoSwitcher import VideoSwitcher
+from staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
 from staldates.ui.widgets.LogViewer import LogViewer
 from staldates.ui.widgets.ProjectorScreensControl import ProjectorScreensControl
 
@@ -17,7 +17,7 @@ class TestMainWindow(GuiTest):
 
     def setUp(self):
         GuiTest.setUp(self)
-        self.mockController = Controller()
+        self.mockController = MockController()
         self.mockController.sequence = MagicMock(return_value=1)
 
         self.main = MainWindow(self.mockController)
