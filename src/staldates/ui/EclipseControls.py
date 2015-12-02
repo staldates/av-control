@@ -8,10 +8,10 @@ class EclipseControls(QWidget):
 
     def __init__(self, controller, deviceID):
         super(EclipseControls, self).__init__()
-        self.controller = controller
         self.deviceID = deviceID
 
         if controller.hasDevice(deviceID):
+            self.device = controller[deviceID]
             layout = QVBoxLayout(self)
             eclipse = EclipseWidget()
             layout.addWidget(eclipse)
@@ -23,7 +23,10 @@ class EclipseControls(QWidget):
 
     def toggleOverscan(self):
         try:
-            self.controller.toggleOverscan(self.deviceID, self.sender().isChecked())
+            if self.sender().isChecked():
+                self.device.overscanOn()
+            else:
+                self.device.overscanOff()
         except NamingError:
             self.errorBox(StringConstants.nameErrorText)
         except ProtocolError:
@@ -31,7 +34,10 @@ class EclipseControls(QWidget):
 
     def toggleFreeze(self):
         try:
-            self.controller.toggleFreeze(self.deviceID, self.sender().isChecked())
+            if self.sender().isChecked():
+                self.device.freeze()
+            else:
+                self.device.unfreeze()
         except NamingError:
             self.errorBox(StringConstants.nameErrorText)
         except ProtocolError:
@@ -39,7 +45,10 @@ class EclipseControls(QWidget):
 
     def toggleOverlay(self):
         try:
-            self.controller.toggleOverlay(self.deviceID, self.sender().isChecked())
+            if self.sender().isChecked():
+                self.device.overlayOn()
+            else:
+                self.device.overlayOff()
         except NamingError:
             self.errorBox(StringConstants.nameErrorText)
         except ProtocolError:
@@ -47,7 +56,10 @@ class EclipseControls(QWidget):
 
     def toggleFade(self):
         try:
-            self.controller.toggleFade(self.deviceID, self.sender().isChecked())
+            if self.sender().isChecked():
+                self.device.fadeOut()
+            else:
+                self.device.fadeIn()
         except NamingError:
             self.errorBox(StringConstants.nameErrorText)
         except ProtocolError:
