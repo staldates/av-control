@@ -26,7 +26,7 @@ class AdvancedMenu(ScreenWithBackButton):
 
         btnAutoTrack = ExpandingButton()
         btnAutoTrack.setText("Recalibrate Extras scan converter")
-        btnAutoTrack.clicked.connect(lambda: self.controller.recalibrate("Extras Scan Converter"))
+        btnAutoTrack.clicked.connect(lambda: self.controller["Extras Scan Converter"].recalibrate())
         layout.addWidget(btnAutoTrack)
 
         btnQuit = ExpandingButton()
