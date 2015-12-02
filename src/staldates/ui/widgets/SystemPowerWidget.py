@@ -2,7 +2,7 @@ from PySide.QtGui import QIcon, QHBoxLayout
 from PySide.QtCore import Qt, QSize
 from staldates.ui.widgets.Buttons import ExpandingButton
 from staldates.ui.widgets.Screens import ScreenWithBackButton
-from avx.Sequencer import ControllerEvent, SleepEvent
+from avx.Sequencer import ControllerEvent, DeviceEvent, SleepEvent
 
 
 class SystemPowerWidget(ScreenWithBackButton):
@@ -36,13 +36,13 @@ class SystemPowerWidget(ScreenWithBackButton):
     def powerOn(self):
         self.controller.sequence(
             ControllerEvent("showPowerOnDialogOnClients"),
-            ControllerEvent("turnOn", "Power", 1),
+            DeviceEvent("Power", "on", 1),
             SleepEvent(3),
-            ControllerEvent("turnOn", "Power", 2),
+            DeviceEvent("Power", "on", 2),
             SleepEvent(3),
-            ControllerEvent("turnOn", "Power", 3),
+            DeviceEvent("Power", "on", 3),
             SleepEvent(3),
-            ControllerEvent("turnOn", "Power", 4),
+            DeviceEvent("Power", "on", 4),
             ControllerEvent("initialise"),  # By this time all things we care about to initialise will have been switched on
             ControllerEvent("hidePowerDialogOnClients")
         )
@@ -50,12 +50,12 @@ class SystemPowerWidget(ScreenWithBackButton):
     def powerOff(self):
         self.controller.sequence(
             ControllerEvent("showPowerOffDialogOnClients"),
-            ControllerEvent("turnOff", "Power", 4),
+            DeviceEvent("Power", "off", 4),
             SleepEvent(3),
-            ControllerEvent("turnOff", "Power", 3),
+            DeviceEvent("Power", "off", 3),
             SleepEvent(3),
-            ControllerEvent("turnOff", "Power", 2),
+            DeviceEvent("Power", "off", 2),
             SleepEvent(3),
-            ControllerEvent("turnOff", "Power", 1),
+            DeviceEvent("Power", "off", 1),
             ControllerEvent("hidePowerDialogOnClients"),
         )
