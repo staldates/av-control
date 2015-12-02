@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 '''
 Created on 8 Nov 2012
 
@@ -9,8 +9,8 @@ require("avx>=0.92")
 
 from PySide.QtCore import Qt
 from PySide.QtGui import QApplication
-from org.muscat.avx.Client import Client
-from org.muscat.avx.controller.Controller import Controller, VersionMismatchError
+from avx.Client import Client
+from avx.controller.Controller import Controller, VersionMismatchError
 from staldates.ui.MainWindow import MainWindow
 import argparse
 import atexit

@@ -2,7 +2,7 @@ from PySide.QtGui import QIcon, QHBoxLayout
 from PySide.QtCore import Qt, QSize
 from staldates.ui.widgets.Buttons import ExpandingButton
 from staldates.ui.widgets.Screens import ScreenWithBackButton
-from org.muscat.avx.Sequencer import ControllerEvent, SleepEvent
+from avx.Sequencer import ControllerEvent, SleepEvent
 
 
 class SystemPowerWidget(ScreenWithBackButton):

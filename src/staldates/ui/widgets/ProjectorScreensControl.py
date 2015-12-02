@@ -3,7 +3,7 @@ from PySide.QtGui import QButtonGroup, QIcon, QGridLayout
 from staldates.ui.widgets.Buttons import ExpandingButton,\
     IDedButton
 from Pyro4.errors import NamingError, ProtocolError
-from org.muscat.avx.StringConstants import StringConstants
+from avx.StringConstants import StringConstants
 from staldates.ui.widgets.Screens import ScreenWithBackButton
 
 

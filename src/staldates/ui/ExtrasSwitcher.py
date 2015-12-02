@@ -6,7 +6,7 @@ Created on 10 Nov 2012
 from PySide.QtGui import QWidget, QGridLayout, QButtonGroup, QMessageBox
 from staldates.ui.widgets.Buttons import InputButton, OutputButton
 from Pyro4.errors import ProtocolError, NamingError
-from org.muscat.avx.StringConstants import StringConstants
+from avx.StringConstants import StringConstants
 from staldates.ui.widgets.ScanConverterControls import OverscanFreezeWidget
 import logging
 from staldates import VisualsSystem

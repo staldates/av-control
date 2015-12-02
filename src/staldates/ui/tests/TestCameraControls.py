@@ -5,37 +5,51 @@ Created on 15 Apr 2013
 '''
 from mock import MagicMock
 from staldates.ui.CameraControls import CameraControl, AdvancedCameraControl
-from org.muscat.avx.controller.Controller import Controller
-from org.muscat.avx.controller.VISCAController import CameraMove, CameraWhiteBalance
-from org.muscat.avx.devices.Device import Device
+from avx.devices.Device import Device
 from staldates.ui.tests.GuiTest import GuiTest
 from PySide.QtTest import QTest
 from PySide.QtCore import Qt
-from org.muscat.avx.CameraPosition import CameraPosition
+from avx.CameraPosition import CameraPosition
 from staldates.ui.MainWindow import MainWindow
+from avx.controller.Controller import Controller
 
 
 class Test(GuiTest):
 
     def setUp(self):
         GuiTest.setUp(self)
-        self.mockController = Controller()
-        self.mockController.move = MagicMock(return_value=1)
-        self.mockController.zoom = MagicMock(return_value=1)
-        self.mockController.focus = MagicMock(return_value=1)
 
+        self.mockController = Controller()
         self.mockMainWindow = MainWindow(self.mockController)
 
-        cam = Device("Test Camera")
-        self.mockController.addDevice(cam)
-        cam.recallPreset = lambda x: {}
+        self.cam = Device("Test Camera")
+        self.cam.moveUp = MagicMock(return_value=1)
+        self.cam.moveDown = MagicMock(return_value=1)
+        self.cam.moveLeft = MagicMock(return_value=1)
+        self.cam.moveRight = MagicMock(return_value=1)
+        self.cam.stop = MagicMock(return_value=1)
+        self.cam.recallPreset = MagicMock(return_value=1)
+        self.cam.whiteBalanceAuto = MagicMock(return_value=1)
+        self.cam.whiteBalanceIndoor = MagicMock(return_value=1)
+        self.cam.whiteBalanceOutdoor = MagicMock(return_value=1)
+        self.cam.whiteBalanceOnePush = MagicMock(return_value=1)
+        self.cam.whiteBalanceOnePushTrigger = MagicMock(return_value=1)
+        self.cam.zoomIn = MagicMock(return_value=1)
+        self.cam.zoomOut = MagicMock(return_value=1)
+        self.cam.stopZoom = MagicMock(return_value=1)
+        self.cam.focusNear = MagicMock(return_value=1)
+        self.cam.focusFar = MagicMock(return_value=1)
+        self.cam.focusStop = MagicMock(return_value=1)
+        self.cam.focusAuto = MagicMock(return_value=1)
+        self.cam.backlightCompOn = MagicMock(return_value=1)
+        self.cam.backlightCompOff = MagicMock(return_value=1)
 
     def tearDown(self):
         self.app = None
 
     def testCannotSelectMultiplePresets(self):
         ''' See https://github.com/jamesremuscat/aldatesx/issues/23'''
-        cc = CameraControl(self.mockController, "Test Camera")
+        cc = CameraControl(self.cam)
         buttons = cc.presetGroup.buttons()
 
         self.assertEqual(-1, cc.presetGroup.checkedId())
@@ -49,75 +63,91 @@ class Test(GuiTest):
         self.assertFalse(buttons[1].isChecked())
 
     def testMoveCamera(self):
-        cc = CameraControl(self.mockController, "Test Camera")
+        cc = CameraControl(self.cam)
+
         cc.btnUp.pressed.emit()
-        self.mockController.move.assert_called_with("Test Camera", CameraMove.Up)
+        self.cam.moveUp.assert_called_once_with()
         cc.btnUp.released.emit()
-        self.mockController.move.assert_called_with("Test Camera", CameraMove.Stop)
+        self.cam.stop.assert_called_once_with()
+        self.cam.stop.reset_mock()
+
         cc.btnDown.pressed.emit()
-        self.mockController.move.assert_called_with("Test Camera", CameraMove.Down)
+        self.cam.moveDown.assert_called_once_with()
         cc.btnDown.released.emit()
-        self.mockController.move.assert_called_with("Test Camera", CameraMove.Stop)
+        self.cam.stop.assert_called_once_with()
+        self.cam.stop.reset_mock()
+
         cc.btnLeft.pressed.emit()
-        self.mockController.move.assert_called_with("Test Camera", CameraMove.Left)
+        self.cam.moveLeft.assert_called_once_with()
         cc.btnLeft.released.emit()
-        self.mockController.move.assert_called_with("Test Camera", CameraMove.Stop)
+        self.cam.stop.assert_called_once_with()
+        self.cam.stop.reset_mock()
+
         cc.btnRight.pressed.emit()
-        self.mockController.move.assert_called_with("Test Camera", CameraMove.Right)
+        self.cam.moveRight.assert_called_once_with()
         cc.btnRight.released.emit()
-        self.mockController.move.assert_called_with("Test Camera", CameraMove.Stop)
+        self.cam.stop.assert_called_once_with()
+        self.cam.stop.reset_mock()
 
     def testMoveCameraWithKeyboard(self):
-        cc = CameraControl(self.mockController, "Test Camera")
+        cc = CameraControl(self.cam)
+
         QTest.keyPress(cc, Qt.Key_Up)
-        self.mockController.move.assert_called_with("Test Camera", CameraMove.Up)
+        self.cam.moveUp.assert_called_once_with()
         QTest.keyRelease(cc, Qt.Key_Up)
-        self.mockController.move.assert_called_with("Test Camera", CameraMove.Stop)
+        self.cam.stop.assert_called_once_with()
+        self.cam.stop.reset_mock()
+
         QTest.keyPress(cc, Qt.Key_Down)
-        self.mockController.move.assert_called_with("Test Camera", CameraMove.Down)
+        self.cam.moveDown.assert_called_once_with()
         QTest.keyRelease(cc, Qt.Key_Down)
-        self.mockController.move.assert_called_with("Test Camera", CameraMove.Stop)
+        self.cam.stop.assert_called_once_with()
+        self.cam.stop.reset_mock()
+
         QTest.keyPress(cc, Qt.Key_Left)
-        self.mockController.move.assert_called_with("Test Camera", CameraMove.Left)
+        self.cam.moveLeft.assert_called_once_with()
         QTest.keyRelease(cc, Qt.Key_Left)
-        self.mockController.move.assert_called_with("Test Camera", CameraMove.Stop)
+        self.cam.stop.assert_called_once_with()
+        self.cam.stop.reset_mock()
+
         QTest.keyPress(cc, Qt.Key_Right)
-        self.mockController.move.assert_called_with("Test Camera", CameraMove.Right)
+        self.cam.moveRight.assert_called_once_with()
         QTest.keyRelease(cc, Qt.Key_Right)
-        self.mockController.move.assert_called_with("Test Camera", CameraMove.Stop)
+        self.cam.stop.assert_called_once_with()
+        self.cam.stop.reset_mock()
+
 
 # Tests for advanced camera controls
 
     def testGetCameraPosition(self):
         fakePosition = CameraPosition(111, 222, 333)
-        self.mockController.getPosition = MagicMock(return_value=fakePosition)
-        acc = AdvancedCameraControl(self.mockController, "Test Camera", self.mockMainWindow)
+        self.cam.getPosition = MagicMock(return_value=fakePosition)
+        acc = AdvancedCameraControl(self.cam, self.mockMainWindow)
         self.findButton(acc, "Get Position").click()
-        self.mockController.getPosition.assert_called_once_with("Test Camera")
+        self.cam.getPosition.assert_called_once_with()
         self.assertEqual("111", acc.posDisplay.itemAtPosition(0, 1).widget().text())
         self.assertEqual("222", acc.posDisplay.itemAtPosition(1, 1).widget().text())
         self.assertEqual("333", acc.posDisplay.itemAtPosition(2, 1).widget().text())
 
     def testChangeWhiteBalance(self):
-        self.mockController.whiteBalance = MagicMock(return_value=1)
-        acc = AdvancedCameraControl(self.mockController, "Test Camera", self.mockMainWindow)
+        acc = AdvancedCameraControl(self.cam, self.mockMainWindow)
         self.assertFalse(self.findButton(acc, "Set").isEnabled())
 
         self.findButton(acc, "Auto").click()
-        self.mockController.whiteBalance.assert_called_with("Test Camera", CameraWhiteBalance.Auto)
+        self.cam.whiteBalanceAuto.assert_called_once_with()
         self.assertFalse(self.findButton(acc, "Set").isEnabled())
 
         self.findButton(acc, "Indoor").click()
-        self.mockController.whiteBalance.assert_called_with("Test Camera", CameraWhiteBalance.Indoor)
+        self.cam.whiteBalanceIndoor.assert_called_once_with()
         self.assertFalse(self.findButton(acc, "Set").isEnabled())
 
         self.findButton(acc, "Outdoor").click()
-        self.mockController.whiteBalance.assert_called_with("Test Camera", CameraWhiteBalance.Outdoor)
+        self.cam.whiteBalanceOutdoor.assert_called_once_with()
         self.assertFalse(self.findButton(acc, "Set").isEnabled())
 
         self.findButton(acc, "One Push").click()
-        self.mockController.whiteBalance.assert_called_with("Test Camera", CameraWhiteBalance.OnePush)
+        self.cam.whiteBalanceOnePush.assert_called_once_with()
         self.assertTrue(self.findButton(acc, "Set").isEnabled())
 
         self.findButton(acc, "Set").click()
-        self.mockController.whiteBalance.assert_called_with("Test Camera", CameraWhiteBalance.Trigger)
+        self.cam.whiteBalanceOnePushTrigger.assert_called_once_with()

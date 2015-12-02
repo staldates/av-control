@@ -4,8 +4,8 @@ Created on 16 Apr 2013
 @author: jrem
 '''
 import unittest
-from org.muscat.avx.controller.Controller import Controller
-from org.muscat.avx.devices.Device import Device
+from avx.controller.Controller import Controller
+from avx.devices.Device import Device
 from staldates.ui.VideoSwitcher import VideoSwitcher
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
 from mock import MagicMock

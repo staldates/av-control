@@ -4,7 +4,7 @@ Created on 17 Apr 2013
 @author: jrem
 '''
 from staldates.ui.tests.GuiTest import GuiTest
-from org.muscat.avx.controller.Controller import Controller
+from avx.controller.Controller import Controller
 from staldates.ui.MainWindow import MainWindow
 from staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
 from mock import MagicMock

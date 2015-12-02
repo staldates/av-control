@@ -5,8 +5,8 @@ Created on 20 Feb 2015
 '''
 import unittest
 from mock import MagicMock
-from org.muscat.avx.controller.Controller import Controller
-from org.muscat.avx.devices.Device import Device
+from avx.controller.Controller import Controller
+from avx.devices.Device import Device
 from staldates.ui.tests.GuiTest import GuiTest
 from staldates.ui.ExtrasSwitcher import ExtrasSwitcher
 
