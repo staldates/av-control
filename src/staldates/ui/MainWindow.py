@@ -57,7 +57,7 @@ class MainWindow(QMainWindow):
         mainLayout.addWidget(screens, 1, 3)
 
         if controller.hasDevice("Lights"):
-            self.lightsMenu = LightingControl(self.controller, self)
+            self.lightsMenu = LightingControl(controller["Lights"], self)
 
             lights = ExpandingButton()
             lights.setText("Lights")

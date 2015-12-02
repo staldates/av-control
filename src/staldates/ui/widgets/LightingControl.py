@@ -1,15 +1,12 @@
-from staldates.ui.widgets.Screens import ScreenWithBackButton
 from PySide.QtGui import QHBoxLayout, QVBoxLayout
 from staldates.ui.widgets.Buttons import ExpandingButton
+from staldates.ui.widgets.Screens import ScreenWithBackButton
 
 
 class LightingControl(ScreenWithBackButton):
-    '''
-    classdocs
-    '''
 
-    def __init__(self, controller, mainWindow):
-        self.controller = controller
+    def __init__(self, lightsDevice, mainWindow):
+        self.lights = lightsDevice
         ScreenWithBackButton.__init__(self, "Welcome Area Lights", mainWindow)
 
     def makeContent(self):
