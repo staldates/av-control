@@ -144,14 +144,14 @@ class CameraControl(QWidget):
             btnPresetRecall = CameraButton()
             presets.addWidget(btnPresetRecall, 0, i, 1, 1)
             btnPresetRecall.setText(str(i + 1))
-            btnPresetRecall.clicked.connect(lambda: self.recallPreset(i))
+            btnPresetRecall.clicked.connect(lambda i=i: self.recallPreset(i))
             btnPresetRecall.setCheckable(True)
             self.presetGroup.addButton(btnPresetRecall, i)
 
             btnPresetSet = CameraButton()
             presets.addWidget(btnPresetSet, 1, i, 1, 1)
             btnPresetSet.setText("Set")
-            btnPresetSet.clicked.connect(lambda: self.storePreset(i))
+            btnPresetSet.clicked.connect(lambda i=i: self.storePreset(i))
 
         layout.addLayout(presets, 4, 0, 3, 6)
 
@@ -177,6 +177,7 @@ class CameraControl(QWidget):
 
     def storePreset(self, index):
         try:
+            print "Storing preset " + str(index)
             result = self.camera.storePreset(index)
             self.presetGroup.buttons()[index].setChecked(True)
             return result
@@ -187,6 +188,7 @@ class CameraControl(QWidget):
 
     def recallPreset(self, index):
         try:
+            print "Recalling preset " + str(index)
             return self.camera.recallPreset(index)
         except NamingError:
             self.errorBox(StringConstants.nameErrorText)

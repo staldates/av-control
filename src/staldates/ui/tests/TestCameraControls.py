@@ -42,6 +42,8 @@ class Test(GuiTest):
         self.cam.focusAuto = MagicMock(return_value=1)
         self.cam.backlightCompOn = MagicMock(return_value=1)
         self.cam.backlightCompOff = MagicMock(return_value=1)
+        self.cam.storePreset = MagicMock(return_value=1)
+        self.cam.recallPreset = MagicMock(return_value=1)
 
     def tearDown(self):
         self.app = None
@@ -115,6 +117,13 @@ class Test(GuiTest):
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
+    def testPresets(self):
+        cc = CameraControl(self.cam)
+        self.findButton(cc, "2").click()
+        self.cam.recallPreset.assert_called_once_with(1)
+        self.findButton(cc, "Set").click()  # finds the first one
+        self.cam.storePreset.assert_called_once_with(0)
+        self.assertEquals(0, cc.presetGroup.checkedId())
 
 # Tests for advanced camera controls
 
