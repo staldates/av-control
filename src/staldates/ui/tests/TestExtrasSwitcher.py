@@ -4,18 +4,18 @@ Created on 20 Feb 2015
 @author: jrem
 '''
 import unittest
-from mock import MagicMock
-from avx.controller.Controller import Controller
 from avx.devices.Device import Device
-from staldates.ui.tests.GuiTest import GuiTest
+from mock import MagicMock
 from staldates.ui.ExtrasSwitcher import ExtrasSwitcher
+from staldates.ui.tests.GuiTest import GuiTest
+from staldates.ui.tests.TestUtils import MockController
 
 
 class Test(GuiTest):
 
     def setUp(self):
         GuiTest.setUp(self)
-        self.mockController = Controller()
+        self.mockController = MockController()
 
         self.main = Device("Main")
         self.mockController.addDevice(self.main)

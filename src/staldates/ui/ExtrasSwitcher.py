@@ -81,7 +81,7 @@ class ExtrasSwitcher(QWidget):
         if inChannel >= 0:
             try:
                 logging.debug("Extras: " + str(inChannel) + " => " + str(output))
-                self.controller.switch("Extras", inChannel, output)
+                self.controller["Extras"].sendInputToOutput(inChannel, output)
             except NamingError:
                 self.errorBox(StringConstants.nameErrorText)
             except ProtocolError:
