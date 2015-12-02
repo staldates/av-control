@@ -54,3 +54,4 @@ docs/_build/
 
 # pidfiles
 *.pid
+/venv/
