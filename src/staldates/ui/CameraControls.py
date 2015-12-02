@@ -123,6 +123,7 @@ class CameraControl(QWidget):
         focus.downButton.pressed.connect(self.camera.focusNear)
         focus.downButton.released.connect(self.camera.focusStop)
         focus.downButton.clicked.connect(self.deselectPreset)
+
         def autoFocusAndDeselect():
             self.camera.focusAuto()
             self.deselectPreset()

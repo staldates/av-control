@@ -27,10 +27,10 @@ class Test(GuiTest):
 
         self.esc = Device("Extras Scan Converter")
         self.mockController.addDevice(self.esc)
-        self.esc.overscanOff = MagicMock(return_value = 1)
-        self.esc.overscanOn = MagicMock(return_value = 1)
-        self.esc.freezeOff = MagicMock(return_value = 1)
-        self.esc.freezeOn = MagicMock(return_value = 1)
+        self.esc.overscanOff = MagicMock(return_value=1)
+        self.esc.overscanOn = MagicMock(return_value=1)
+        self.esc.freezeOff = MagicMock(return_value=1)
+        self.esc.freezeOn = MagicMock(return_value=1)
 
         self.es = ExtrasSwitcher(self.mockController)
 
