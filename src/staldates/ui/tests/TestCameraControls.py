@@ -3,14 +3,13 @@ Created on 15 Apr 2013
 
 @author: jrem
 '''
-from mock import MagicMock
-from staldates.ui.CameraControls import CameraControl, AdvancedCameraControl
-from avx.devices.Device import Device
-from staldates.ui.tests.GuiTest import GuiTest
-from PySide.QtTest import QTest
-from PySide.QtCore import Qt
 from avx.CameraPosition import CameraPosition
-from avx.controller.Controller import Controller
+from avx.devices.Device import Device
+from mock import MagicMock
+from PySide.QtCore import Qt
+from PySide.QtTest import QTest
+from staldates.ui.CameraControls import CameraControl, AdvancedCameraControl
+from staldates.ui.tests.GuiTest import GuiTest
 
 
 class Test(GuiTest):
@@ -18,7 +17,6 @@ class Test(GuiTest):
     def setUp(self):
         GuiTest.setUp(self)
 
-        self.mockController = Controller()
         self.mockMainWindow = MagicMock()
 
         self.cam = Device("Test Camera")
