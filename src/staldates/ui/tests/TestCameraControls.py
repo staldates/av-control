@@ -35,7 +35,7 @@ class Test(GuiTest):
         self.cam.whiteBalanceOnePushTrigger = MagicMock(return_value=1)
         self.cam.zoomIn = MagicMock(return_value=1)
         self.cam.zoomOut = MagicMock(return_value=1)
-        self.cam.stopZoom = MagicMock(return_value=1)
+        self.cam.zoomStop = MagicMock(return_value=1)
         self.cam.focusNear = MagicMock(return_value=1)
         self.cam.focusFar = MagicMock(return_value=1)
         self.cam.focusStop = MagicMock(return_value=1)

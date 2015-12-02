@@ -108,10 +108,10 @@ class CameraControl(QWidget):
 
         zoomInOut = PlusMinusButtons("Zoom")
         zoomInOut.upButton.pressed.connect(self.camera.zoomIn)
-        zoomInOut.upButton.released.connect(self.camera.stopZoom)
+        zoomInOut.upButton.released.connect(self.camera.zoomStop)
         zoomInOut.upButton.clicked.connect(self.deselectPreset)
         zoomInOut.downButton.pressed.connect(self.camera.zoomOut)
-        zoomInOut.downButton.released.connect(self.camera.stopZoom)
+        zoomInOut.downButton.released.connect(self.camera.zoomStop)
         zoomInOut.downButton.clicked.connect(self.deselectPreset)
 
         layout.addWidget(zoomInOut, 0, 3, 4, 1)
