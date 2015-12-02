@@ -25,6 +25,11 @@ class Test(GuiTest):
         self.mockController.addDevice(self.extras)
         self.extras.sendInputToOutput = MagicMock(return_value=1)
 
+        self.esc = Device("Extras Scan Converter")
+        self.mockController.addDevice(self.esc)
+        self.esc.overscanOff = MagicMock(return_value = 1)
+        self.esc.overscanOn = MagicMock(return_value = 1)
+
         self.es = ExtrasSwitcher(self.mockController)
 
     def testDoesntSwitchMinusOne(self):
@@ -33,6 +38,12 @@ class Test(GuiTest):
         self.es.inputs.buttons()[0].click()
         self.es.takePreview()
         self.assert_(self.extras.sendInputToOutput.called, "Switcher was not called but it should have been")
+
+    def testToggleOverscan(self):
+        self.findButton(self.es, "Overscan").click()
+        self.esc.overscanOff.assert_called_once_with()
+        self.findButton(self.es, "Overscan").click()
+        self.esc.overscanOn.assert_called_once_with()
 
 if __name__ == "__main__":
     unittest.main()

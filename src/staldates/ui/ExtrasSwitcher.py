@@ -89,7 +89,10 @@ class ExtrasSwitcher(QWidget):
 
     def toggleOverscan(self):
         try:
-            self.controller.toggleOverscan("Extras Scan Converter", self.sender().isChecked())
+            if self.sender().isChecked():
+                self.controller["Extras Scan Converter"].overscanOn()
+            else:
+                self.controller["Extras Scan Converter"].overscanOff()
         except NamingError:
             self.errorBox(StringConstants.nameErrorText)
         except ProtocolError:
