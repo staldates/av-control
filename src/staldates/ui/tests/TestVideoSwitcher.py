@@ -5,26 +5,14 @@ Created on 16 Apr 2013
 '''
 import unittest
 from avx.devices.Device import Device
+from mock import MagicMock
+from PySide.QtCore import Qt
+from PySide.QtTest import QTest
 from staldates.ui.VideoSwitcher import VideoSwitcher
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
-from mock import MagicMock
 from staldates.ui.tests.GuiTest import GuiTest
-from PySide.QtTest import QTest
-from PySide.QtCore import Qt
+from staldates.ui.tests.TestUtils import MockController
 
-
-class MockController(object):
-    def __init__(self):
-        self.devices = {}
-
-    def hasDevice(self, deviceID):
-        return deviceID in self.devices.keys()
-
-    def addDevice(self, device):
-        self.devices[device.deviceID] = device
-
-    def __getitem__(self, item):
-        return self.devices.get(item)
 
 class TestVideoSwitcher(GuiTest):
 
