@@ -4,7 +4,6 @@ Created on 16 Apr 2013
 @author: jrem
 '''
 import unittest
-from avx.controller.Controller import Controller
 from avx.devices.Device import Device
 from staldates.ui.VideoSwitcher import VideoSwitcher
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
@@ -14,11 +13,24 @@ from PySide.QtTest import QTest
 from PySide.QtCore import Qt
 
 
+class MockController(object):
+    def __init__(self):
+        self.devices = {}
+
+    def hasDevice(self, deviceID):
+        return deviceID in self.devices.keys()
+
+    def addDevice(self, device):
+        self.devices[device.deviceID] = device
+
+    def __getitem__(self, item):
+        return self.devices.get(item)
+
 class TestVideoSwitcher(GuiTest):
 
     def setUp(self):
         GuiTest.setUp(self)
-        self.mockController = Controller()
+        self.mockController = MockController()
 
         self.main = Device("Main")
         self.mockController.addDevice(self.main)
@@ -59,6 +71,7 @@ class TestVideoSwitcher(GuiTest):
         self.vs.btnExtras.click()
         self.preview.sendInputToOutput.assert_called_with(6, 1)  # This is wired up the wrong way around - 5 on main vs 6 on preview
         self.vs.extrasSwitcher.inputs.buttons()[4].click()  # Visuals PC video
+        self.assertEqual(self.vs.extrasSwitcher.inputs.checkedButton(), self.vs.extrasSwitcher.inputs.buttons()[4])
         outputsGrid.btnAll.click()  # This one click should trigger two takes, one on each switcher
         self.extras.sendInputToOutput.assert_called_with(8, 1)
         self.main.sendInputToOutput.assert_called_with(5, 0)  # Extras to everywhere

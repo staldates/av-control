@@ -10,7 +10,6 @@ from staldates.ui.tests.GuiTest import GuiTest
 from PySide.QtTest import QTest
 from PySide.QtCore import Qt
 from avx.CameraPosition import CameraPosition
-from staldates.ui.MainWindow import MainWindow
 from avx.controller.Controller import Controller
 
 
@@ -20,7 +19,7 @@ class Test(GuiTest):
         GuiTest.setUp(self)
 
         self.mockController = Controller()
-        self.mockMainWindow = MainWindow(self.mockController)
+        self.mockMainWindow = MagicMock()
 
         self.cam = Device("Test Camera")
         self.cam.moveUp = MagicMock(return_value=1)

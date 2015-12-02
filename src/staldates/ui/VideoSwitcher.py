@@ -186,25 +186,17 @@ class VideoSwitcher(QWidget):
                 self.mainWindow.errorBox(StringConstants.protocolErrorText)
 
     def handlePCMixSelect(self):
-        outputChannel = self.sender().ID
-        inputChannel = self.inputs.checkedId()
-
-        if outputChannel != 2:
-            raise RuntimeError("This isn't PC Mix...")
-
-        try:
-            if inputChannel == 5:
-                self.extrasSwitcher.takePreview()
-                # HACK HACK HACK someone wired these up the wrong way
-                self.controller.switch("Preview", 6, outputChannel)
-            elif inputChannel != 6:
-                self.controller.switch("Preview", inputChannel, outputChannel)
-            else:
-                logging.error("Tried to send PC to PC Mix. Bad things would have happened!")
-        except NamingError:
-            self.mainWindow.errorBox(StringConstants.nameErrorText)
-        except ProtocolError:
-            self.mainWindow.errorBox(StringConstants.protocolErrorText)
+        inputID = self.inputs.checkedId()
+        checkedExtrasButton = self.extrasSwitcher.inputs.checkedButton()
+        checkedExtrasButton
+        inputChannel = checkedExtrasButton.input if (inputID == 5 and checkedExtrasButton) else self.inputs.checkedButton().input
+        if inputChannel:
+            try:
+                inputChannel.toPCMix(self.controller)
+            except NamingError:
+                self.mainWindow.errorBox(StringConstants.nameErrorText)
+            except ProtocolError:
+                self.mainWindow.errorBox(StringConstants.protocolErrorText)
 
     def showCameraAdvanced(self, camDevice):
         ctls = AdvancedCameraControl(self.controller, camDevice, self.mainWindow)

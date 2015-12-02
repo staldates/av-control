@@ -62,7 +62,8 @@ class ExtrasInput(Input):
         controller["Preview"].sendInputToOutput(6, 1)
 
     def toPCMix(self, controller):
-        controller["Preview"].sendInputToOutput(self.sourceChannel, 2)
+        controller["Extras"].sendInputToOutput(self.sourceChannel, 2)
+        controller["Preview"].sendInputToOutput(6, 2)
 
     def toMain(self, controller, mainChannel):
         controller["Extras"].sendInputToOutput(self.sourceChannel, 1)
