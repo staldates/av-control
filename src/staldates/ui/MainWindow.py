@@ -47,7 +47,7 @@ class MainWindow(QMainWindow):
         blinds.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         mainLayout.addWidget(blinds, 1, 2)
 
-        self.sc = ProjectorScreensControl(self.controller, self)
+        self.sc = ProjectorScreensControl(controller["Screens"], self)
 
         screens = ExpandingButton()
         screens.setText("Screens")

@@ -11,6 +11,7 @@ from staldates.ui.VideoSwitcher import VideoSwitcher
 from staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
 from staldates.ui.widgets.LogViewer import LogViewer
 from staldates.ui.widgets.ProjectorScreensControl import ProjectorScreensControl
+from avx.devices.Device import Device
 
 
 class TestMainWindow(GuiTest):
@@ -19,6 +20,12 @@ class TestMainWindow(GuiTest):
         GuiTest.setUp(self)
         self.mockController = MockController()
         self.mockController.sequence = MagicMock(return_value=1)
+
+        self.screens = Device("Screens")
+        self.screens.lower = MagicMock(return_value=1)
+        self.screens.raiseUp = MagicMock(return_value=1)
+        self.screens.stop = MagicMock(return_value=1)
+        self.mockController.addDevice(self.screens)
 
         self.main = MainWindow(self.mockController)
 
@@ -61,26 +68,24 @@ class TestMainWindow(GuiTest):
         top = self.getCurrentScreen()
         self.assertTrue(isinstance(top, ProjectorScreensControl))
 
-        self.mockController.raiseUp = MagicMock(return_value=0)
         self.findButton(top, "Raise").click()
-        self.mockController.raiseUp.assert_called_once_with("Screens", 0)
+        self.screens.raiseUp.assert_called_once_with(0)
 
-        self.mockController.lower = MagicMock(return_value=0)
         self.findButton(top, "Lower").click()
-        self.mockController.lower.assert_called_once_with("Screens", 0)
+        self.screens.lower.assert_called_once_with(0)
 
-        self.mockController.stop = MagicMock(return_value=0)
         self.findButton(top, "Stop").click()
-        self.mockController.stop.assert_called_once_with("Screens", 0)
+        self.screens.stop.assert_called_once_with(0)
 
-        self.mockController.raiseUp.reset_mock()
-        self.mockController.lower.reset_mock()
+        self.screens.lower.reset_mock()
+        self.screens.raiseUp.reset_mock()
+
         self.findButton(top, "Left").click()
         self.findButton(top, "Raise").click()
-        self.mockController.raiseUp.assert_called_once_with("Screens", 1)
+        self.screens.raiseUp.assert_called_once_with(1)
         self.findButton(top, "Right").click()
         self.findButton(top, "Lower").click()
-        self.mockController.lower.assert_called_once_with("Screens", 2)
+        self.screens.lower.assert_called_once_with(2)
 
 
 class FakeLogEntry(object):

@@ -12,8 +12,8 @@ class ProjectorScreensControl(ScreenWithBackButton):
     Controls for the projector screens.
     '''
 
-    def __init__(self, controller, mainWindow):
-        self.controller = controller
+    def __init__(self, screensDevice, mainWindow):
+        self.screensDevice = screensDevice
         ScreenWithBackButton.__init__(self, "Projector Screens", mainWindow)
 
     def makeContent(self):
@@ -71,7 +71,7 @@ class ProjectorScreensControl(ScreenWithBackButton):
     def raiseUp(self):
         screenID = self.screens.checkedId()
         try:
-            self.controller.raiseUp("Screens", screenID)
+            self.screensDevice.raiseUp(screenID)
         except NamingError:
             self.mainWindow.errorBox(StringConstants.nameErrorText)
         except ProtocolError:
@@ -80,7 +80,7 @@ class ProjectorScreensControl(ScreenWithBackButton):
     def lowerDown(self):
         screenID = self.screens.checkedId()
         try:
-            self.controller.lower("Screens", screenID)
+            self.screensDevice.lower(screenID)
         except NamingError:
             self.mainWindow.errorBox(StringConstants.nameErrorText)
         except ProtocolError:
@@ -89,7 +89,7 @@ class ProjectorScreensControl(ScreenWithBackButton):
     def stop(self):
         screenID = self.screens.checkedId()
         try:
-            self.controller.stop("Screens", screenID)
+            self.screensDevice.stop(screenID)
         except NamingError:
             self.mainWindow.errorBox(StringConstants.nameErrorText)
         except ProtocolError:
