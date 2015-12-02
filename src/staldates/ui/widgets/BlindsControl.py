@@ -12,8 +12,8 @@ class BlindsControl(ScreenWithBackButton):
     Controls for the blinds.
     '''
 
-    def __init__(self, controller, mainWindow):
-        self.controller = controller
+    def __init__(self, blindsDevice, mainWindow):
+        self.blindsDevice = blindsDevice
         ScreenWithBackButton.__init__(self, "Blinds", mainWindow)
 
     def makeContent(self):
@@ -66,7 +66,7 @@ class BlindsControl(ScreenWithBackButton):
     def raiseUp(self):
         blindID = self.blinds.checkedId()
         try:
-            self.controller.raiseUp("Blinds", blindID)
+            self.blindsDevice.raiseUp(blindID)
         except NamingError:
             self.mainWindow.errorBox(StringConstants.nameErrorText)
         except ProtocolError:
@@ -75,7 +75,7 @@ class BlindsControl(ScreenWithBackButton):
     def lowerDown(self):
         blindID = self.blinds.checkedId()
         try:
-            self.controller.lower("Blinds", blindID)
+            self.blindsDevice.lower(blindID)
         except NamingError:
             self.mainWindow.errorBox(StringConstants.nameErrorText)
         except ProtocolError:
@@ -84,7 +84,7 @@ class BlindsControl(ScreenWithBackButton):
     def stop(self):
         blindID = self.blinds.checkedId()
         try:
-            self.controller.stop("Blinds", blindID)
+            self.blindsDevice.stop(blindID)
         except NamingError:
             self.mainWindow.errorBox(StringConstants.nameErrorText)
         except ProtocolError:
