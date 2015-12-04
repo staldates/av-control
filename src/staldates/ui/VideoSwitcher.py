@@ -199,7 +199,7 @@ class VideoSwitcher(QWidget):
                 self.mainWindow.errorBox(StringConstants.protocolErrorText)
 
     def showCameraAdvanced(self, camDevice):
-        ctls = AdvancedCameraControl(self.controller, camDevice, self.mainWindow)
+        ctls = AdvancedCameraControl(camDevice, self.controller[camDevice], self.mainWindow)
         self.mainWindow.showScreen(ctls)
 
     def updateOutputMappings(self, mapping):

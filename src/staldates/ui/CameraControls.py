@@ -212,9 +212,9 @@ class CameraControl(QWidget):
 
 class AdvancedCameraControl(ScreenWithBackButton):
 
-    def __init__(self, camera, mainScreen):
+    def __init__(self, title, camera, mainScreen):
         self.camera = camera
-        super(AdvancedCameraControl, self).__init__(camera.deviceID, mainScreen)
+        super(AdvancedCameraControl, self).__init__(title, mainScreen)
 
     def makeContent(self):
         layout = QGridLayout()
