@@ -128,7 +128,7 @@ class Test(GuiTest):
     def testGetCameraPosition(self):
         fakePosition = CameraPosition(111, 222, 333)
         self.cam.getPosition = MagicMock(return_value=fakePosition)
-        acc = AdvancedCameraControl(self.cam, self.mockMainWindow)
+        acc = AdvancedCameraControl("Test", self.cam, self.mockMainWindow)
         self.findButton(acc, "Get Position").click()
         self.cam.getPosition.assert_called_once_with()
         self.assertEqual("111", acc.posDisplay.itemAtPosition(0, 1).widget().text())
@@ -136,7 +136,7 @@ class Test(GuiTest):
         self.assertEqual("333", acc.posDisplay.itemAtPosition(2, 1).widget().text())
 
     def testChangeWhiteBalance(self):
-        acc = AdvancedCameraControl(self.cam, self.mockMainWindow)
+        acc = AdvancedCameraControl("Test", self.cam, self.mockMainWindow)
         self.assertFalse(self.findButton(acc, "Set").isEnabled())
 
         self.findButton(acc, "Auto").click()
