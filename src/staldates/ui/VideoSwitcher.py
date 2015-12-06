@@ -108,9 +108,9 @@ class VideoSwitcher(QWidget):
         ]
         self.advPanels = [
             None,
-            AdvancedCameraControl("Camera 1", self.controller["Camera 1"], self.mainWindow),
-            AdvancedCameraControl("Camera 2", self.controller["Camera 2"], self.mainWindow),
-            AdvancedCameraControl("Camera 3", self.controller["Camera 3"], self.mainWindow),
+            AdvancedCameraControl("Camera 1", self.controller["Camera 1"], self.mainWindow) if self.controller.hasDevice("Camera 1") else None,
+            AdvancedCameraControl("Camera 2", self.controller["Camera 2"], self.mainWindow) if self.controller.hasDevice("Camera 1") else None,
+            AdvancedCameraControl("Camera 3", self.controller["Camera 3"], self.mainWindow) if self.controller.hasDevice("Camera 1") else None,
             None,
             None,
             None
