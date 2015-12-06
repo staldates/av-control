@@ -43,117 +43,110 @@ class Test(GuiTest):
         self.cam.storePreset = MagicMock(return_value=1)
         self.cam.recallPreset = MagicMock(return_value=1)
 
-    def tearDown(self):
-        self.app = None
+        self.cc = CameraControl(self.cam)
 
     def testCannotSelectMultiplePresets(self):
         ''' See https://github.com/jamesremuscat/aldatesx/issues/23'''
-        cc = CameraControl(self.cam)
-        buttons = cc.presetGroup.buttons()
+        buttons = self.cc.presetGroup.buttons()
 
-        self.assertEqual(-1, cc.presetGroup.checkedId())
-        cc.btnDown.click()
+        self.assertEqual(-1, self.cc.presetGroup.checkedId())
+        self.cc.btnDown.click()
         buttons[1].click()
         self.assertTrue(buttons[1].isChecked())
         self.assertFalse(buttons[0].isChecked())
         buttons[0].click()
-        self.assertEqual(0, cc.presetGroup.checkedId())
+        self.assertEqual(0, self.cc.presetGroup.checkedId())
         self.assertTrue(buttons[0].isChecked())
         self.assertFalse(buttons[1].isChecked())
 
     def testMoveCamera(self):
-        cc = CameraControl(self.cam)
-
-        cc.btnUp.pressed.emit()
+        self.cc.btnUp.pressed.emit()
         self.cam.moveUp.assert_called_once_with()
-        cc.btnUp.released.emit()
+        self.cc.btnUp.released.emit()
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
-        cc.btnDown.pressed.emit()
+        self.cc.btnDown.pressed.emit()
         self.cam.moveDown.assert_called_once_with()
-        cc.btnDown.released.emit()
+        self.cc.btnDown.released.emit()
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
-        cc.btnLeft.pressed.emit()
+        self.cc.btnLeft.pressed.emit()
         self.cam.moveLeft.assert_called_once_with()
-        cc.btnLeft.released.emit()
+        self.cc.btnLeft.released.emit()
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
-        cc.btnRight.pressed.emit()
+        self.cc.btnRight.pressed.emit()
         self.cam.moveRight.assert_called_once_with()
-        cc.btnRight.released.emit()
+        self.cc.btnRight.released.emit()
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
     def testMoveCameraWithKeyboard(self):
-        cc = CameraControl(self.cam)
-
-        QTest.keyPress(cc, Qt.Key_Up)
+        QTest.keyPress(self.cc, Qt.Key_Up)
         self.cam.moveUp.assert_called_once_with()
-        QTest.keyRelease(cc, Qt.Key_Up)
+        QTest.keyRelease(self.cc, Qt.Key_Up)
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
-        QTest.keyPress(cc, Qt.Key_Down)
+        QTest.keyPress(self.cc, Qt.Key_Down)
         self.cam.moveDown.assert_called_once_with()
-        QTest.keyRelease(cc, Qt.Key_Down)
+        QTest.keyRelease(self.cc, Qt.Key_Down)
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
-        QTest.keyPress(cc, Qt.Key_Left)
+        QTest.keyPress(self.cc, Qt.Key_Left)
         self.cam.moveLeft.assert_called_once_with()
-        QTest.keyRelease(cc, Qt.Key_Left)
+        QTest.keyRelease(self.cc, Qt.Key_Left)
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
-        QTest.keyPress(cc, Qt.Key_Right)
+        QTest.keyPress(self.cc, Qt.Key_Right)
         self.cam.moveRight.assert_called_once_with()
-        QTest.keyRelease(cc, Qt.Key_Right)
+        QTest.keyRelease(self.cc, Qt.Key_Right)
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
     def testPresets(self):
-        cc = CameraControl(self.cam)
-        self.findButton(cc, "2").click()
+        self.findButton(self.cc, "2").click()
         self.cam.recallPreset.assert_called_once_with(1)
-        self.findButton(cc, "Set").click()  # finds the first one
+        self.findButton(self.cc, "Set").click()  # finds the first one
         self.cam.storePreset.assert_called_once_with(0)
-        self.assertEquals(0, cc.presetGroup.checkedId())
+        self.assertEquals(0, self.cc.presetGroup.checkedId())
 
 # Tests for advanced camera controls
 
     def testGetCameraPosition(self):
         fakePosition = CameraPosition(111, 222, 333)
         self.cam.getPosition = MagicMock(return_value=fakePosition)
-        acc = AdvancedCameraControl("Test", self.cam, self.mockMainWindow)
-        self.findButton(acc, "Get Position").click()
+        self.acc = AdvancedCameraControl("Test", self.cam, self.mockMainWindow)
+        self.findButton(self.acc, "Get Position").click()
         self.cam.getPosition.assert_called_once_with()
-        self.assertEqual("111", acc.posDisplay.itemAtPosition(0, 1).widget().text())
-        self.assertEqual("222", acc.posDisplay.itemAtPosition(1, 1).widget().text())
-        self.assertEqual("333", acc.posDisplay.itemAtPosition(2, 1).widget().text())
+        self.assertEqual("111", self.acc.posDisplay.itemAtPosition(0, 1).widget().text())
+        self.assertEqual("222", self.acc.posDisplay.itemAtPosition(1, 1).widget().text())
+        self.assertEqual("333", self.acc.posDisplay.itemAtPosition(2, 1).widget().text())
 
     def testChangeWhiteBalance(self):
-        acc = AdvancedCameraControl("Test", self.cam, self.mockMainWindow)
-        self.assertFalse(self.findButton(acc, "Set").isEnabled())
+        self.acc = AdvancedCameraControl("Test", self.cam, self.mockMainWindow)
+        self.assertFalse(self.findButton(self.acc, "Set").isEnabled())
 
-        self.findButton(acc, "Auto").click()
+        self.findButton(self.acc, "Auto").click()
         self.cam.whiteBalanceAuto.assert_called_once_with()
-        self.assertFalse(self.findButton(acc, "Set").isEnabled())
+        self.assertFalse(self.findButton(self.acc, "Set").isEnabled())
 
-        self.findButton(acc, "Indoor").click()
+        self.findButton(self.acc, "Indoor").click()
         self.cam.whiteBalanceIndoor.assert_called_once_with()
-        self.assertFalse(self.findButton(acc, "Set").isEnabled())
+        self.assertFalse(self.findButton(self.acc, "Set").isEnabled())
 
-        self.findButton(acc, "Outdoor").click()
+        self.findButton(self.acc, "Outdoor").click()
         self.cam.whiteBalanceOutdoor.assert_called_once_with()
-        self.assertFalse(self.findButton(acc, "Set").isEnabled())
+        self.assertFalse(self.findButton(self.acc, "Set").isEnabled())
 
-        self.findButton(acc, "One Push").click()
+        self.findButton(self.acc, "One Push").click()
         self.cam.whiteBalanceOnePush.assert_called_once_with()
-        self.assertTrue(self.findButton(acc, "Set").isEnabled())
+        self.assertTrue(self.findButton(self.acc, "Set").isEnabled())
 
-        self.findButton(acc, "Set").click()
+        self.findButton(self.acc, "Set").click()
         self.cam.whiteBalanceOnePushTrigger.assert_called_once_with()
