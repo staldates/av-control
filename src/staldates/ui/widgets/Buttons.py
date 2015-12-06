@@ -13,14 +13,26 @@ class ExpandingButton(QToolButton):
 
 class InputButton(ExpandingButton):
 
+    longpress = Signal()
+
     def __init__(self, parent=None):
         super(InputButton, self).__init__(parent)
         self.setCheckable(True)
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         self.input = None
+        self.grabGesture(Qt.TapAndHoldGesture)
 
     def setInput(self, myInput):
         self.input = myInput
+
+    def event(self, evt):
+        if evt.type() == QEvent.Gesture:
+            gesture = evt.gesture(Qt.TapAndHoldGesture)
+            if gesture:
+                if gesture.state() == Qt.GestureState.GestureFinished:
+                    self.longpress.emit()
+                    return True
+        return super(InputButton, self).event(evt)
 
 
 class IDedButton(ExpandingButton):
@@ -53,19 +65,5 @@ class OptionButton(ExpandingButton):
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
 
 
-class CameraSelectionButton(InputButton):
-
-    longpress = Signal()
-
-    def __init__(self, parent=None):
-        super(CameraSelectionButton, self).__init__(parent)
-        self.grabGesture(Qt.TapAndHoldGesture)
-
-    def event(self, evt):
-        if evt.type() == QEvent.Gesture:
-            gesture = evt.gesture(Qt.TapAndHoldGesture)
-            if gesture:
-                if gesture.state() == Qt.GestureState.GestureFinished:
-                    self.longpress.emit()
-                    return True
-        return super(CameraSelectionButton, self).event(evt)
+class CameraSelectionButton(InputButton, IDedButton):
+    pass

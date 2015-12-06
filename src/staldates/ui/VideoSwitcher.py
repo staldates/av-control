@@ -30,29 +30,26 @@ class VideoSwitcher(QWidget):
 
         inputsGrid = QHBoxLayout()
 
-        self.btnCamera1 = CameraSelectionButton()
+        self.btnCamera1 = CameraSelectionButton(1)
         self.btnCamera1.setText("Camera 1")
         self.btnCamera1.setInput(VisualsSystem.camera1)
         inputsGrid.addWidget(self.btnCamera1)
         self.inputs.addButton(self.btnCamera1, 1)
         self.btnCamera1.setIcon(QIcon("icons/camera-video.svg"))
-        self.btnCamera1.longpress.connect(lambda: self.showCameraAdvanced("Camera 1"))
 
-        self.btnCamera2 = CameraSelectionButton()
+        self.btnCamera2 = CameraSelectionButton(2)
         self.btnCamera2.setText("Camera 2")
         self.btnCamera2.setInput(VisualsSystem.camera2)
         inputsGrid.addWidget(self.btnCamera2)
         self.inputs.addButton(self.btnCamera2, 2)
         self.btnCamera2.setIcon(QIcon("icons/camera-video.svg"))
-        self.btnCamera2.longpress.connect(lambda: self.showCameraAdvanced("Camera 2"))
 
-        self.btnCamera3 = CameraSelectionButton()
+        self.btnCamera3 = CameraSelectionButton(3)
         self.btnCamera3.setText("Camera 3")
         self.btnCamera3.setInput(VisualsSystem.camera3)
         inputsGrid.addWidget(self.btnCamera3)
         self.inputs.addButton(self.btnCamera3, 3)
         self.btnCamera3.setIcon(QIcon("icons/camera-video.svg"))
-        self.btnCamera3.longpress.connect(lambda: self.showCameraAdvanced("Camera 3"))
 
         self.btnDVD = InputButton()
         self.btnDVD.setText("DVD")
@@ -109,15 +106,20 @@ class VideoSwitcher(QWidget):
             self.extrasSwitcher if self.controller.hasDevice("Extras") else QLabel(StringConstants.noDevice),  # Extras
             EclipseControls(self.controller, "Main Scan Converter") if self.controller.hasDevice("Main Scan Converter") else QLabel(StringConstants.noDevice),  # Visuals PC
         ]
+        self.advPanels = [
+            None,
+            AdvancedCameraControl("Camera 1", self.controller["Camera 1"], self.mainWindow),
+            AdvancedCameraControl("Camera 2", self.controller["Camera 2"], self.mainWindow),
+            AdvancedCameraControl("Camera 3", self.controller["Camera 3"], self.mainWindow),
+            None,
+            None,
+            None
+        ]
 
     def setInputClickHandlers(self):
-        self.btnCamera1.clicked.connect(self.handleInputSelect)
-        self.btnCamera2.clicked.connect(self.handleInputSelect)
-        self.btnCamera3.clicked.connect(self.handleInputSelect)
-        self.btnDVD.clicked.connect(self.handleInputSelect)
-        self.btnExtras.clicked.connect(self.handleInputSelect)
-        self.btnVisualsPC.clicked.connect(self.handleInputSelect)
-        self.btnBlank.clicked.connect(self.handleInputSelect)
+        for btn in self.inputs.buttons():
+            btn.clicked.connect(self.handleInputSelect)
+            btn.longpress.connect(self.showAdvPanel)
 
     def setOutputClickHandlers(self, outputsGrid):
         outputsGrid.connectMainOutputs(self.handleOutputSelect)
@@ -198,9 +200,11 @@ class VideoSwitcher(QWidget):
             except ProtocolError:
                 self.mainWindow.errorBox(StringConstants.protocolErrorText)
 
-    def showCameraAdvanced(self, camDevice):
-        ctls = AdvancedCameraControl(camDevice, self.controller[camDevice], self.mainWindow)
-        self.mainWindow.showScreen(ctls)
+    def showAdvPanel(self):
+        sender = self.sender()
+        inputID = self.sender().ID if hasattr(sender, "ID") else None
+        if inputID is not None and self.advPanels[inputID] is not None:
+            self.mainWindow.showScreen(self.advPanels[inputID])
 
     def updateOutputMappings(self, mapping):
         self.outputsGrid.updateOutputMappings(mapping)
