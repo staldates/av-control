@@ -1,7 +1,9 @@
-from PySide.QtGui import QVBoxLayout
+from avx._version import __version__ as _avx_version
+from PySide.QtGui import QVBoxLayout, QLabel
 from staldates.ui.widgets.LogViewer import LogViewer
 from staldates.ui.widgets.Buttons import ExpandingButton
 from staldates.ui.widgets.Screens import ScreenWithBackButton
+from staldates.ui._version import __version__ as _ui_version
 
 
 class AdvancedMenu(ScreenWithBackButton):
@@ -16,6 +18,10 @@ class AdvancedMenu(ScreenWithBackButton):
 
     def makeContent(self):
         layout = QVBoxLayout()
+
+        lblVersion = QLabel()
+        lblVersion.setText("av-control version {0} (avx version {1})".format(_ui_version, _avx_version))
+        layout.addWidget(lblVersion)
 
         self.lv = LogViewer(self.controller, self.mainWindow)
 
