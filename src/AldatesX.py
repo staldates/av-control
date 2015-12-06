@@ -5,7 +5,7 @@ Created on 8 Nov 2012
 @author: james
 '''
 from pkg_resources import require
-require("avx>=0.92")
+require("avx>=0.95")
 
 from PySide.QtCore import Qt
 from PySide.QtGui import QApplication
