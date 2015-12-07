@@ -5,7 +5,7 @@ Created on 8 Nov 2012
 @author: james
 '''
 from pkg_resources import require
-from PySide.QtCore import Qt, QFile, QTextStream
+from PySide.QtCore import Qt, QFile
 from PySide.QtGui import QApplication
 from avx.Client import Client
 from avx.controller.Controller import Controller, VersionMismatchError
@@ -30,7 +30,7 @@ if __name__ == "__main__":
     try:
         fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except IOError:
-    # another instance is running
+        # another instance is running
         print "AldatesX is already running."
         sys.exit(1)
 
