@@ -23,7 +23,12 @@ setup(
     install_requires=['avx>=0.95.dev', 'mock', 'nose', 'nosexcover'],
     dependency_links = [
         "lib/" # find local copies of packages here
-        ],
+    ],
     packages=find_packages('src', exclude=["*.tests"]),
     package_dir = {'':'src'},
-    )
+    entry_points={
+        'console_scripts': [
+            'av-control = staldates.avcontrol:main'
+        ],
+    }
+)

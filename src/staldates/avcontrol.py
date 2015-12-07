@@ -1,37 +1,31 @@
-#!/usr/bin/env python
-'''
-Created on 8 Nov 2012
-
-@author: james
-'''
-from pkg_resources import require
-from PySide.QtCore import Qt, QFile
-from PySide.QtGui import QApplication
-from avx.Client import Client
-from avx.controller.Controller import Controller, VersionMismatchError
-from staldates.ui.MainWindow import MainWindow
 import argparse
 import atexit
 import fcntl  # @UnresolvedImport
 import logging
 import sys
+
+from avx.Client import Client
+from avx.controller.Controller import Controller, VersionMismatchError
+from pkg_resources import require
 from Pyro4.errors import NamingError, CommunicationError
+from PySide.QtCore import Qt, QFile
+from PySide.QtGui import QApplication
+from staldates.ui import resources  # @UnusedImport  # Initialises the Qt resources
+from staldates.ui.MainWindow import MainWindow
 from staldates.ui.widgets import Dialogs
 
-from staldates.ui import resources  # @UnusedImport
 
 require("avx>=0.95")
 
 
-if __name__ == "__main__":
-
-    pid_file = 'aldatesx.pid'
+def main():
+    pid_file = 'av-control.pid'
     fp = open(pid_file, 'w')
     try:
         fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except IOError:
         # another instance is running
-        print "AldatesX is already running."
+        print "av-control is already running."
         sys.exit(1)
 
     logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s',
@@ -86,3 +80,6 @@ if __name__ == "__main__":
         Dialogs.errorBox("Unable to connect to controller. Please check network connections and try again. (Error details: " + str(e) + ")")
     except VersionMismatchError as e:
         Dialogs.errorBox(str(e))
+
+if __name__ == '__main__':
+    main()
