@@ -53,7 +53,7 @@ class ProjectorScreensControl(ScreenWithBackButton):
 
         btnStop = SvgButton(":icons/process-stop", 96, 96)
         btnStop.setText("Stop")
-        btnStop.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+        btnStop.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         layout.addWidget(btnStop, 2, 4, 2, 2)
         btnStop.clicked.connect(self.stop)
 
