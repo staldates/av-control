@@ -1,8 +1,8 @@
-from PySide.QtGui import QIcon, QHBoxLayout
-from PySide.QtCore import Qt, QSize
-from staldates.ui.widgets.Buttons import ExpandingButton
-from staldates.ui.widgets.Screens import ScreenWithBackButton
 from avx.Sequencer import ControllerEvent, DeviceEvent, SleepEvent
+from PySide.QtCore import Qt
+from PySide.QtGui import QHBoxLayout
+from staldates.ui.widgets.Buttons import SvgButton
+from staldates.ui.widgets.Screens import ScreenWithBackButton
 
 
 class SystemPowerWidget(ScreenWithBackButton):
@@ -15,18 +15,14 @@ class SystemPowerWidget(ScreenWithBackButton):
 
         buttons = QHBoxLayout()
 
-        self.btnOff = ExpandingButton()
+        self.btnOff = SvgButton(":icons/lightbulb_off", 128, 128)
         self.btnOff.setText("Off")
-        self.btnOff.setIcon(QIcon(":icons/lightbulb_off"))
-        self.btnOff.setIconSize(QSize(128, 128))
         self.btnOff.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self.btnOff.clicked.connect(self.powerOff)
         buttons.addWidget(self.btnOff)
 
-        self.btnOn = ExpandingButton()
+        self.btnOn = SvgButton(":icons/lightbulb_on", 128, 128)
         self.btnOn.setText("On")
-        self.btnOn.setIcon(QIcon("src/staldates/ui/resources/icons/lightbulb_on.svg"))
-        self.btnOn.setIconSize(QSize(128, 128))
         self.btnOn.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self.btnOn.clicked.connect(self.powerOn)
         buttons.addWidget(self.btnOn)

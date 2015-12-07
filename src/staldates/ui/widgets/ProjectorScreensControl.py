@@ -1,9 +1,8 @@
-from PySide.QtCore import Qt, QSize
-from PySide.QtGui import QButtonGroup, QIcon, QGridLayout
-from staldates.ui.widgets.Buttons import ExpandingButton,\
-    IDedButton
-from Pyro4.errors import NamingError, ProtocolError
 from avx.StringConstants import StringConstants
+from Pyro4.errors import NamingError, ProtocolError
+from PySide.QtCore import Qt
+from PySide.QtGui import QButtonGroup, QGridLayout
+from staldates.ui.widgets.Buttons import IDedButton, SvgButton
 from staldates.ui.widgets.Screens import ScreenWithBackButton
 
 
@@ -40,30 +39,22 @@ class ProjectorScreensControl(ScreenWithBackButton):
         btnRight.setCheckable(True)
         self.screens.addButton(btnRight, 2)
 
-        iconSize = QSize(96, 96)
-
-        btnRaise = ExpandingButton()
+        btnRaise = SvgButton(":icons/go-up", 96, 96)
         btnRaise.setText("Raise")
-        btnRaise.setIcon(QIcon(":icons/go-up"))
         btnRaise.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         layout.addWidget(btnRaise, 2, 1, 1, 3)
-        btnRaise.setIconSize(iconSize)
         btnRaise.clicked.connect(self.raiseUp)
 
-        btnLower = ExpandingButton()
+        btnLower = SvgButton(":icons/go-down", 96, 96)
         btnLower.setText("Lower")
-        btnLower.setIcon(QIcon(":icons/go-down"))
         btnLower.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         layout.addWidget(btnLower, 3, 1, 1, 3)
-        btnLower.setIconSize(iconSize)
         btnLower.clicked.connect(self.lowerDown)
 
-        btnStop = ExpandingButton()
+        btnStop = SvgButton(":icons/process-stop", 96, 96)
         btnStop.setText("Stop")
-        btnStop.setIcon(QIcon(":icons/process-stop"))
         btnStop.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         layout.addWidget(btnStop, 2, 4, 2, 2)
-        btnStop.setIconSize(iconSize)
         btnStop.clicked.connect(self.stop)
 
         return layout

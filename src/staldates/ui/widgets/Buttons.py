@@ -1,5 +1,7 @@
-from PySide.QtGui import QLabel, QToolButton, QSizePolicy, QVBoxLayout
+from PySide.QtGui import QLabel, QToolButton, QSizePolicy, QVBoxLayout, QImage,\
+    QPainter, QPixmap, QIcon
 from PySide.QtCore import Qt, QSize, Signal, QEvent
+from PySide.QtSvg import QSvgRenderer
 
 
 class ExpandingButton(QToolButton):
@@ -67,3 +69,17 @@ class OptionButton(ExpandingButton):
 
 class CameraSelectionButton(InputButton, IDedButton):
     pass
+
+
+class SvgButton(ExpandingButton):
+    def __init__(self, svgImage, width, height, parent=None):
+        super(SvgButton, self).__init__(parent)
+        svg_renderer = QSvgRenderer(svgImage)
+        image = QImage(width, height, QImage.Format_ARGB32)
+        # Set the ARGB to 0 to prevent rendering artifacts
+        image.fill(0x00000000)
+        svg_renderer.render(QPainter(image))
+        pixmap = QPixmap.fromImage(image)
+        icon = QIcon(pixmap)
+        self.setIcon(icon)
+        self.setIconSize(QSize(width, height))
