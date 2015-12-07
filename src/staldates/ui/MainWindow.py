@@ -18,7 +18,7 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         self.controller = controller
 
-        self.setWindowTitle("AldatesX")
+        self.setWindowTitle("av-control")
         self.resize(1024, 600)
 
         self.mainScreen = VideoSwitcher(controller, self)
