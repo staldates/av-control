@@ -130,7 +130,7 @@ class CameraControl(QWidget):
         focus.autoButton.clicked.connect(autoFocusAndDeselect)
         layout.addWidget(focus, 0, 4, 4, 1)
 
-        brightness = PlusMinusButtons("Backlight Comp")
+        brightness = PlusMinusButtons("EV Comp")
         brightness.upButton.clicked.connect(self.camera.backlightCompOn)
         brightness.downButton.clicked.connect(self.camera.backlightCompOff)
         layout.addWidget(brightness, 0, 5, 4, 1)
