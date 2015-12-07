@@ -5,8 +5,6 @@ QWidget {
 
 MainWindow, QDialog {
   background-color: #003E5F;
-  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                       stop: 0 #003E5F, stop: 1 #001623)
 }
 
 OutputsGrid {
