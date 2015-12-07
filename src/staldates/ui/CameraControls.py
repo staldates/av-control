@@ -18,10 +18,10 @@ class PlusMinusButtons(QWidget):
     def __init__(self, caption):
         super(PlusMinusButtons, self).__init__()
         self.upButton = CameraButton()
-        self.upButton.setIcon(QIcon("icons/list-add.svg"))
+        self.upButton.setIcon(QIcon(":icons/list-add"))
 
         self.downButton = CameraButton()
-        self.downButton.setIcon(QIcon("icons/list-remove.svg"))
+        self.downButton.setIcon(QIcon(":icons/list-remove"))
 
         self.caption = QLabel("<b>" + caption + "</b>")
         self.caption.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
@@ -83,28 +83,28 @@ class CameraControl(QWidget):
         self.btnUp.pressed.connect(self.camera.moveUp)
         self.btnUp.released.connect(self.camera.stop)
         self.btnUp.clicked.connect(self.deselectPreset)
-        self.btnUp.setIcon(QIcon("icons/go-up.svg"))
+        self.btnUp.setIcon(QIcon(":icons/go-up"))
 
         self.btnLeft = CameraButton()
         layout.addWidget(self.btnLeft, 1, 0, 2, 1)
         self.btnLeft.pressed.connect(self.camera.moveLeft)
         self.btnLeft.released.connect(self.camera.stop)
         self.btnLeft.clicked.connect(self.deselectPreset)
-        self.btnLeft.setIcon(QIcon("icons/go-previous.svg"))
+        self.btnLeft.setIcon(QIcon(":icons/go-previous"))
 
         self.btnDown = CameraButton()
         layout.addWidget(self.btnDown, 2, 1, 2, 1)
         self.btnDown.pressed.connect(self.camera.moveDown)
         self.btnDown.released.connect(self.camera.stop)
         self.btnDown.clicked.connect(self.deselectPreset)
-        self.btnDown.setIcon(QIcon("icons/go-down.svg"))
+        self.btnDown.setIcon(QIcon(":icons/go-down"))
 
         self.btnRight = CameraButton()
         layout.addWidget(self.btnRight, 1, 2, 2, 1)
         self.btnRight.pressed.connect(self.camera.moveRight)
         self.btnRight.released.connect(self.camera.stop)
         self.btnRight.clicked.connect(self.deselectPreset)
-        self.btnRight.setIcon(QIcon("icons/go-next.svg"))
+        self.btnRight.setIcon(QIcon(":icons/go-next"))
 
         zoomInOut = PlusMinusButtons("Zoom")
         zoomInOut.upButton.pressed.connect(self.camera.zoomIn)

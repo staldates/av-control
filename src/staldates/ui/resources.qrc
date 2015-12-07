@@ -1,0 +1,29 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="applications-system">resources/icons/applications-system.svg</file>
+        <file alias="blinds">resources/icons/blinds.svg</file>
+        <file alias="camera-video">resources/icons/camera-video.svg</file>
+        <file alias="computer">resources/icons/computer.svg</file>
+        <file alias="go-down">resources/icons/go-down.svg</file>
+        <file alias="go-next">resources/icons/go-next.svg</file>
+        <file alias="go-previous">resources/icons/go-previous.svg</file>
+        <file alias="go-up">resources/icons/go-up.svg</file>
+        <file alias="lightbulb_off">resources/icons/lightbulb_off.svg</file>
+        <file alias="lightbulb_on">resources/icons/lightbulb_on.svg</file>
+        <file alias="list-add">resources/icons/list-add.svg</file>
+        <file alias="list-remove">resources/icons/list-remove.svg</file>
+        <file alias="media-optical">resources/icons/media-optical.svg</file>
+        <file alias="media-playback-pause">resources/icons/media-playback-pause.svg</file>
+        <file alias="preferences-desktop-screensaver">resources/icons/preferences-desktop-screensaver.svg</file>
+        <file alias="preferences-system-windows">resources/icons/preferences-system-windows.svg</file>
+        <file alias="process-stop">resources/icons/process-stop.svg</file>
+        <file alias="screens">resources/icons/screens.svg</file>
+        <file alias="spinner">resources/icons/spinner.gif</file>
+        <file alias="system-shutdown">resources/icons/system-shutdown.svg</file>
+        <file alias="video-display">resources/icons/video-display.svg</file>
+        <file alias="view-fullscreen">resources/icons/view-fullscreen.svg</file>
+    </qresource>
+    <qresource>
+      <file alias="stylesheet">resources/AldatesX.qss</file>
+    </qresource>
+</RCC>
