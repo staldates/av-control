@@ -18,7 +18,7 @@ class PowerNotificationDialog(QDialog):
         layout = QGridLayout()
 
         spinBox = QLabel()
-        spinner = QMovie("icons/spinner.gif")
+        spinner = QMovie(":icons/spinner")
         spinner.start()
         spinBox.setMovie(spinner)
         layout.addWidget(spinBox, 0, 0)
