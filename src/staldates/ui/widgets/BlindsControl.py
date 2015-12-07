@@ -39,7 +39,7 @@ class BlindsControl(ScreenWithBackButton):
 
         btnRaise = ExpandingButton()
         btnRaise.setText("Raise")
-        btnRaise.setIcon(QIcon("icons/go-up.svg"))
+        btnRaise.setIcon(QIcon(":icons/go-up"))
         btnRaise.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         layout.addWidget(btnRaise, 1, 1, 1, 3)
         btnRaise.setIconSize(iconSize)
@@ -47,7 +47,7 @@ class BlindsControl(ScreenWithBackButton):
 
         btnLower = ExpandingButton()
         btnLower.setText("Lower")
-        btnLower.setIcon(QIcon("icons/go-down.svg"))
+        btnLower.setIcon(QIcon(":icons/go-down"))
         btnLower.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         layout.addWidget(btnLower, 2, 1, 1, 3)
         btnLower.setIconSize(iconSize)
@@ -55,7 +55,7 @@ class BlindsControl(ScreenWithBackButton):
 
         btnStop = ExpandingButton()
         btnStop.setText("Stop")
-        btnStop.setIcon(QIcon("icons/process-stop.svg"))
+        btnStop.setIcon(QIcon(":icons/process-stop"))
         btnStop.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         layout.addWidget(btnStop, 1, 4, 2, 2)
         btnStop.setIconSize(iconSize)

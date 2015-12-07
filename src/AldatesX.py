@@ -5,9 +5,7 @@ Created on 8 Nov 2012
 @author: james
 '''
 from pkg_resources import require
-require("avx>=0.95")
-
-from PySide.QtCore import Qt
+from PySide.QtCore import Qt, QFile, QTextStream
 from PySide.QtGui import QApplication
 from avx.Client import Client
 from avx.controller.Controller import Controller, VersionMismatchError
@@ -19,6 +17,10 @@ import logging
 import sys
 from Pyro4.errors import NamingError, CommunicationError
 from staldates.ui.widgets import Dialogs
+
+from staldates.ui import resources  # @UnusedImport
+
+require("avx>=0.95")
 
 
 if __name__ == "__main__":
@@ -47,8 +49,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     try:
-        stylesheet = open("AldatesX.qss", "r")
-        app.setStyleSheet(stylesheet.read())
+        ssf = QFile(":/stylesheet")
+        ssf.open(QFile.ReadOnly)
+        styleSheet = str(ssf.readAll())
+        app.setStyleSheet(styleSheet)
     except IOError:
         # never mind
         logging.warn("Cannot find stylesheet, using default system styles.")

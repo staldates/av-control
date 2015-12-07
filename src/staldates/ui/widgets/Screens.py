@@ -21,7 +21,7 @@ class ScreenWithBackButton(QWidget):
 
         b = ExpandingButton()
         b.setText("Back")
-        b.setIcon(QIcon("icons/go-previous.svg"))
+        b.setIcon(QIcon(":icons/go-previous"))
         b.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         b.clicked.connect(mainWindow.stepBack)
         layout.addWidget(b, 2, 0, 1, 3)

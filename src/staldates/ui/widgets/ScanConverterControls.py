@@ -10,11 +10,11 @@ class OverscanFreezeWidget(QWidget):
         self.btnOverscan = OptionButton()
         self.btnOverscan.setText("Overscan")
         self.btnOverscan.setChecked(True)
-        self.btnOverscan.setIcon(QIcon("icons/view-fullscreen.svg"))
+        self.btnOverscan.setIcon(QIcon(":icons/view-fullscreen"))
 
         self.btnFreeze = OptionButton()
         self.btnFreeze.setText("Freeze")
-        self.btnFreeze.setIcon(QIcon("icons/media-playback-pause.svg"))
+        self.btnFreeze.setIcon(QIcon(":icons/media-playback-pause"))
 
         self.layout()
 
@@ -31,11 +31,11 @@ class EclipseWidget(OverscanFreezeWidget):
     def __init__(self, parent=None):
         self.btnFade = OptionButton()
         self.btnFade.setText("Fade")
-        self.btnFade.setIcon(QIcon("icons/preferences-desktop-screensaver.svg"))
+        self.btnFade.setIcon(QIcon(":icons/preferences-desktop-screensaver"))
 
         self.btnOverlay = OptionButton()
         self.btnOverlay.setText("Overlay")
-        self.btnOverlay.setIcon(QIcon("icons/preferences-system-windows.svg"))
+        self.btnOverlay.setIcon(QIcon(":icons/preferences-system-windows"))
 
         super(EclipseWidget, self).__init__(parent)
 

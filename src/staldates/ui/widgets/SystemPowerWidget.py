@@ -17,7 +17,7 @@ class SystemPowerWidget(ScreenWithBackButton):
 
         self.btnOff = ExpandingButton()
         self.btnOff.setText("Off")
-        self.btnOff.setIcon(QIcon("icons/lightbulb_off.svg"))
+        self.btnOff.setIcon(QIcon(":icons/lightbulb_off"))
         self.btnOff.setIconSize(QSize(128, 128))
         self.btnOff.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self.btnOff.clicked.connect(self.powerOff)
@@ -25,7 +25,7 @@ class SystemPowerWidget(ScreenWithBackButton):
 
         self.btnOn = ExpandingButton()
         self.btnOn.setText("On")
-        self.btnOn.setIcon(QIcon("icons/lightbulb_on.svg"))
+        self.btnOn.setIcon(QIcon("src/staldates/ui/resources/icons/lightbulb_on.svg"))
         self.btnOn.setIconSize(QSize(128, 128))
         self.btnOn.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self.btnOn.clicked.connect(self.powerOn)

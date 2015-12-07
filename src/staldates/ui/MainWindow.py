@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
         syspower = ExpandingButton()
         syspower.setText("Power")
         syspower.clicked.connect(self.showSystemPower)
-        syspower.setIcon(QIcon("icons/system-shutdown.svg"))
+        syspower.setIcon(QIcon(":icons/system-shutdown"))
         syspower.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         mainLayout.addWidget(syspower, 1, 0)
 
@@ -43,7 +43,7 @@ class MainWindow(QMainWindow):
         blinds = ExpandingButton()
         blinds.setText("Blinds")
         blinds.clicked.connect(lambda: self.showScreen(self.bc))
-        blinds.setIcon(QIcon("icons/blinds.svg"))
+        blinds.setIcon(QIcon(":icons/blinds"))
         blinds.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         mainLayout.addWidget(blinds, 1, 2)
 
@@ -52,7 +52,7 @@ class MainWindow(QMainWindow):
         screens = ExpandingButton()
         screens.setText("Screens")
         screens.clicked.connect(lambda: self.showScreen(self.sc))
-        screens.setIcon(QIcon("icons/screens.svg"))
+        screens.setIcon(QIcon(":icons/screens"))
         screens.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         mainLayout.addWidget(screens, 1, 3)
 
@@ -62,7 +62,7 @@ class MainWindow(QMainWindow):
             lights = ExpandingButton()
             lights.setText("Lights")
             lights.clicked.connect(lambda: self.showScreen(self.lightsMenu))
-            lights.setIcon(QIcon("icons/lightbulb_on.svg"))
+            lights.setIcon(QIcon(":icons/lightbulb_on"))
             lights.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
             mainLayout.addWidget(lights, 1, 4)
 
@@ -70,7 +70,7 @@ class MainWindow(QMainWindow):
 
         adv = ExpandingButton()
         adv.setText("Advanced")
-        adv.setIcon(QIcon("icons/applications-system.svg"))
+        adv.setIcon(QIcon(":icons/applications-system"))
         adv.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         adv.clicked.connect(lambda: self.showScreen(self.advMenu))
         mainLayout.addWidget(adv, 1, 5)
