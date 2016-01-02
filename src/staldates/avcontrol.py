@@ -54,11 +54,6 @@ def main():
     try:
         controller = Controller.fromPyro(args.c)
 
-        remoteVersion = controller.getVersion()
-
-        if remoteVersion != Controller.version:
-            raise VersionMismatchError(remoteVersion, Controller.version)
-
         myapp = MainWindow(controller)
 
         client = Client(myapp)

@@ -20,7 +20,7 @@ setup(
     author='James Muscat',
     author_email='jamesremuscat@gmail.com',
     url='https://github.com/staldates/av-control',
-    install_requires=['avx>=0.95.dev', 'PySide'],
+    install_requires=['avx>=0.96.dev', 'PySide'],
     setup_requires=['nose>=1.0'],
     tests_require = ['mock'],
     dependency_links = [
