@@ -42,7 +42,7 @@ class AvControlClient(Client):
         return True
 
     def updateOutputMappings(self, mapping):
-        invoke_in_main_thread(self.aldatesx.updateOutputMappings, mapping)
+        invoke_in_main_thread(self.avcontrol.updateOutputMappings, mapping)
         return True
 
 
