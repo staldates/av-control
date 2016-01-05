@@ -22,7 +22,7 @@ require("avx>=0.95")
 class AvControlClient(Client):
 
     def __init__(self, avcontrol):
-        super(AvControlClient, self).__init__()
+        super(AvControlClient, self).__init__(self)
         self.avcontrol = avcontrol
 
     def errorBox(self, text):
