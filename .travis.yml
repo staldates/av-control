@@ -1,12 +1,13 @@
-sudo: required
 language: python
 python:
   - "2.7"
 before_install:
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1024x800x16"
+addons:
+  apt:
+    packages:
+      - libqt4-dev
 install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y libqt4-dev
   - pip install PySide --no-index --find-links https://parkin.github.io/python-wheelhouse/
   - python ~/virtualenv/python${TRAVIS_PYTHON_VERSION}/bin/pyside_postinstall.py -install
   - pip install coveralls
