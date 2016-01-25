@@ -4,6 +4,7 @@ Created on 16 Apr 2013
 @author: jrem
 '''
 from PySide.QtGui import QApplication, QAbstractButton
+from staldates.ui import resources  # @UnusedImport  # Initialises the Qt resources
 import unittest
 
 

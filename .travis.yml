@@ -1,0 +1,21 @@
+language: python
+python:
+  - "2.7"
+before_install:
+  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1024x800x16"
+before_script:
+  - "export DISPLAY=:99.0"
+addons:
+  apt:
+    packages:
+      - libqt4-dev
+      - pyside-tools
+install:
+  - pip install PySide --no-index --find-links https://parkin.github.io/python-wheelhouse/
+  - python ~/virtualenv/python${TRAVIS_PYTHON_VERSION}/bin/pyside_postinstall.py -install
+  - pip install coveralls
+script:
+  - ./compileResources.sh
+  - coverage run --source=staldates setup.py nosetests
+after_success:
+  coveralls
