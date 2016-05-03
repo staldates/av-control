@@ -33,30 +33,35 @@ class ExtrasSwitcher(QWidget):
         btnE1.setInput(VisualsSystem.extras1)
         layout.addWidget(btnE1, 0, 0)
         inputs.addButton(btnE1, 1)
+        btnE1.clicked.connect(self.takePreview)
 
         btnE2 = InputButton(self)
         btnE2.setText("Extras 2")
         btnE2.setInput(VisualsSystem.extras2)
         layout.addWidget(btnE2, 0, 1)
         inputs.addButton(btnE2, 2)
+        btnE2.clicked.connect(self.takePreview)
 
         btnE3 = InputButton(self)
         btnE3.setText("Extras 3")
         btnE3.setInput(VisualsSystem.extras3)
         layout.addWidget(btnE3, 0, 2)
         inputs.addButton(btnE3, 3)
+        btnE3.clicked.connect(self.takePreview)
 
         btnE4 = InputButton(self)
         btnE4.setText("Extras 4")
         btnE4.setInput(VisualsSystem.extras4)
         layout.addWidget(btnE4, 0, 3)
         inputs.addButton(btnE4, 4)
+        btnE4.clicked.connect(self.takePreview)
 
         btnEVideo = InputButton(self)
         btnEVideo.setText("Visuals PC video")
         btnEVideo.setInput(VisualsSystem.visualsPCVideo)
         layout.addWidget(btnEVideo, 0, 4)
         inputs.addButton(btnEVideo, 8)
+        btnEVideo.clicked.connect(self.takePreview)
 
         self.inputs = inputs
 
@@ -66,14 +71,16 @@ class ExtrasSwitcher(QWidget):
             scControl.btnOverscan.toggled.connect(self.toggleOverscan)
             scControl.btnFreeze.toggled.connect(self.toggleFreeze)
 
-        btnPrevMix = OutputButton(1)
-        btnPrevMix.setText("Preview / PC Mix")
-        layout.addWidget(btnPrevMix, 2, 0, 1, 5)
-
-        btnPrevMix.clicked.connect(self.takePreview)
+    def currentInput(self):
+        button = self.inputs.checkedButton()
+        if button is None:
+            return None
+        return button.input
 
     def takePreview(self):
-        self.take(2)
+        currentInput = self.currentInput()
+        if currentInput:
+            currentInput.preview(self.controller)
 
     def take(self, output=1):
         '''Send the currently selected input to the main switcher's input. '''
