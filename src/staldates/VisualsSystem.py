@@ -113,7 +113,7 @@ visualsPC = MainInput(6)
 # 4 - Extras 4
 # 5 - empty
 # 6 - empty
-# 7 - empty
+# 7 - Main switcher output (not an explicit input)
 # 8 - Visuals PC video
 #
 
