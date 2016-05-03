@@ -56,8 +56,9 @@ class TestVideoSwitcher(GuiTest):
         outputsGrid.btnAll.click()
         self.main.sendInputToOutput.assert_called_with(0, 0)  # Everything blanked
 
+        self.extras.sendInputToOutput.reset_mock()
         self.vs.btnExtras.click()
-        self.assertPreviewCalledFor(6)  # This is wired up the wrong way around - 5 on main vs 6 on preview
+        self.extras.sendInputToOutput.assert_not_called()  # main sw not involved and no input selected
         self.vs.extrasSwitcher.inputs.buttons()[4].click()  # Visuals PC video
         self.assertEqual(self.vs.extrasSwitcher.inputs.checkedButton(), self.vs.extrasSwitcher.inputs.buttons()[4])
         outputsGrid.btnAll.click()  # This one click should trigger two takes, one on each switcher
@@ -71,8 +72,8 @@ class TestVideoSwitcher(GuiTest):
         outputsGrid = self.vs.findChild(OutputsGrid)
 
         self.vs.btnVisualsPC.click()
-        self.assertPreviewCalledFor(5)
-        self.preview.sendInputToOutput.reset_mock()
+        self.assertPreviewCalledFor(6)
+        self.main.sendInputToOutput.reset_mock()
         outputsGrid.btnPCMix.click()
         self.assertFalse(self.preview.sendInputToOutput.called)
         self.assertFalse(self.main.sendInputToOutput.called)
@@ -112,15 +113,16 @@ class TestVideoSwitcher(GuiTest):
         QTest.keyClick(self.vs, Qt.Key_Space)
         self.main.sendInputToOutput.assert_called_with(4, 0)
 
+        self.extras.sendInputToOutput.reset_mock()
         QTest.keyClick(self.vs, Qt.Key_5)
-        self.assertPreviewCalledFor(6)
+        self.extras.sendInputToOutput.assert_not_called()  # main sw not involved and no input selected
         # Make sure there's an actual channel selected
         self.vs.extrasSwitcher.inputs.buttons()[3].click()
         QTest.keyClick(self.vs, Qt.Key_Space)
         self.main.sendInputToOutput.assert_called_with(5, 0)
 
         QTest.keyClick(self.vs, Qt.Key_6)
-        self.assertPreviewCalledFor(5)
+        self.assertPreviewCalledFor(6)
         QTest.keyClick(self.vs, Qt.Key_Space)
         self.main.sendInputToOutput.assert_called_with(6, 0)
 
@@ -132,7 +134,8 @@ class TestVideoSwitcher(GuiTest):
         self.main.sendInputToOutput.assert_called_with(6, 0)  # which was the last valid input key pressed
 
     def assertPreviewCalledFor(self, inputID):
-        return self.preview.sendInputToOutput.assert_called_with(inputID, 1)
+        self.main.sendInputToOutput.assert_called_with(inputID, 1)
+        return self.extras.sendInputToOutput.assert_called_with(7, 3)
 
 if __name__ == "__main__":
     unittest.main()
