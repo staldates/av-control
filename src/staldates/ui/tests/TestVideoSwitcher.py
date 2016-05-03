@@ -40,13 +40,13 @@ class TestVideoSwitcher(GuiTest):
         self.assertTrue(outputsGrid is not None)
 
         self.vs.btnCamera1.click()
-        self.preview.sendInputToOutput.assert_called_with(1, 1)  # Camera 1 is previewed
+        self.assertPreviewCalledFor(1)  # Camera 1 is previewed
 
         outputsGrid.btnChurch.click()
         self.main.sendInputToOutput.assert_called_with(1, 4)  # Camera 1 sent to output 4 (church)
 
         self.vs.btnCamera3.click()
-        self.preview.sendInputToOutput.assert_called_with(3, 1)  # Camera 3 previewed
+        self.assertPreviewCalledFor(3)  # Camera 3 previewed
         outputsGrid.btnGallery.click()
         self.main.sendInputToOutput.assert_called_with(3, 6)  # Camera 3 sent to output 6 (gallery)
         outputsGrid.btnPCMix.click()
@@ -57,7 +57,7 @@ class TestVideoSwitcher(GuiTest):
         self.main.sendInputToOutput.assert_called_with(0, 0)  # Everything blanked
 
         self.vs.btnExtras.click()
-        self.preview.sendInputToOutput.assert_called_with(6, 1)  # This is wired up the wrong way around - 5 on main vs 6 on preview
+        self.assertPreviewCalledFor(6)  # This is wired up the wrong way around - 5 on main vs 6 on preview
         self.vs.extrasSwitcher.inputs.buttons()[4].click()  # Visuals PC video
         self.assertEqual(self.vs.extrasSwitcher.inputs.checkedButton(), self.vs.extrasSwitcher.inputs.buttons()[4])
         outputsGrid.btnAll.click()  # This one click should trigger two takes, one on each switcher
@@ -71,7 +71,7 @@ class TestVideoSwitcher(GuiTest):
         outputsGrid = self.vs.findChild(OutputsGrid)
 
         self.vs.btnVisualsPC.click()
-        self.preview.sendInputToOutput.assert_called_with(5, 1)
+        self.assertPreviewCalledFor(5)
         self.preview.sendInputToOutput.reset_mock()
         outputsGrid.btnPCMix.click()
         self.assertFalse(self.preview.sendInputToOutput.called)
@@ -93,34 +93,34 @@ class TestVideoSwitcher(GuiTest):
         self.main.sendInputToOutput.assert_called_with(0, 0)
 
         QTest.keyClick(self.vs, Qt.Key_1)
-        self.preview.sendInputToOutput.assert_called_with(1, 1)
+        self.assertPreviewCalledFor(1)
         QTest.keyClick(self.vs, Qt.Key_Space)
         self.main.sendInputToOutput.assert_called_with(1, 0)
 
         QTest.keyClick(self.vs, Qt.Key_2)
-        self.preview.sendInputToOutput.assert_called_with(2, 1)
+        self.assertPreviewCalledFor(2)
         QTest.keyClick(self.vs, Qt.Key_Space)
         self.main.sendInputToOutput.assert_called_with(2, 0)
 
         QTest.keyClick(self.vs, Qt.Key_3)
-        self.preview.sendInputToOutput.assert_called_with(3, 1)
+        self.assertPreviewCalledFor(3)
         QTest.keyClick(self.vs, Qt.Key_Space)
         self.main.sendInputToOutput.assert_called_with(3, 0)
 
         QTest.keyClick(self.vs, Qt.Key_4)
-        self.preview.sendInputToOutput.assert_called_with(4, 1)
+        self.assertPreviewCalledFor(4)
         QTest.keyClick(self.vs, Qt.Key_Space)
         self.main.sendInputToOutput.assert_called_with(4, 0)
 
         QTest.keyClick(self.vs, Qt.Key_5)
-        self.preview.sendInputToOutput.assert_called_with(6, 1)
+        self.assertPreviewCalledFor(6)
         # Make sure there's an actual channel selected
         self.vs.extrasSwitcher.inputs.buttons()[3].click()
         QTest.keyClick(self.vs, Qt.Key_Space)
         self.main.sendInputToOutput.assert_called_with(5, 0)
 
         QTest.keyClick(self.vs, Qt.Key_6)
-        self.preview.sendInputToOutput.assert_called_with(5, 1)
+        self.assertPreviewCalledFor(5)
         QTest.keyClick(self.vs, Qt.Key_Space)
         self.main.sendInputToOutput.assert_called_with(6, 0)
 
@@ -131,6 +131,8 @@ class TestVideoSwitcher(GuiTest):
         QTest.keyClick(self.vs, Qt.Key_Space)
         self.main.sendInputToOutput.assert_called_with(6, 0)  # which was the last valid input key pressed
 
+    def assertPreviewCalledFor(self, inputID):
+        return self.preview.sendInputToOutput.assert_called_with(inputID, 1)
 
 if __name__ == "__main__":
     unittest.main()
