@@ -82,18 +82,6 @@ class ExtrasSwitcher(QWidget):
         if currentInput:
             currentInput.preview(self.controller)
 
-    def take(self, output=1):
-        '''Send the currently selected input to the main switcher's input. '''
-        inChannel = self.inputs.checkedId()
-        if inChannel >= 0:
-            try:
-                logging.debug("Extras: " + str(inChannel) + " => " + str(output))
-                self.controller["Extras"].sendInputToOutput(inChannel, output)
-            except NamingError:
-                self.errorBox(StringConstants.nameErrorText)
-            except ProtocolError:
-                self.errorBox(StringConstants.protocolErrorText)
-
     def toggleOverscan(self):
         try:
             if self.sender().isChecked():
