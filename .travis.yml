@@ -13,8 +13,9 @@ addons:
 install:
   - pip install PySide --no-index --find-links https://parkin.github.io/python-wheelhouse/
   - python ~/virtualenv/python${TRAVIS_PYTHON_VERSION}/bin/pyside_postinstall.py -install
-  - pip install coveralls
+  - pip install pep8 coveralls
 script:
+  - pep8 --ignore=E501 src
   - ./compileResources.sh
   - coverage run --source=staldates setup.py nosetests
 after_success:
