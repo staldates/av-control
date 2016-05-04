@@ -61,6 +61,7 @@ class TestVideoSwitcher(GuiTest):
         self.vs.btnExtras.click()
         self.extras.sendInputToOutput.assert_not_called()  # main sw not involved and no input selected
         self.vs.extrasSwitcher.inputs.buttons()[4].click()  # Visuals PC video
+        self.assertEqual("PC video", self.vs.btnExtras.text())
         self.extras.sendInputToOutput.assert_called_with(8, EXTRAS_OUTPUT_TO_PREVIEW)
         self.assertEqual(self.vs.extrasSwitcher.inputs.checkedButton(), self.vs.extrasSwitcher.inputs.buttons()[4])
         outputsGrid.btnAll.click()  # This one click should trigger two takes, one on each switcher
@@ -120,6 +121,7 @@ class TestVideoSwitcher(GuiTest):
         self.extras.sendInputToOutput.assert_not_called()  # main sw not involved and no input selected
         # Make sure there's an actual channel selected
         self.vs.extrasSwitcher.inputs.buttons()[3].click()
+        self.assertEqual("Extras 4", self.vs.btnExtras.text())
         self.extras.sendInputToOutput.assert_called_with(4, EXTRAS_OUTPUT_TO_PREVIEW)
         QTest.keyClick(self.vs, Qt.Key_Space)
         self.main.sendInputToOutput.assert_called_with(5, 0)
