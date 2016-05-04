@@ -53,8 +53,9 @@ class BlankMainInput(MainInput):
 
 class ExtrasInput(Input):
 
-    def __init__(self, sourceChannel):
+    def __init__(self, sourceChannel, name):
         super(ExtrasInput, self).__init__(sourceChannel)
+        self.name = name
 
     def preview(self, controller):
         controller["Extras"].sendInputToOutput(self.sourceChannel, EXTRAS_OUTPUT_TO_PREVIEW)
@@ -117,8 +118,8 @@ visualsPC = MainInput(6)
 # 8 - Visuals PC video
 #
 
-extras1 = ExtrasInput(1)
-extras2 = ExtrasInput(2)
-extras3 = ExtrasInput(3)
-extras4 = ExtrasInput(4)
-visualsPCVideo = ExtrasInput(8)
+extras1 = ExtrasInput(1, "Extras 1")
+extras2 = ExtrasInput(2, "Extras 2")
+extras3 = ExtrasInput(3, "Extras 3")
+extras4 = ExtrasInput(4, "Extras 4")
+visualsPCVideo = ExtrasInput(8, "PC video")

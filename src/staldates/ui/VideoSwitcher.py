@@ -1,5 +1,5 @@
 from PySide.QtGui import QLabel, QWidget, QGridLayout, QHBoxLayout, QButtonGroup, QIcon
-from PySide.QtCore import QMetaObject, Qt
+from PySide.QtCore import QMetaObject, Qt, Slot
 from staldates.ui.widgets.Buttons import InputButton, CameraSelectionButton
 from staldates.ui.ExtrasSwitcher import ExtrasSwitcher
 from staldates.ui.CameraControls import CameraControl, AdvancedCameraControl
@@ -80,6 +80,7 @@ class VideoSwitcher(QWidget):
         gridlayout.addLayout(inputsGrid, 0, 0, 1, 7)
 
         self.extrasSwitcher = ExtrasSwitcher(self.controller)
+        self.extrasSwitcher.inputSelected.connect(self.handleExtrasSelect)
         self.btnExtras.setInput(ProxyInput(self.extrasSwitcher))
         self.blank = QWidget(self)
         gridlayout.addWidget(self.blank, 1, 0, 1, 5)
@@ -199,6 +200,10 @@ class VideoSwitcher(QWidget):
                 self.mainWindow.errorBox(StringConstants.nameErrorText)
             except ProtocolError:
                 self.mainWindow.errorBox(StringConstants.protocolErrorText)
+
+    @Slot(VisualsSystem.Input)
+    def handleExtrasSelect(self, extrasInput):
+        self.btnExtras.setText(extrasInput.name)
 
     def showAdvPanel(self):
         sender = self.sender()

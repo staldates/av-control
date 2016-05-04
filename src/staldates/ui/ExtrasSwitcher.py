@@ -3,10 +3,11 @@ Created on 10 Nov 2012
 
 @author: james
 '''
-from PySide.QtGui import QWidget, QGridLayout, QButtonGroup, QMessageBox
-from staldates.ui.widgets.Buttons import InputButton
-from Pyro4.errors import ProtocolError, NamingError
 from avx.StringConstants import StringConstants
+from Pyro4.errors import ProtocolError, NamingError
+from PySide.QtGui import QWidget, QGridLayout, QButtonGroup, QMessageBox
+from PySide.QtCore import Signal
+from staldates.ui.widgets.Buttons import InputButton
 from staldates.ui.widgets.ScanConverterControls import OverscanFreezeWidget
 from staldates import VisualsSystem
 
@@ -15,6 +16,8 @@ class ExtrasSwitcher(QWidget):
     '''
     The extras switcher.
     '''
+
+    inputSelected = Signal(VisualsSystem.Input)
 
     def __init__(self, controller):
         super(ExtrasSwitcher, self).__init__()
@@ -80,6 +83,7 @@ class ExtrasSwitcher(QWidget):
         currentInput = self.currentInput()
         if currentInput:
             currentInput.preview(self.controller)
+            self.inputSelected.emit(currentInput)
 
     def toggleOverscan(self):
         try:
