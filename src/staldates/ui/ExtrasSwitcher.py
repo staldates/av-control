@@ -101,9 +101,9 @@ class ExtrasSwitcher(QWidget):
     def toggleFreeze(self):
         try:
             if self.sender().isChecked():
-                self.controller["Extras Scan Converter"].freezeOn()
+                self.controller["Extras Scan Converter"].freeze()
             else:
-                self.controller["Extras Scan Converter"].freezeOff()
+                self.controller["Extras Scan Converter"].unfreeze()
         except NamingError:
             self.errorBox(StringConstants.nameErrorText)
         except ProtocolError:

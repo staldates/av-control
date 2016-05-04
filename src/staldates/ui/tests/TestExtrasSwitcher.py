@@ -29,8 +29,8 @@ class Test(GuiTest):
         self.mockController.addDevice(self.esc)
         self.esc.overscanOff = MagicMock(return_value=1)
         self.esc.overscanOn = MagicMock(return_value=1)
-        self.esc.freezeOff = MagicMock(return_value=1)
-        self.esc.freezeOn = MagicMock(return_value=1)
+        self.esc.unfreeze = MagicMock(return_value=1)
+        self.esc.freeze = MagicMock(return_value=1)
 
         self.es = ExtrasSwitcher(self.mockController)
 
@@ -49,9 +49,9 @@ class Test(GuiTest):
 
     def testToggleFreeze(self):
         self.findButton(self.es, "Freeze").click()
-        self.esc.freezeOn.assert_called_once_with()
+        self.esc.freeze.assert_called_once_with()
         self.findButton(self.es, "Freeze").click()
-        self.esc.freezeOff.assert_called_once_with()
+        self.esc.unfreeze.assert_called_once_with()
 
 if __name__ == "__main__":
     unittest.main()
