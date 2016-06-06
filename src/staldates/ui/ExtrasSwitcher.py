@@ -3,7 +3,7 @@ Created on 10 Nov 2012
 
 @author: james
 '''
-from avx.StringConstants import StringConstants
+from staldates.ui.StringConstants import StringConstants
 from Pyro4.errors import ProtocolError, NamingError
 from PySide.QtGui import QWidget, QGridLayout, QButtonGroup, QMessageBox
 from PySide.QtCore import Signal

@@ -1,7 +1,7 @@
 from PySide.QtGui import QWidget, QVBoxLayout
 from staldates.ui.widgets.ScanConverterControls import EclipseWidget
 from Pyro4.errors import ProtocolError, NamingError
-from avx.StringConstants import StringConstants
+from staldates.ui.StringConstants import StringConstants
 
 
 class EclipseControls(QWidget):

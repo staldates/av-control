@@ -2,7 +2,7 @@ from PySide.QtGui import QButtonGroup, QGridLayout, QLabel, QWidget, QIcon, QMes
 from PySide.QtCore import QSize, Qt
 from staldates.ui.widgets.Buttons import ExpandingButton, OptionButton
 from Pyro4.errors import NamingError, ProtocolError
-from avx.StringConstants import StringConstants
+from staldates.ui.StringConstants import StringConstants
 from staldates.ui.widgets.Screens import ScreenWithBackButton
 
 

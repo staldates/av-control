@@ -1,7 +1,7 @@
-from avx.StringConstants import StringConstants
 from Pyro4.errors import NamingError, ProtocolError
 from PySide.QtCore import Qt
 from PySide.QtGui import QButtonGroup, QGridLayout
+from staldates.ui.StringConstants import StringConstants
 from staldates.ui.widgets.Buttons import IDedButton, SvgButton
 from staldates.ui.widgets.Screens import ScreenWithBackButton
 
