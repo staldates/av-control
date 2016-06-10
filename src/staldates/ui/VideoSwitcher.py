@@ -4,9 +4,9 @@ from staldates.ui.widgets.Buttons import InputButton, CameraSelectionButton
 from staldates.ui.ExtrasSwitcher import ExtrasSwitcher
 from staldates.ui.CameraControls import CameraControl, AdvancedCameraControl
 from Pyro4.errors import ProtocolError, NamingError
-from avx.StringConstants import StringConstants
 from staldates.ui.EclipseControls import EclipseControls
 import logging
+from staldates.ui.StringConstants import StringConstants
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
 from staldates import VisualsSystem
 from staldates.VisualsSystem import ProxyInput
