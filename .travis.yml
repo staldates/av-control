@@ -19,7 +19,7 @@ install:
   - python ~/virtualenv/python${TRAVIS_PYTHON_VERSION}/bin/pyside_postinstall.py -install
   - pip install pep8 coveralls
   - pip install --upgrade setuptools
-  - if [ "$USE_AVX_DEVELOP" = true ]; then pip install pip install git+git://github.com/jamesremuscat/avx.git#develop; fi
+  - if [ "$USE_AVX_DEVELOP" = true ]; then pip install git+git://github.com/jamesremuscat/avx.git#develop; fi
 script:
   - pep8 --ignore=E501 src
   - ./compileResources.sh
