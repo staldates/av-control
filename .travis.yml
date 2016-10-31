@@ -11,11 +11,15 @@ addons:
     packages:
       - libqt4-dev
       - pyside-tools
+env:
+  - USE_AVX_DEVELOP=false
+  - USE_AVX_DEVELOP=true
 install:
   - pip install PySide --no-index --find-links https://parkin.github.io/python-wheelhouse/
   - python ~/virtualenv/python${TRAVIS_PYTHON_VERSION}/bin/pyside_postinstall.py -install
   - pip install pep8 coveralls
   - pip install --upgrade setuptools
+  - if [ "$USE_AVX_DEVELOP" = true ]; then pip install pip install git+git://github.com/jamesremuscat/avx.git#develop; fi
 script:
   - pep8 --ignore=E501 src
   - ./compileResources.sh
