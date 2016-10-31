@@ -37,7 +37,7 @@ class AdvancedMenu(ScreenWithBackButton):
         layout.addWidget(btnAutoTrack)
 
         btnQuit = ExpandingButton()
-        btnQuit.setText("Exit AldatesX")
+        btnQuit.setText("Exit AV Control")
         btnQuit.clicked.connect(self.mainWindow.close)
         layout.addWidget(btnQuit)
 
