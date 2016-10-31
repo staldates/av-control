@@ -20,7 +20,7 @@ class TestOutputsGrid(GuiTest):
         self.assertEqual("Camera 1", self.findButton(og, "Monitor 1").inputDisplay.text())
         self.assertEqual("Camera 3", self.findButton(og, "Church").inputDisplay.text())
         self.assertEqual("Extras", self.findButton(og, "Gallery").inputDisplay.text())
-        self.assertEqual("Visuals PC", self.findButton(og, "Special").inputDisplay.text())
+        self.assertEqual("Visuals PC", self.findButton(og, "Stage").inputDisplay.text())
         self.assertEqual("Blank", self.findButton(og, "Record").inputDisplay.text())
 
     def testDisplayInputSentToAll(self):
@@ -29,7 +29,7 @@ class TestOutputsGrid(GuiTest):
         self.assertEqual("Camera 1", self.findButton(og, "Monitor 1").inputDisplay.text())
         self.assertEqual("Camera 1", self.findButton(og, "Church").inputDisplay.text())
         self.assertEqual("Camera 1", self.findButton(og, "Gallery").inputDisplay.text())
-        self.assertEqual("Camera 1", self.findButton(og, "Special").inputDisplay.text())
+        self.assertEqual("Camera 1", self.findButton(og, "Stage").inputDisplay.text())
         self.assertEqual("Camera 1", self.findButton(og, "Record").inputDisplay.text())
 
     def testDisplayInputSentToPCMix(self):

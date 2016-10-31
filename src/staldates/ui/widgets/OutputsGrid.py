@@ -34,7 +34,7 @@ class OutputsGrid(QFrame):
         self.btnChurch.setText("Church")
         layout.addWidget(self.btnChurch, 1, 0)
         self.btnSpecial = OutputButton(ID=7)
-        self.btnSpecial.setText("Special")
+        self.btnSpecial.setText("Stage")
         layout.addWidget(self.btnSpecial, 1, 1)
 
         self.btnGallery = OutputButton(ID=6)
