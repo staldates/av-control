@@ -1,7 +1,6 @@
 from PySide.QtGui import QWidget, QVBoxLayout
+from staldates.ui.widgets.Dialogs import handlePyroErrors
 from staldates.ui.widgets.ScanConverterControls import EclipseWidget
-from Pyro4.errors import ProtocolError, NamingError
-from staldates.ui.StringConstants import StringConstants
 
 
 class EclipseControls(QWidget):
@@ -21,46 +20,30 @@ class EclipseControls(QWidget):
             eclipse.btnFade.toggled.connect(self.toggleFade)
             eclipse.btnOverlay.toggled.connect(self.toggleOverlay)
 
-    def toggleOverscan(self):
-        try:
-            if self.sender().isChecked():
-                self.device.overscanOn()
-            else:
-                self.device.overscanOff()
-        except NamingError:
-            self.errorBox(StringConstants.nameErrorText)
-        except ProtocolError:
-            self.errorBox(StringConstants.protocolErrorText)
+    @handlePyroErrors
+    def toggleOverscan(self, overscan):
+        if overscan:
+            self.device.overscanOn()
+        else:
+            self.device.overscanOff()
 
-    def toggleFreeze(self):
-        try:
-            if self.sender().isChecked():
-                self.device.freeze()
-            else:
-                self.device.unfreeze()
-        except NamingError:
-            self.errorBox(StringConstants.nameErrorText)
-        except ProtocolError:
-            self.errorBox(StringConstants.protocolErrorText)
+    @handlePyroErrors
+    def toggleFreeze(self, freeze):
+        if freeze:
+            self.device.freeze()
+        else:
+            self.device.unfreeze()
 
-    def toggleOverlay(self):
-        try:
-            if self.sender().isChecked():
-                self.device.overlayOn()
-            else:
-                self.device.overlayOff()
-        except NamingError:
-            self.errorBox(StringConstants.nameErrorText)
-        except ProtocolError:
-            self.errorBox(StringConstants.protocolErrorText)
+    @handlePyroErrors
+    def toggleOverlay(self, overlay):
+        if overlay:
+            self.device.overlayOn()
+        else:
+            self.device.overlayOff()
 
-    def toggleFade(self):
-        try:
-            if self.sender().isChecked():
-                self.device.fadeOut()
-            else:
-                self.device.fadeIn()
-        except NamingError:
-            self.errorBox(StringConstants.nameErrorText)
-        except ProtocolError:
-            self.errorBox(StringConstants.protocolErrorText)
+    @handlePyroErrors
+    def toggleFade(self, fade):
+        if fade:
+            self.device.fadeOut()
+        else:
+            self.device.fadeIn()
