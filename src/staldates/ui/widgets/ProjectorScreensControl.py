@@ -1,8 +1,7 @@
-from Pyro4.errors import NamingError, ProtocolError
 from PySide.QtCore import Qt
 from PySide.QtGui import QButtonGroup, QGridLayout
-from staldates.ui.StringConstants import StringConstants
 from staldates.ui.widgets.Buttons import IDedButton, SvgButton
+from staldates.ui.widgets.Dialogs import handlePyroErrors
 from staldates.ui.widgets.Screens import ScreenWithBackButton
 
 
@@ -59,29 +58,17 @@ class ProjectorScreensControl(ScreenWithBackButton):
 
         return layout
 
+    @handlePyroErrors
     def raiseUp(self):
         screenID = self.screens.checkedId()
-        try:
-            self.screensDevice.raiseUp(screenID)
-        except NamingError:
-            self.mainWindow.errorBox(StringConstants.nameErrorText)
-        except ProtocolError:
-            self.mainWindow.errorBox(StringConstants.protocolErrorText)
+        self.screensDevice.raiseUp(screenID)
 
+    @handlePyroErrors
     def lowerDown(self):
         screenID = self.screens.checkedId()
-        try:
-            self.screensDevice.lower(screenID)
-        except NamingError:
-            self.mainWindow.errorBox(StringConstants.nameErrorText)
-        except ProtocolError:
-            self.mainWindow.errorBox(StringConstants.protocolErrorText)
+        self.screensDevice.lower(screenID)
 
+    @handlePyroErrors
     def stop(self):
         screenID = self.screens.checkedId()
-        try:
-            self.screensDevice.stop(screenID)
-        except NamingError:
-            self.mainWindow.errorBox(StringConstants.nameErrorText)
-        except ProtocolError:
-            self.mainWindow.errorBox(StringConstants.protocolErrorText)
+        self.screensDevice.stop(screenID)

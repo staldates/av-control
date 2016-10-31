@@ -1,4 +1,5 @@
 from PySide.QtGui import QVBoxLayout, QTableWidget, QTableWidgetItem
+from staldates.ui.widgets.Dialogs import handlePyroErrors
 from staldates.ui.widgets.Screens import ScreenWithBackButton
 
 
@@ -17,6 +18,7 @@ class LogViewer(ScreenWithBackButton):
 
         return layout
 
+    @handlePyroErrors
     def displayLog(self):
         entries = self.controller.getLog()
         self.table.clearContents()

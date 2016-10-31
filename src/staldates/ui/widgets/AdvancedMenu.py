@@ -2,6 +2,7 @@ from avx._version import __version__ as _avx_version
 from PySide.QtGui import QVBoxLayout, QLabel
 from staldates.ui.widgets.LogViewer import LogViewer
 from staldates.ui.widgets.Buttons import ExpandingButton
+from staldates.ui.widgets.Dialogs import handlePyroErrors
 from staldates.ui.widgets.Screens import ScreenWithBackButton
 from staldates.ui._version import __version__ as _ui_version
 
@@ -32,7 +33,7 @@ class AdvancedMenu(ScreenWithBackButton):
 
         btnAutoTrack = ExpandingButton()
         btnAutoTrack.setText("Recalibrate Extras scan converter")
-        btnAutoTrack.clicked.connect(lambda: self.controller["Extras Scan Converter"].recalibrate())
+        btnAutoTrack.clicked.connect(handlePyroErrors(lambda: self.controller["Extras Scan Converter"].recalibrate()))
         layout.addWidget(btnAutoTrack)
 
         btnQuit = ExpandingButton()

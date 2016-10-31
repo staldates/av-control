@@ -1,9 +1,8 @@
-from Pyro4.errors import NamingError, ProtocolError
 from PySide.QtCore import Qt
 from PySide.QtGui import QButtonGroup, QGridLayout
-from staldates.ui.StringConstants import StringConstants
 from staldates.ui.widgets.Buttons import IDedButton, SvgButton
 from staldates.ui.widgets.Screens import ScreenWithBackButton
+from staldates.ui.widgets.Dialogs import handlePyroErrors
 
 
 class BlindsControl(ScreenWithBackButton):
@@ -54,29 +53,17 @@ class BlindsControl(ScreenWithBackButton):
 
         return layout
 
+    @handlePyroErrors
     def raiseUp(self):
         blindID = self.blinds.checkedId()
-        try:
-            self.blindsDevice.raiseUp(blindID)
-        except NamingError:
-            self.mainWindow.errorBox(StringConstants.nameErrorText)
-        except ProtocolError:
-            self.mainWindow.errorBox(StringConstants.protocolErrorText)
+        self.blindsDevice.raiseUp(blindID)
 
+    @handlePyroErrors
     def lowerDown(self):
         blindID = self.blinds.checkedId()
-        try:
-            self.blindsDevice.lower(blindID)
-        except NamingError:
-            self.mainWindow.errorBox(StringConstants.nameErrorText)
-        except ProtocolError:
-            self.mainWindow.errorBox(StringConstants.protocolErrorText)
+        self.blindsDevice.lower(blindID)
 
+    @handlePyroErrors
     def stop(self):
         blindID = self.blinds.checkedId()
-        try:
-            self.blindsDevice.stop(blindID)
-        except NamingError:
-            self.mainWindow.errorBox(StringConstants.nameErrorText)
-        except ProtocolError:
-            self.mainWindow.errorBox(StringConstants.protocolErrorText)
+        self.blindsDevice.stop(blindID)

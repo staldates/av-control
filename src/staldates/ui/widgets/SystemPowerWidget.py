@@ -2,6 +2,7 @@ from avx.Sequencer import ControllerEvent, DeviceEvent, LogEvent, SleepEvent
 from PySide.QtCore import Qt
 from PySide.QtGui import QHBoxLayout
 from staldates.ui.widgets.Buttons import SvgButton
+from staldates.ui.widgets.Dialogs import handlePyroErrors
 from staldates.ui.widgets.Screens import ScreenWithBackButton
 
 import logging
@@ -31,6 +32,7 @@ class SystemPowerWidget(ScreenWithBackButton):
 
         return buttons
 
+    @handlePyroErrors
     def powerOn(self):
         self.controller.sequence(
             ControllerEvent("showPowerOnDialogOnClients"),
@@ -47,6 +49,7 @@ class SystemPowerWidget(ScreenWithBackButton):
             LogEvent(logging.INFO, "Power on sequence complete")
         )
 
+    @handlePyroErrors
     def powerOff(self):
         self.controller.sequence(
             ControllerEvent("showPowerOffDialogOnClients"),
