@@ -171,8 +171,13 @@ class VideoSwitcher(QWidget):
 
         # Prevent certain options from being selectable
         if inputID == 6 or inputID == 0:
+            self.outputsGrid.setEnabled(True)
             self.outputsGrid.btnPCMix.setEnabled(False)
+        elif inputID == 5 and self.extrasSwitcher.currentInput() is None:
+            self.outputsGrid.setEnabled(False)
+            self.outputsGrid.btnPCMix.setEnabled(True)
         else:
+            self.outputsGrid.setEnabled(True)
             self.outputsGrid.btnPCMix.setEnabled(True)
 
     def handleOutputSelect(self):
@@ -191,7 +196,6 @@ class VideoSwitcher(QWidget):
     def handlePCMixSelect(self):
         inputID = self.inputs.checkedId()
         checkedExtrasButton = self.extrasSwitcher.inputs.checkedButton()
-        checkedExtrasButton
         inputChannel = checkedExtrasButton.input if (inputID == 5 and checkedExtrasButton) else self.inputs.checkedButton().input
         if inputChannel:
             try:
@@ -203,8 +207,15 @@ class VideoSwitcher(QWidget):
 
     @Slot(VisualsSystem.Input)
     def handleExtrasSelect(self, extrasInput):
-        self.btnExtras.setText(extrasInput.name)
-        self.outputsGrid.inputNames[5] = extrasInput.name
+        if extrasInput is not None:
+            self.btnExtras.setText(extrasInput.name)
+            self.outputsGrid.inputNames[5] = extrasInput.name
+            self.outputsGrid.setEnabled(True)
+        else:
+            # Not sure under what circumstances, if any, this will arise
+            self.btnExtras.setText("Extras")
+            self.outputsGrid.inputNames[5] = "Extras"
+            self.outputsGrid.setEnabled(False)
 
     def showAdvPanel(self):
         sender = self.sender()

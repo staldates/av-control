@@ -69,7 +69,12 @@ class TestVideoSwitcher(GuiTest):
         self.main.sendInputToOutput.assert_called_with(5, 0)  # Extras to everywhere
         outputsGrid.updateOutputMappings({'Main': {0: 5}})
         self.assertEqual("PC video", outputsGrid.btnMonitor1.inputDisplay.text())
+        self.main.sendInputToOutput.reset_mock()
+        self.extras.sendInputToOutput.reset_mock()
+        self.assertTrue(outputsGrid.isEnabled())
+        self.assertTrue(outputsGrid.btnPCMix.isEnabled())
         outputsGrid.btnPCMix.click()
+        self.assertTrue(outputsGrid.isEnabled())
         self.extras.sendInputToOutput.assert_called_with(8, 2)
         self.preview.sendInputToOutput.assert_called_with(6, 2)  # Extras to PC Mix
 
@@ -139,6 +144,12 @@ class TestVideoSwitcher(GuiTest):
         self.assertFalse(self.preview.sendInputToOutput.called)
         QTest.keyClick(self.vs, Qt.Key_Space)
         self.main.sendInputToOutput.assert_called_with(6, 0)  # which was the last valid input key pressed
+
+    def testNotSendNullExtra(self):
+        outputsGrid = self.vs.findChild(OutputsGrid)
+        self.vs.btnExtras.click()
+        self.assertIsNone(self.vs.extrasSwitcher.currentInput())
+        self.assertFalse(outputsGrid.isEnabled())
 
     def assertPreviewCalledFor(self, inputID):
         self.main.sendInputToOutput.assert_called_with(inputID, 1)
