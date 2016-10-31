@@ -150,6 +150,7 @@ class TestVideoSwitcher(GuiTest):
         self.vs.btnExtras.click()
         self.assertIsNone(self.vs.extrasSwitcher.currentInput())
         self.assertFalse(outputsGrid.isEnabled())
+        self.assertTrue(self.vs.extrasSwitcher.noInputWarning.isVisibleTo(self.vs.extrasSwitcher))
 
     def assertPreviewCalledFor(self, inputID):
         self.main.sendInputToOutput.assert_called_with(inputID, 1)

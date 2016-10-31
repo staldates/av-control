@@ -22,6 +22,7 @@
         <file alias="system-shutdown">resources/icons/system-shutdown.svg</file>
         <file alias="video-display">resources/icons/video-display.svg</file>
         <file alias="view-fullscreen">resources/icons/view-fullscreen.svg</file>
+        <file alias="warning">resources/icons/dialog-warning.svg</file>
     </qresource>
     <qresource>
       <file alias="stylesheet">resources/AldatesX.qss</file>

@@ -5,7 +5,8 @@ Created on 10 Nov 2012
 '''
 from staldates.ui.StringConstants import StringConstants
 from Pyro4.errors import ProtocolError, NamingError
-from PySide.QtGui import QWidget, QGridLayout, QButtonGroup, QMessageBox
+from PySide.QtGui import QWidget, QGridLayout, QHBoxLayout, QButtonGroup, QPixmap, QLabel, QMessageBox,\
+    QSizePolicy
 from PySide.QtCore import Signal
 from staldates.ui.widgets.Buttons import InputButton
 from staldates.ui.widgets.ScanConverterControls import OverscanFreezeWidget
@@ -73,6 +74,9 @@ class ExtrasSwitcher(QWidget):
             scControl.btnOverscan.toggled.connect(self.toggleOverscan)
             scControl.btnFreeze.toggled.connect(self.toggleFreeze)
 
+        self.noInputWarning = NoInputSelectedWarning(self)
+        layout.addWidget(self.noInputWarning, 1, 0, 1, 4)
+
     def currentInput(self):
         button = self.inputs.checkedButton()
         if button is None:
@@ -84,6 +88,9 @@ class ExtrasSwitcher(QWidget):
         if currentInput:
             currentInput.preview(self.controller)
             self.inputSelected.emit(currentInput)
+            self.noInputWarning.setVisible(False)
+        else:
+            self.noInputWarning.setVisible(True)
 
     def toggleOverscan(self):
         try:
@@ -112,3 +119,17 @@ class ExtrasSwitcher(QWidget):
         msgBox.setText(text)
         msgBox.setIcon(QMessageBox.Critical)
         msgBox.exec_()
+
+
+class NoInputSelectedWarning(QWidget):
+    def __init__(self, parent=None):
+        super(NoInputSelectedWarning, self).__init__(parent)
+        layout = QHBoxLayout()
+
+        img = QLabel(self)
+        img.setPixmap(QPixmap(":icons/warning"))
+        img.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        layout.addWidget(img)
+        layout.addWidget(QLabel("No input is currently selected"))
+
+        self.setLayout(layout)
