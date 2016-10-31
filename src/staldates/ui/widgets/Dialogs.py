@@ -2,6 +2,7 @@ from Pyro4.errors import PyroError
 from PySide.QtGui import QDialog, QGridLayout, QLabel, QMessageBox, QMovie
 from PySide.QtCore import Qt
 from staldates.ui.widgets.Buttons import ExpandingButton
+import functools
 import logging
 
 
@@ -48,12 +49,13 @@ def errorBox(text):
     msgBox.exec_()
 
 
-def handlePyroErrors(extraMessage=''):
-    def decorator(func):
-        def innerFunc(*args, **kwargs):
-            try:
-                func(*args, **kwargs)
-            except PyroError as e:
-                errorBox("{} {}\n({})".format(extraMessage, e, e.__class__.__name__).strip())
-        return innerFunc
-    return decorator
+def handlePyroErrors(func=None, extraMessage=''):
+    if func is None:
+        return functools.partial(handlePyroErrors, extraMessage=extraMessage)
+
+    def innerFunc(*args, **kwargs):
+        try:
+            func(*args, **kwargs)
+        except PyroError as e:
+            errorBox("{} {}\n({})".format(extraMessage, e, e.__class__.__name__).strip())
+    return innerFunc

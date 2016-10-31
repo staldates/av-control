@@ -95,15 +95,15 @@ class ExtrasSwitcher(QWidget):
             self.noInputWarning.setVisible(True)
 
     @handlePyroErrors
-    def toggleOverscan(self):
-        if self.sender().isChecked():
+    def toggleOverscan(self, overscan):
+        if overscan:
             self.controller["Extras Scan Converter"].overscanOn()
         else:
             self.controller["Extras Scan Converter"].overscanOff()
 
     @handlePyroErrors
-    def toggleFreeze(self):
-        if self.sender().isChecked():
+    def toggleFreeze(self, freeze):
+        if freeze:
             self.controller["Extras Scan Converter"].freeze()
         else:
             self.controller["Extras Scan Converter"].unfreeze()

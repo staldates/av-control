@@ -67,7 +67,7 @@ def invoke_in_main_thread(fn, *args, **kwargs):
                                InvokeEvent(fn, *args, **kwargs))
 
 
-@handlePyroErrors("Cannot start application due to a network error -")
+@handlePyroErrors(extraMessage="Cannot start application due to a network error -")
 def main():
     pid_file = 'av-control.pid'
     fp = open(pid_file, 'w')
