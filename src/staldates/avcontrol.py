@@ -6,7 +6,6 @@ import sys
 
 from avx.Client import Client
 from avx.controller.Controller import Controller, VersionMismatchError
-from pkg_resources import require
 from Pyro4.errors import NamingError, CommunicationError
 from PySide.QtCore import Qt, QFile, QObject, QCoreApplication, QEvent
 from PySide.QtGui import QApplication
@@ -14,9 +13,6 @@ from staldates.ui import resources  # @UnusedImport  # Initialises the Qt resour
 from staldates.ui.MainWindow import MainWindow
 from staldates.ui.StringConstants import StringConstants
 from staldates.ui.widgets import Dialogs
-
-
-require("avx>=0.95")
 
 
 class AvControlClient(Client):
