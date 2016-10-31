@@ -26,9 +26,9 @@ class OutputsGrid(QFrame):
         QFrame.__init__(self)
         layout = QGridLayout()
 
-        self.btnProjectors = OutputButton(ID=2)
-        self.btnProjectors.setText("Projectors")
-        layout.addWidget(self.btnProjectors, 0, 1)
+        self.btnMonitor1 = OutputButton(ID=2)
+        self.btnMonitor1.setText("Monitor 1")
+        layout.addWidget(self.btnMonitor1, 0, 1)
 
         self.btnChurch = OutputButton(ID=4)
         self.btnChurch.setText("Church")
@@ -59,7 +59,7 @@ class OutputsGrid(QFrame):
         layout.addWidget(self.btnAll, 4, 1)
 
         self.outputButtons = {
-            2: self.btnProjectors,
+            2: self.btnMonitor1,
             3: self.btnFont,
             4: self.btnChurch,
             5: self.btnWelcome,
@@ -76,7 +76,7 @@ class OutputsGrid(QFrame):
         self.setLayout(layout)
 
     def connectMainOutputs(self, function):
-        self.btnProjectors.clicked.connect(function)
+        self.btnMonitor1.clicked.connect(function)
         self.btnChurch.clicked.connect(function)
         self.btnSpecial.clicked.connect(function)
         self.btnGallery.clicked.connect(function)
