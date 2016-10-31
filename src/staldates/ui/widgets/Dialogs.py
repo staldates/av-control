@@ -1,3 +1,4 @@
+from Pyro4.errors import PyroError
 from PySide.QtGui import QDialog, QGridLayout, QLabel, QMessageBox, QMovie
 from PySide.QtCore import Qt
 from staldates.ui.widgets.Buttons import ExpandingButton
@@ -45,3 +46,14 @@ def errorBox(text):
     msgBox.setText('<span style="color: white;">' + text + '</span>')
     msgBox.setIcon(QMessageBox.Critical)
     msgBox.exec_()
+
+
+def handlePyroErrors(extraMessage=''):
+    def decorator(func):
+        def innerFunc(*args, **kwargs):
+            try:
+                func(*args, **kwargs)
+            except PyroError as e:
+                errorBox("{} {}\n({})".format(extraMessage, e, e.__class__.__name__).strip())
+        return innerFunc
+    return decorator

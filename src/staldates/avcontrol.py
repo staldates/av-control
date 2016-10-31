@@ -6,13 +6,13 @@ import sys
 
 from avx.Client import Client
 from avx.controller.Controller import Controller, VersionMismatchError
-from Pyro4.errors import NamingError, CommunicationError
 from PySide.QtCore import Qt, QFile, QObject, QCoreApplication, QEvent
 from PySide.QtGui import QApplication
 from staldates.ui import resources  # @UnusedImport  # Initialises the Qt resources
 from staldates.ui.MainWindow import MainWindow
 from staldates.ui.StringConstants import StringConstants
 from staldates.ui.widgets import Dialogs
+from staldates.ui.widgets.Dialogs import handlePyroErrors
 
 
 class AvControlClient(Client):
@@ -67,6 +67,7 @@ def invoke_in_main_thread(fn, *args, **kwargs):
                                InvokeEvent(fn, *args, **kwargs))
 
 
+@handlePyroErrors("Cannot start application due to a network error -")
 def main():
     pid_file = 'av-control.pid'
     fp = open(pid_file, 'w')
@@ -120,8 +121,6 @@ def main():
             myapp.show()
         sys.exit(app.exec_())
 
-    except (NamingError, CommunicationError) as e:
-        Dialogs.errorBox("Unable to connect to controller. Please check network connections and try again. (Error details: " + str(e) + ")")
     except VersionMismatchError as e:
         Dialogs.errorBox(str(e))
 
