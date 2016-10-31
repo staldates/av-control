@@ -1,9 +1,8 @@
-from PySide.QtGui import QButtonGroup, QGridLayout, QLabel, QWidget, QIcon, QMessageBox, QSizePolicy
+from PySide.QtGui import QButtonGroup, QGridLayout, QLabel, QWidget, QIcon, QSizePolicy
 from PySide.QtCore import QSize, Qt
 from staldates.ui.widgets.Buttons import ExpandingButton, OptionButton
-from Pyro4.errors import NamingError, ProtocolError
-from staldates.ui.StringConstants import StringConstants
 from staldates.ui.widgets.Screens import ScreenWithBackButton
+from staldates.ui.widgets.Dialogs import handlePyroErrors
 
 
 class CameraButton(ExpandingButton):
@@ -64,6 +63,10 @@ class PlusMinusAutoButtons(PlusMinusButtons):
         layout.setRowStretch(3, 2)
 
 
+def _safelyConnect(signal, slot):
+    signal.connect(handlePyroErrors(slot))
+
+
 class CameraControl(QWidget):
     '''
     GUI to control a camera.
@@ -80,59 +83,59 @@ class CameraControl(QWidget):
 
         self.btnUp = CameraButton()
         layout.addWidget(self.btnUp, 0, 1, 2, 1)
-        self.btnUp.pressed.connect(self.camera.moveUp)
-        self.btnUp.released.connect(self.camera.stop)
-        self.btnUp.clicked.connect(self.deselectPreset)
+        _safelyConnect(self.btnUp.pressed, self.camera.moveUp)
+        _safelyConnect(self.btnUp.released, self.camera.stop)
+        _safelyConnect(self.btnUp.clicked, self.deselectPreset)
         self.btnUp.setIcon(QIcon(":icons/go-up"))
 
         self.btnLeft = CameraButton()
         layout.addWidget(self.btnLeft, 1, 0, 2, 1)
-        self.btnLeft.pressed.connect(self.camera.moveLeft)
-        self.btnLeft.released.connect(self.camera.stop)
-        self.btnLeft.clicked.connect(self.deselectPreset)
+        _safelyConnect(self.btnLeft.pressed, self.camera.moveLeft)
+        _safelyConnect(self.btnLeft.released, self.camera.stop)
+        _safelyConnect(self.btnLeft.clicked, self.deselectPreset)
         self.btnLeft.setIcon(QIcon(":icons/go-previous"))
 
         self.btnDown = CameraButton()
         layout.addWidget(self.btnDown, 2, 1, 2, 1)
-        self.btnDown.pressed.connect(self.camera.moveDown)
-        self.btnDown.released.connect(self.camera.stop)
-        self.btnDown.clicked.connect(self.deselectPreset)
+        _safelyConnect(self.btnDown.pressed, self.camera.moveDown)
+        _safelyConnect(self.btnDown.released, self.camera.stop)
+        _safelyConnect(self.btnDown.clicked, self.deselectPreset)
         self.btnDown.setIcon(QIcon(":icons/go-down"))
 
         self.btnRight = CameraButton()
         layout.addWidget(self.btnRight, 1, 2, 2, 1)
-        self.btnRight.pressed.connect(self.camera.moveRight)
-        self.btnRight.released.connect(self.camera.stop)
-        self.btnRight.clicked.connect(self.deselectPreset)
+        _safelyConnect(self.btnRight.pressed, self.camera.moveRight)
+        _safelyConnect(self.btnRight.released, self.camera.stop)
+        _safelyConnect(self.btnRight.clicked, self.deselectPreset)
         self.btnRight.setIcon(QIcon(":icons/go-next"))
 
         zoomInOut = PlusMinusButtons("Zoom")
-        zoomInOut.upButton.pressed.connect(self.camera.zoomIn)
-        zoomInOut.upButton.released.connect(self.camera.zoomStop)
-        zoomInOut.upButton.clicked.connect(self.deselectPreset)
-        zoomInOut.downButton.pressed.connect(self.camera.zoomOut)
-        zoomInOut.downButton.released.connect(self.camera.zoomStop)
-        zoomInOut.downButton.clicked.connect(self.deselectPreset)
+        _safelyConnect(zoomInOut.upButton.pressed, self.camera.zoomIn)
+        _safelyConnect(zoomInOut.upButton.released, self.camera.zoomStop)
+        _safelyConnect(zoomInOut.upButton.clicked, self.deselectPreset)
+        _safelyConnect(zoomInOut.downButton.pressed, self.camera.zoomOut)
+        _safelyConnect(zoomInOut.downButton.released, self.camera.zoomStop)
+        _safelyConnect(zoomInOut.downButton.clicked, self.deselectPreset)
 
         layout.addWidget(zoomInOut, 0, 3, 4, 1)
 
         focus = PlusMinusAutoButtons("Focus")
-        focus.upButton.pressed.connect(self.camera.focusFar)
-        focus.upButton.released.connect(self.camera.focusStop)
-        focus.upButton.clicked.connect(self.deselectPreset)
-        focus.downButton.pressed.connect(self.camera.focusNear)
-        focus.downButton.released.connect(self.camera.focusStop)
-        focus.downButton.clicked.connect(self.deselectPreset)
+        _safelyConnect(focus.upButton.pressed, self.camera.focusFar)
+        _safelyConnect(focus.upButton.released, self.camera.focusStop)
+        _safelyConnect(focus.upButton.clicked, self.deselectPreset)
+        _safelyConnect(focus.downButton.pressed, self.camera.focusNear)
+        _safelyConnect(focus.downButton.released, self.camera.focusStop)
+        _safelyConnect(focus.downButton.clicked, self.deselectPreset)
 
         def autoFocusAndDeselect():
             self.camera.focusAuto()
             self.deselectPreset()
-        focus.autoButton.clicked.connect(autoFocusAndDeselect)
+        _safelyConnect(focus.autoButton.clicked, autoFocusAndDeselect)
         layout.addWidget(focus, 0, 4, 4, 1)
 
         brightness = PlusMinusButtons("EV Comp")
-        brightness.upButton.clicked.connect(self.camera.backlightCompOn)
-        brightness.downButton.clicked.connect(self.camera.backlightCompOff)
+        _safelyConnect(brightness.upButton.clicked, self.camera.backlightCompOn)
+        _safelyConnect(brightness.downButton.clicked, self.camera.backlightCompOff)
         layout.addWidget(brightness, 0, 5, 4, 1)
 
         presets = QGridLayout()
@@ -145,14 +148,14 @@ class CameraControl(QWidget):
             btnPresetRecall = CameraButton()
             presets.addWidget(btnPresetRecall, 0, i, 1, 1)
             btnPresetRecall.setText(str(i + 1))
-            btnPresetRecall.clicked.connect(lambda i=i: self.recallPreset(i))
+            _safelyConnect(btnPresetRecall.clicked, lambda i=i: self.recallPreset(i))
             btnPresetRecall.setCheckable(True)
             self.presetGroup.addButton(btnPresetRecall, i)
 
             btnPresetSet = CameraButton()
             presets.addWidget(btnPresetSet, 1, i, 1, 1)
             btnPresetSet.setText("Set")
-            btnPresetSet.clicked.connect(lambda i=i: self.storePreset(i))
+            _safelyConnect(btnPresetSet.clicked, lambda i=i: self.storePreset(i))
 
         layout.addLayout(presets, 4, 0, 3, 6)
 
@@ -176,25 +179,17 @@ class CameraControl(QWidget):
         elif e.key() == Qt.Key_Down:
             self.btnDown.released.emit()
 
+    @handlePyroErrors
     def storePreset(self, index):
-        try:
-            print "Storing preset " + str(index)
-            result = self.camera.storePreset(index)
-            self.presetGroup.buttons()[index].setChecked(True)
-            return result
-        except NamingError:
-            self.errorBox(StringConstants.nameErrorText)
-        except ProtocolError:
-            self.errorBox(StringConstants.protocolErrorText)
+        print "Storing preset " + str(index)
+        result = self.camera.storePreset(index)
+        self.presetGroup.buttons()[index].setChecked(True)
+        return result
 
+    @handlePyroErrors
     def recallPreset(self, index):
-        try:
-            print "Recalling preset " + str(index)
-            return self.camera.recallPreset(index)
-        except NamingError:
-            self.errorBox(StringConstants.nameErrorText)
-        except ProtocolError:
-            self.errorBox(StringConstants.protocolErrorText)
+        print "Recalling preset " + str(index)
+        return self.camera.recallPreset(index)
 
     def deselectPreset(self):
         # Yuck.
@@ -202,12 +197,6 @@ class CameraControl(QWidget):
         while (self.presetGroup.checkedId() >= 0):
             self.presetGroup.checkedButton().setChecked(False)
         self.presetGroup.setExclusive(True)
-
-    def errorBox(self, text):
-        msgBox = QMessageBox()
-        msgBox.setText(text)
-        msgBox.setIcon(QMessageBox.Critical)
-        msgBox.exec_()
 
 
 class AdvancedCameraControl(ScreenWithBackButton):
@@ -244,27 +233,27 @@ class AdvancedCameraControl(ScreenWithBackButton):
 
         btnAuto = OptionButton()
         btnAuto.setText("Auto")
-        btnAuto.clicked.connect(self.camera.whiteBalanceAuto)
+        _safelyConnect(btnAuto.clicked, self.camera.whiteBalanceAuto)
         whiteBalanceGrid.addWidget(btnAuto, 1, 0)
 
         btnIndoor = OptionButton()
         btnIndoor.setText("Indoor")
-        btnIndoor.clicked.connect(self.camera.whiteBalanceIndoor)
+        _safelyConnect(btnIndoor.clicked, self.camera.whiteBalanceIndoor)
         whiteBalanceGrid.addWidget(btnIndoor, 2, 0)
 
         btnOutdoor = OptionButton()
         btnOutdoor.setText("Outdoor")
-        btnOutdoor.clicked.connect(self.camera.whiteBalanceOutdoor)
+        _safelyConnect(btnOutdoor.clicked, self.camera.whiteBalanceOutdoor)
         whiteBalanceGrid.addWidget(btnOutdoor, 3, 0)
 
         btnOnePush = OptionButton()
         btnOnePush.setText("One Push")
-        btnOnePush.clicked.connect(self.camera.whiteBalanceOnePush)
+        _safelyConnect(btnOnePush.clicked, self.camera.whiteBalanceOnePush)
         whiteBalanceGrid.addWidget(btnOnePush, 4, 0)
 
         btnOnePushTrigger = ExpandingButton()
         btnOnePushTrigger.setText("Set")
-        btnOnePushTrigger.clicked.connect(self.camera.whiteBalanceOnePushTrigger)
+        _safelyConnect(btnOnePushTrigger.clicked, self.camera.whiteBalanceOnePushTrigger)
         btnOnePushTrigger.setEnabled(False)
         whiteBalanceGrid.addWidget(btnOnePushTrigger, 4, 1)
 
@@ -279,6 +268,7 @@ class AdvancedCameraControl(ScreenWithBackButton):
 
         return layout
 
+    @handlePyroErrors
     def displayPosition(self):
         pos = self.camera.getPosition()
 
