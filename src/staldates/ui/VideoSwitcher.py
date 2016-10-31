@@ -204,6 +204,7 @@ class VideoSwitcher(QWidget):
     @Slot(VisualsSystem.Input)
     def handleExtrasSelect(self, extrasInput):
         self.btnExtras.setText(extrasInput.name)
+        self.outputsGrid.inputNames[5] = extrasInput.name
 
     def showAdvPanel(self):
         sender = self.sender()
@@ -212,4 +213,5 @@ class VideoSwitcher(QWidget):
             self.mainWindow.showScreen(self.advPanels[inputID])
 
     def updateOutputMappings(self, mapping):
+        print mapping
         self.outputsGrid.updateOutputMappings(mapping)

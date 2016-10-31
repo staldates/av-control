@@ -67,6 +67,8 @@ class TestVideoSwitcher(GuiTest):
         outputsGrid.btnAll.click()  # This one click should trigger two takes, one on each switcher
         self.extras.sendInputToOutput.assert_called_with(8, 1)
         self.main.sendInputToOutput.assert_called_with(5, 0)  # Extras to everywhere
+        outputsGrid.updateOutputMappings({'Main': {0: 5}})
+        self.assertEqual("PC video", outputsGrid.btnMonitor1.inputDisplay.text())
         outputsGrid.btnPCMix.click()
         self.extras.sendInputToOutput.assert_called_with(8, 2)
         self.preview.sendInputToOutput.assert_called_with(6, 2)  # Extras to PC Mix
