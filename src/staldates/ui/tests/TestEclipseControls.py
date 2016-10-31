@@ -7,14 +7,12 @@ from avx.devices.Device import Device
 from mock import MagicMock
 from staldates.ui.EclipseControls import EclipseControls
 from staldates.ui.tests.GuiTest import GuiTest
-from staldates.ui.tests.TestUtils import MockController
 
 
 class TestEclipseControls(GuiTest):
 
     def setUp(self):
         GuiTest.setUp(self)
-        self.mockController = MockController()
 
         self.conv = Device("Test Scan Converter")
         self.conv.fadeIn = MagicMock(return_value=1)
@@ -25,11 +23,10 @@ class TestEclipseControls(GuiTest):
         self.conv.overscanOff = MagicMock(return_value=1)
         self.conv.freeze = MagicMock(return_value=1)
         self.conv.unfreeze = MagicMock(return_value=1)
-        self.mockController.addDevice(self.conv)
 
     def testControls(self):
 
-        ec = EclipseControls(self.mockController, "Test Scan Converter")
+        ec = EclipseControls(self.conv)
         self.findButton(ec, "Overscan").click()
         self.conv.overscanOff.assert_called_once_with()
         self.findButton(ec, "Overscan").click()

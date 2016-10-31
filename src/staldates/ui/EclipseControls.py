@@ -5,12 +5,11 @@ from staldates.ui.widgets.ScanConverterControls import EclipseWidget
 
 class EclipseControls(QWidget):
 
-    def __init__(self, controller, deviceID):
+    def __init__(self, device):
         super(EclipseControls, self).__init__()
-        self.deviceID = deviceID
+        self.device = device
 
-        if controller.hasDevice(deviceID):
-            self.device = controller[deviceID]
+        if device:
             layout = QVBoxLayout(self)
             eclipse = EclipseWidget()
             layout.addWidget(eclipse)

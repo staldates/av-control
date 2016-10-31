@@ -104,7 +104,7 @@ class VideoSwitcher(QWidget):
             CameraControl(self.controller["Camera 3"]) if self.controller.hasDevice("Camera 3") else QLabel(StringConstants.noDevice),
             QLabel(StringConstants.noDevice),  # DVD - no controls
             self.extrasSwitcher if self.controller.hasDevice("Extras") else QLabel(StringConstants.noDevice),  # Extras
-            EclipseControls(self.controller, "Main Scan Converter") if self.controller.hasDevice("Main Scan Converter") else QLabel(StringConstants.noDevice),  # Visuals PC
+            EclipseControls(self.controller["Main Scan Converter"]) if self.controller.hasDevice("Main Scan Converter") else QLabel(StringConstants.noDevice),  # Visuals PC
         ]
         self.advPanels = [
             None,
