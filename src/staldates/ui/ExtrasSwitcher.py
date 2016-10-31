@@ -3,12 +3,10 @@ Created on 10 Nov 2012
 
 @author: james
 '''
-from staldates.ui.StringConstants import StringConstants
-from Pyro4.errors import ProtocolError, NamingError
-from PySide.QtGui import QWidget, QGridLayout, QHBoxLayout, QButtonGroup, QPixmap, QLabel, QMessageBox,\
-    QSizePolicy
+from PySide.QtGui import QWidget, QGridLayout, QHBoxLayout, QButtonGroup, QPixmap, QLabel, QSizePolicy
 from PySide.QtCore import Signal
 from staldates.ui.widgets.Buttons import InputButton
+from staldates.ui.widgets.Dialogs import handlePyroErrors
 from staldates.ui.widgets.ScanConverterControls import OverscanFreezeWidget
 from staldates import VisualsSystem
 
@@ -68,14 +66,18 @@ class ExtrasSwitcher(QWidget):
 
         self.inputs = inputs
 
+        self._maybeAddScanConverterControls(layout)
+
+        self.noInputWarning = NoInputSelectedWarning(self)
+        layout.addWidget(self.noInputWarning, 1, 0, 1, 4)
+
+    @handlePyroErrors
+    def _maybeAddScanConverterControls(self, layout):
         if self.controller.hasDevice("Extras Scan Converter"):
             scControl = OverscanFreezeWidget()
             layout.addWidget(scControl, 1, 4)
             scControl.btnOverscan.toggled.connect(self.toggleOverscan)
             scControl.btnFreeze.toggled.connect(self.toggleFreeze)
-
-        self.noInputWarning = NoInputSelectedWarning(self)
-        layout.addWidget(self.noInputWarning, 1, 0, 1, 4)
 
     def currentInput(self):
         button = self.inputs.checkedButton()
@@ -92,33 +94,19 @@ class ExtrasSwitcher(QWidget):
         else:
             self.noInputWarning.setVisible(True)
 
+    @handlePyroErrors
     def toggleOverscan(self):
-        try:
-            if self.sender().isChecked():
-                self.controller["Extras Scan Converter"].overscanOn()
-            else:
-                self.controller["Extras Scan Converter"].overscanOff()
-        except NamingError:
-            self.errorBox(StringConstants.nameErrorText)
-        except ProtocolError:
-            self.errorBox(StringConstants.protocolErrorText)
+        if self.sender().isChecked():
+            self.controller["Extras Scan Converter"].overscanOn()
+        else:
+            self.controller["Extras Scan Converter"].overscanOff()
 
+    @handlePyroErrors
     def toggleFreeze(self):
-        try:
-            if self.sender().isChecked():
-                self.controller["Extras Scan Converter"].freeze()
-            else:
-                self.controller["Extras Scan Converter"].unfreeze()
-        except NamingError:
-            self.errorBox(StringConstants.nameErrorText)
-        except ProtocolError:
-            self.errorBox(StringConstants.protocolErrorText)
-
-    def errorBox(self, text):
-        msgBox = QMessageBox()
-        msgBox.setText(text)
-        msgBox.setIcon(QMessageBox.Critical)
-        msgBox.exec_()
+        if self.sender().isChecked():
+            self.controller["Extras Scan Converter"].freeze()
+        else:
+            self.controller["Extras Scan Converter"].unfreeze()
 
 
 class NoInputSelectedWarning(QWidget):

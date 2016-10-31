@@ -7,6 +7,7 @@ from Pyro4.errors import ProtocolError, NamingError
 from staldates.ui.EclipseControls import EclipseControls
 import logging
 from staldates.ui.StringConstants import StringConstants
+from staldates.ui.widgets.Dialogs import handlePyroErrors
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
 from staldates import VisualsSystem
 from staldates.VisualsSystem import ProxyInput
@@ -154,14 +155,9 @@ class VideoSwitcher(QWidget):
         inputID = self.inputs.checkedId()
         logging.debug("Input selected: " + str(inputID))
         if inputID >= 0:
-            try:
-                myInput = self.inputs.checkedButton().input
-                if myInput:
-                    myInput.preview(self.controller)
-            except NamingError:
-                self.mainWindow.errorBox(StringConstants.nameErrorText)
-            except ProtocolError:
-                self.mainWindow.errorBox(StringConstants.protocolErrorText)
+            myInput = self.inputs.checkedButton().input
+            if myInput:
+                myInput.preview(self.controller)
         self.gridlayout.removeWidget(self.gridlayout.itemAtPosition(1, 0).widget())
         for p in self.panels:
             p.hide()

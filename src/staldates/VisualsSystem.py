@@ -1,3 +1,5 @@
+from staldates.ui.widgets.Dialogs import handlePyroErrors
+
 EXTRAS_INPUT_FROM_MAIN = 7
 EXTRAS_OUTPUT_TO_PREVIEW = 3
 
@@ -22,10 +24,12 @@ class MainInput(Input):
     def __init__(self, sourceChannel):
         super(MainInput, self).__init__(sourceChannel)
 
+    @handlePyroErrors
     def preview(self, controller):
         controller["Main"].sendInputToOutput(self.sourceChannel, 1)
         controller["Extras"].sendInputToOutput(EXTRAS_INPUT_FROM_MAIN, EXTRAS_OUTPUT_TO_PREVIEW)
 
+    @handlePyroErrors
     def toPCMix(self, controller):
         # 5 and 6 are wired opposite ways around on preview and main switchers
         if self.sourceChannel == 5:
@@ -35,6 +39,7 @@ class MainInput(Input):
         else:
             controller["Preview"].sendInputToOutput(self.sourceChannel, 2)
 
+    @handlePyroErrors
     def toMain(self, controller, mainChannel):
         controller["Main"].sendInputToOutput(self.sourceChannel, mainChannel)
 
@@ -57,13 +62,16 @@ class ExtrasInput(Input):
         super(ExtrasInput, self).__init__(sourceChannel)
         self.name = name
 
+    @handlePyroErrors
     def preview(self, controller):
         controller["Extras"].sendInputToOutput(self.sourceChannel, EXTRAS_OUTPUT_TO_PREVIEW)
 
+    @handlePyroErrors
     def toPCMix(self, controller):
         controller["Extras"].sendInputToOutput(self.sourceChannel, 2)
         controller["Preview"].sendInputToOutput(6, 2)
 
+    @handlePyroErrors
     def toMain(self, controller, mainChannel):
         controller["Extras"].sendInputToOutput(self.sourceChannel, 1)
         controller["Main"].sendInputToOutput(5, mainChannel)
