@@ -2,6 +2,7 @@ import argparse
 import atexit
 import fcntl  # @UnresolvedImport
 import logging
+import Pyro4
 import sys
 
 from avx.Client import Client
@@ -13,6 +14,9 @@ from staldates.ui.MainWindow import MainWindow
 from staldates.ui.StringConstants import StringConstants
 from staldates.ui.widgets import Dialogs
 from staldates.ui.widgets.Dialogs import handlePyroErrors
+
+
+Pyro4.config.COMMTIMEOUT = 3  # seconds
 
 
 class AvControlClient(Client):

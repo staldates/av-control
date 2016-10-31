@@ -1,4 +1,4 @@
-from Pyro4.errors import PyroError
+from Pyro4.errors import PyroError, TimeoutError
 from PySide.QtGui import QDialog, QGridLayout, QLabel, QMessageBox, QMovie
 from PySide.QtCore import Qt
 from staldates.ui.widgets.Buttons import ExpandingButton
@@ -56,6 +56,8 @@ def handlePyroErrors(func=None, extraMessage=''):
     def innerFunc(*args, **kwargs):
         try:
             func(*args, **kwargs)
+        except TimeoutError as e:
+            errorBox("{} Communication with the controller timed out.\n({})".format(extraMessage, e.__class__.__name__).strip())
         except PyroError as e:
-            errorBox("{} {}\n({})".format(extraMessage, e, e.__class__.__name__).strip())
+            errorBox("{} {}\n({})".format(extraMessage, e.__class__.__name__).strip())
     return innerFunc
