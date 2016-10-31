@@ -3,11 +3,9 @@ from PySide.QtCore import QMetaObject, Qt, Slot
 from staldates.ui.widgets.Buttons import InputButton, CameraSelectionButton
 from staldates.ui.ExtrasSwitcher import ExtrasSwitcher
 from staldates.ui.CameraControls import CameraControl, AdvancedCameraControl
-from Pyro4.errors import ProtocolError, NamingError
 from staldates.ui.EclipseControls import EclipseControls
 import logging
 from staldates.ui.StringConstants import StringConstants
-from staldates.ui.widgets.Dialogs import handlePyroErrors
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
 from staldates import VisualsSystem
 from staldates.VisualsSystem import ProxyInput
@@ -182,24 +180,14 @@ class VideoSwitcher(QWidget):
         checkedExtrasButton = self.extrasSwitcher.inputs.checkedButton()
         inputChannel = checkedExtrasButton.input if (inputID == 5 and checkedExtrasButton) else self.inputs.checkedButton().input
         if inputChannel:
-            try:
-                inputChannel.toMain(self.controller, outputChannel)
-            except NamingError:
-                self.mainWindow.errorBox(StringConstants.nameErrorText)
-            except ProtocolError:
-                self.mainWindow.errorBox(StringConstants.protocolErrorText)
+            inputChannel.toMain(self.controller, outputChannel)
 
     def handlePCMixSelect(self):
         inputID = self.inputs.checkedId()
         checkedExtrasButton = self.extrasSwitcher.inputs.checkedButton()
         inputChannel = checkedExtrasButton.input if (inputID == 5 and checkedExtrasButton) else self.inputs.checkedButton().input
         if inputChannel:
-            try:
-                inputChannel.toPCMix(self.controller)
-            except NamingError:
-                self.mainWindow.errorBox(StringConstants.nameErrorText)
-            except ProtocolError:
-                self.mainWindow.errorBox(StringConstants.protocolErrorText)
+            inputChannel.toPCMix(self.controller)
 
     @Slot(VisualsSystem.Input)
     def handleExtrasSelect(self, extrasInput):
