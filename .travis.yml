@@ -15,6 +15,7 @@ install:
   - pip install PySide --no-index --find-links https://parkin.github.io/python-wheelhouse/
   - python ~/virtualenv/python${TRAVIS_PYTHON_VERSION}/bin/pyside_postinstall.py -install
   - pip install pep8 coveralls
+  - pip install --upgrade setuptools
 script:
   - pep8 --ignore=E501 src
   - ./compileResources.sh
