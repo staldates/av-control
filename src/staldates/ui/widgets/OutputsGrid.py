@@ -40,20 +40,29 @@ class OutputsGrid(QFrame):
         self.btnGallery = OutputButton(ID=6)
         self.btnGallery.setText("Gallery")
         layout.addWidget(self.btnGallery, 2, 0)
+        self.btnWelcome = OutputButton(ID=5)
+        self.btnWelcome.setText("Welcome")
+        layout.addWidget(self.btnWelcome, 2, 1)
+
+        self.btnFont = OutputButton(ID=3)
+        self.btnFont.setText("Font")
+        layout.addWidget(self.btnFont, 3, 0)
         self.btnRecord = OutputButton(ID=8)
         self.btnRecord.setText("Record")
-        layout.addWidget(self.btnRecord, 2, 1)
+        layout.addWidget(self.btnRecord, 3, 1)
 
         self.btnPCMix = OutputButton(ID=2)
         self.btnPCMix.setText("PC Mix")
-        layout.addWidget(self.btnPCMix, 3, 0)
+        layout.addWidget(self.btnPCMix, 4, 0)
         self.btnAll = IDedButton(ID=0)
         self.btnAll.setText("All")
-        layout.addWidget(self.btnAll, 3, 1)
+        layout.addWidget(self.btnAll, 4, 1)
 
         self.outputButtons = {
             2: self.btnMonitor1,
+            3: self.btnFont,
             4: self.btnChurch,
+            5: self.btnWelcome,
             6: self.btnGallery,
             7: self.btnSpecial,
             8: self.btnRecord
@@ -71,6 +80,8 @@ class OutputsGrid(QFrame):
         self.btnChurch.clicked.connect(function)
         self.btnSpecial.clicked.connect(function)
         self.btnGallery.clicked.connect(function)
+        self.btnWelcome.clicked.connect(function)
+        self.btnFont.clicked.connect(function)
         self.btnRecord.clicked.connect(function)
         self.btnAll.clicked.connect(function)
 
