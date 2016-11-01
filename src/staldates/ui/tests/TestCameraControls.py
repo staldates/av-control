@@ -3,8 +3,8 @@ Created on 15 Apr 2013
 
 @author: jrem
 '''
-from avx.CameraPosition import CameraPosition
 from avx.devices.Device import Device
+from avx.devices.VISCACamera import Shutter, Aperture, Gain
 from mock import MagicMock
 from PySide.QtCore import Qt
 from PySide.QtTest import QTest
@@ -42,6 +42,13 @@ class Test(GuiTest):
         self.cam.backlightCompOff = MagicMock(return_value=1)
         self.cam.storePreset = MagicMock(return_value=1)
         self.cam.recallPreset = MagicMock(return_value=1)
+        self.cam.setAutoExposure = MagicMock(return_value=1)
+        self.cam.setShutterPriority = MagicMock(return_value=1)
+        self.cam.setAperturePriority = MagicMock(return_value=1)
+        self.cam.setManualExposure = MagicMock(return_value=1)
+        self.cam.setShutter = MagicMock(return_value=1)
+        self.cam.setAperture = MagicMock(return_value=1)
+        self.cam.setGain = MagicMock(return_value=1)
 
         self.cc = CameraControl(self.cam)
 
@@ -118,16 +125,6 @@ class Test(GuiTest):
 
 # Tests for advanced camera controls
 
-    def testGetCameraPosition(self):
-        fakePosition = CameraPosition(111, 222, 333)
-        self.cam.getPosition = MagicMock(return_value=fakePosition)
-        self.acc = AdvancedCameraControl("Test", self.cam, self.mockMainWindow)
-        self.findButton(self.acc, "Get Position").click()
-        self.cam.getPosition.assert_called_once_with()
-        self.assertEqual("111", self.acc.posDisplay.itemAtPosition(0, 1).widget().text())
-        self.assertEqual("222", self.acc.posDisplay.itemAtPosition(1, 1).widget().text())
-        self.assertEqual("333", self.acc.posDisplay.itemAtPosition(2, 1).widget().text())
-
     def testChangeWhiteBalance(self):
         self.acc = AdvancedCameraControl("Test", self.cam, self.mockMainWindow)
         self.assertFalse(self.findButton(self.acc, "Set").isEnabled())
@@ -150,3 +147,32 @@ class Test(GuiTest):
 
         self.findButton(self.acc, "Set").click()
         self.cam.whiteBalanceOnePushTrigger.assert_called_once_with()
+
+    def testExposureControls(self):
+        self.acc = AdvancedCameraControl("Test", self.cam, self.mockMainWindow)
+
+        ecs = self.acc.exposureControls
+
+        self.assertTrue(self.findButton(self.acc, "Full Auto").isEnabled())
+        self.assertFalse(ecs.aperture.isEnabled())
+        self.assertFalse(ecs.shutter.isEnabled())
+        self.assertFalse(ecs.gain.isEnabled())
+
+        self.findButton(self.acc, "Tv").click()
+        self.assertTrue(ecs.shutter.isEnabled())
+        self.cam.setShutterPriority.assert_called_once_with()
+        ecs.shutter.setCurrentIndex(1)
+        self.cam.setShutter.assert_called_once_with(Shutter.T60)
+
+        self.findButton(self.acc, "Av").click()
+        self.assertFalse(ecs.shutter.isEnabled())
+        self.assertTrue(ecs.aperture.isEnabled())
+        self.cam.setAperturePriority.assert_called_once_with()
+        ecs.aperture.setCurrentIndex(4)
+        self.cam.setAperture.assert_called_once_with(Aperture.F16)
+
+        self.findButton(self.acc, "M").click()
+        self.assertTrue(ecs.gain.isEnabled())
+        self.cam.setManualExposure.assert_called_once_with()
+        ecs.gain.setCurrentIndex(6)
+        self.cam.setGain.assert_called_once_with(Gain.G_15)
