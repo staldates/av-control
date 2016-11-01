@@ -11,10 +11,11 @@ OutputsGrid {
   background-color: #00527E;
 }
 
-InputButton, OutputButton, OptionButton, ExpandingButton {
+InputButton, OutputButton, OptionButton, ExpandingButton, QComboBox, QAbstractItemView {
   background-color: #1693A5;
   color: white;
   border-radius: 5px;
+  selection-background-color: #003E5F;
 }
 
 ExpandingButton:pressed, ExpandingButton:checked {
@@ -22,7 +23,7 @@ ExpandingButton:pressed, ExpandingButton:checked {
   color: black;
 }
 
-InputButton:disabled, OutputButton:disabled, OptionButton:disabled, ExpandingButton:disabled {
+InputButton:disabled, OutputButton:disabled, OptionButton:disabled, ExpandingButton:disabled, QComboBox:disabled {
   background-color: #9FA5A5;
 }
 
@@ -49,4 +50,13 @@ QTableWidget {
 
 QScrollBar:vertical {
   width: 32px;
+}
+
+QComboBox {
+  padding: 5px;
+}
+
+QComboBox::drop-down {
+  border: 0;
+
 }
