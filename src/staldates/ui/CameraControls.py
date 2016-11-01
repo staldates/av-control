@@ -1,4 +1,5 @@
-from PySide.QtGui import QButtonGroup, QGridLayout, QLabel, QWidget, QIcon, QSizePolicy
+from enum import Enum
+from PySide.QtGui import QButtonGroup, QGridLayout, QLabel, QWidget, QIcon, QHBoxLayout
 from PySide.QtCore import QSize, Qt
 from staldates.ui.widgets.Buttons import ExpandingButton, OptionButton
 from staldates.ui.widgets.Screens import ScreenWithBackButton
@@ -199,6 +200,70 @@ class CameraControl(QWidget):
         self.presetGroup.setExclusive(True)
 
 
+class ExposureControl(QWidget):
+
+    class Mode(Enum):
+        AUTO = 1
+        TV = 2
+        AV = 4
+        MANUAL = 8
+
+    def __init__(self, camera):
+        super(ExposureControl, self).__init__()
+        self.camera = camera
+        self.initUI()
+
+    def initUI(self):
+        layout = QGridLayout()
+
+        title = QLabel("Exposure")
+        title.setAlignment(Qt.AlignCenter)
+        layout.addWidget(title, 0, 0, 1, 4)
+
+        btnAuto = OptionButton()
+        btnAuto.setText("Full Auto")
+        _safelyConnect(btnAuto.clicked, self.camera.setAutoExposure)
+        btnAuto.setChecked(True)
+
+        layout.addWidget(btnAuto, 2, 0)
+
+        btnTV = OptionButton()
+        btnTV.setText("Tv")
+        # _safelyConnect(btnTV.clicked, self.camera.setShutterPriority)
+
+        layout.addWidget(btnTV, 2, 1)
+
+        btnAV = OptionButton()
+        btnAV.setText("Av")
+        _safelyConnect(btnAV.clicked, self.camera.setAperturePriority)
+
+        layout.addWidget(btnAV, 2, 2)
+
+        btnManual = OptionButton()
+        btnManual.setText("M")
+        # _safelyConnect(btnManual.clicked, self.camera.setManualExposure)
+
+        layout.addWidget(btnManual, 2, 3)
+
+        layout.addWidget(QLabel("Aperture"), 3, 0)
+
+        layout.addWidget(QLabel("Time"), 4, 0)
+        layout.addWidget(QLabel("Gain"), 5, 0)
+
+        self.exposureButtons = QButtonGroup()
+        self.exposureButtons.addButton(btnAuto, self.Mode.AUTO.value)
+        self.exposureButtons.addButton(btnTV, self.Mode.TV.value)
+        self.exposureButtons.addButton(btnAV, self.Mode.AV.value)
+        self.exposureButtons.addButton(btnManual, self.Mode.MANUAL.value)
+
+        self.exposureButtons.buttonClicked.connect(self.onExposureSelected)
+
+        self.setLayout(layout)
+
+    def onExposureSelected(self):
+        print self.exposureButtons.checkedId()
+
+
 class AdvancedCameraControl(ScreenWithBackButton):
 
     def __init__(self, title, camera, mainScreen):
@@ -206,25 +271,10 @@ class AdvancedCameraControl(ScreenWithBackButton):
         super(AdvancedCameraControl, self).__init__(title, mainScreen)
 
     def makeContent(self):
-        layout = QGridLayout()
+        layout = QHBoxLayout()
 
-        self.posDisplay = QGridLayout()
-
-        self.posDisplay.addWidget(QLabel("Pan:"), 0, 0)
-        self.posDisplay.addWidget(QLabel("Tilt:"), 1, 0)
-        self.posDisplay.addWidget(QLabel("Zoom:"), 2, 0)
-
-        self.posDisplay.addWidget(QLabel(), 0, 1)
-        self.posDisplay.addWidget(QLabel(), 1, 1)
-        self.posDisplay.addWidget(QLabel(), 2, 1)
-
-        layout.addLayout(self.posDisplay, 1, 0)
-
-        btnGetPos = ExpandingButton()
-        btnGetPos.setText("Get Position")
-        btnGetPos.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-        layout.addWidget(btnGetPos, 2, 0)
-        btnGetPos.clicked.connect(self.displayPosition)
+        exposure = ExposureControl(self.camera)
+        layout.addWidget(exposure)
 
         whiteBalanceGrid = QGridLayout()
         wbTitle = QLabel("White Balance")
@@ -264,14 +314,6 @@ class AdvancedCameraControl(ScreenWithBackButton):
         self.wbOpts.addButton(btnOnePush, 4)
         self.wbOpts.buttonClicked.connect(lambda: btnOnePushTrigger.setEnabled(self.wbOpts.checkedId() == 4))
 
-        layout.addLayout(whiteBalanceGrid, 1, 1, 2, 1)
+        layout.addLayout(whiteBalanceGrid)
 
         return layout
-
-    @handlePyroErrors
-    def displayPosition(self):
-        pos = self.camera.getPosition()
-
-        self.posDisplay.itemAtPosition(0, 1).widget().setText(str(pos.pan))
-        self.posDisplay.itemAtPosition(1, 1).widget().setText(str(pos.tilt))
-        self.posDisplay.itemAtPosition(2, 1).widget().setText(str(pos.zoom))
