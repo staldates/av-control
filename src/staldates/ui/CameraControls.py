@@ -1,6 +1,7 @@
 from avx.devices.VISCACamera import Aperture, Shutter, Gain
 from enum import Enum
-from PySide.QtGui import QButtonGroup, QGridLayout, QLabel, QWidget, QIcon, QHBoxLayout, QComboBox
+from PySide.QtGui import QButtonGroup, QGridLayout, QLabel, QWidget, QIcon, QHBoxLayout, QComboBox,\
+    QSizePolicy
 from PySide.QtCore import QSize, Qt
 from staldates.ui.widgets.Buttons import ExpandingButton, OptionButton
 from staldates.ui.widgets.Screens import ScreenWithBackButton
@@ -229,55 +230,58 @@ class ExposureControl(QWidget):
         _safelyConnect(btnAuto.clicked, self.camera.setAutoExposure)
         btnAuto.setChecked(True)
 
-        layout.addWidget(btnAuto, 2, 0)
+        layout.addWidget(btnAuto, 1, 0)
 
         btnTV = OptionButton()
         btnTV.setText("Tv")
         _safelyConnect(btnTV.clicked, self.camera.setShutterPriority)
 
-        layout.addWidget(btnTV, 2, 1)
+        layout.addWidget(btnTV, 1, 1)
 
         btnAV = OptionButton()
         btnAV.setText("Av")
         _safelyConnect(btnAV.clicked, self.camera.setAperturePriority)
 
-        layout.addWidget(btnAV, 2, 2)
+        layout.addWidget(btnAV, 1, 2)
 
         btnManual = OptionButton()
         btnManual.setText("M")
         _safelyConnect(btnManual.clicked, self.camera.setManualExposure)
 
-        layout.addWidget(btnManual, 2, 3)
+        layout.addWidget(btnManual, 1, 3)
 
-        layout.addWidget(QLabel("Aperture"), 3, 0)
+        layout.addWidget(QLabel("Aperture"), 2, 0)
 
         self.aperture = QComboBox(self)
         for a in list(Aperture):
             self.aperture.addItem(a.label, userData=a)
         self.aperture.currentIndexChanged.connect(self.setAperture)
+        self.aperture.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.aperture.setEnabled(False)
 
-        layout.addWidget(self.aperture, 3, 1, 1, 3)
+        layout.addWidget(self.aperture, 2, 1, 1, 3)
 
-        layout.addWidget(QLabel("Time"), 4, 0)
+        layout.addWidget(QLabel("Shutter"), 3, 0)
 
         self.shutter = QComboBox(self)
         for s in list(Shutter):
             self.shutter.addItem(s.label, userData=s)
         self.shutter.currentIndexChanged.connect(self.setShutter)
+        self.shutter.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.shutter.setEnabled(False)
 
-        layout.addWidget(self.shutter, 4, 1, 1, 3)
+        layout.addWidget(self.shutter, 3, 1, 1, 3)
 
-        layout.addWidget(QLabel("Gain"), 5, 0)
+        layout.addWidget(QLabel("Gain"), 4, 0)
 
         self.gain = QComboBox(self)
         for g in list(Gain):
             self.gain.addItem(g.label, userData=g)
         self.gain.currentIndexChanged.connect(self.setGain)
+        self.gain.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.gain.setEnabled(False)
 
-        layout.addWidget(self.gain, 5, 1, 1, 3)
+        layout.addWidget(self.gain, 4, 1, 1, 3)
 
         self.exposureButtons = QButtonGroup()
         self.exposureButtons.addButton(btnAuto, self.Mode.AUTO.value)
@@ -286,6 +290,12 @@ class ExposureControl(QWidget):
         self.exposureButtons.addButton(btnManual, self.Mode.MANUAL.value)
 
         self.exposureButtons.buttonClicked.connect(self.onExposureMethodSelected)
+
+        layout.setRowStretch(0, 0)
+        layout.setRowStretch(1, 1)
+        layout.setRowStretch(2, 1)
+        layout.setRowStretch(3, 1)
+        layout.setRowStretch(4, 1)
 
         self.setLayout(layout)
 
