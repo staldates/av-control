@@ -20,6 +20,7 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("av-control")
         self.resize(1024, 600)
+        self.setWindowIcon(QIcon(":icons/video-display"))
 
         self.mainScreen = VideoSwitcher(controller, self)
         self.stack = QStackedWidget()
