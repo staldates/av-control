@@ -1,4 +1,5 @@
-from PySide.QtGui import QGridLayout, QIcon, QMainWindow, QStackedWidget, QWidget
+from PySide.QtGui import QGridLayout, QIcon, QMainWindow, QStackedWidget, QWidget,\
+    QHBoxLayout
 from PySide.QtCore import Qt
 from staldates.ui.widgets.Buttons import ExpandingButton
 from staldates.ui.widgets.Clock import Clock
@@ -10,6 +11,7 @@ from staldates.ui.widgets.ProjectorScreensControl import ProjectorScreensControl
 from staldates.ui.widgets.AdvancedMenu import AdvancedMenu
 from staldates.ui.widgets import Dialogs
 from staldates.ui.widgets.LightingControl import LightingControl
+from staldates.ui.widgets.Status import SystemStatus
 
 
 class MainWindow(QMainWindow):
@@ -76,7 +78,10 @@ class MainWindow(QMainWindow):
         adv.clicked.connect(lambda: self.showScreen(self.advMenu))
         mainLayout.addWidget(adv, 1, 5)
 
-        mainLayout.addWidget(Clock(), 1, 6)
+        tray = QHBoxLayout()
+        tray.addWidget(Clock())
+        tray.addWidget(SystemStatus(controller))
+        mainLayout.addLayout(tray, 1, 6)
 
         mainLayout.setRowStretch(0, 8)
         mainLayout.setRowStretch(1, 0)

@@ -41,6 +41,14 @@ CameraButton:checked {
   background-color: #1693A5;
 }
 
+QPushButton:flat {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 32px;
+  min-height: 32px;
+}
+
 QMainWindow QLabel {
   color: white;
 }

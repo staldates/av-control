@@ -14,11 +14,14 @@
         <file alias="list-remove">resources/icons/list-remove.svg</file>
         <file alias="media-optical">resources/icons/media-optical.svg</file>
         <file alias="media-playback-pause">resources/icons/media-playback-pause.svg</file>
+        <file alias="network-offline">resources/icons/network-offline.svg</file>
         <file alias="preferences-desktop-screensaver">resources/icons/preferences-desktop-screensaver.svg</file>
         <file alias="preferences-system-windows">resources/icons/preferences-system-windows.svg</file>
         <file alias="process-stop">resources/icons/process-stop.svg</file>
         <file alias="screens">resources/icons/screens.svg</file>
         <file alias="spinner">resources/icons/spinner.gif</file>
+        <file alias="status-ok">resources/icons/status-ok.svg</file>
+        <file alias="status-unknown">resources/icons/status-unknown.svg</file>
         <file alias="system-shutdown">resources/icons/system-shutdown.svg</file>
         <file alias="video-display">resources/icons/video-display.svg</file>
         <file alias="view-fullscreen">resources/icons/view-fullscreen.svg</file>
