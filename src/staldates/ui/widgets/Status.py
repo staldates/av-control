@@ -50,7 +50,9 @@ class SystemStatus(QWidget):
         self.icon.setIcon(QPixmap(self.status.icon))
 
     def showStatusPopup(self):
-        msgBox = QMessageBox()
-        msgBox.setText('<span style="color: white;">' + self.status.message + '</span>')
-        msgBox.setIcon(self.status.boxIcon)
+        msgBox = QMessageBox(
+            self.status.boxIcon,
+            "System status",
+            '<span style="color: white;">' + self.status.message + '</span>'
+        )
         msgBox.exec_()
