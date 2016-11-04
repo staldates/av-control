@@ -32,6 +32,8 @@ class MainWindow(QMainWindow):
         mainLayout = QGridLayout()
         mainLayout.addWidget(self.stack, 0, 0, 1, 7)
 
+        column = 0
+
         self.spc = SystemPowerWidget(controller, self)
 
         syspower = ExpandingButton()
@@ -39,7 +41,8 @@ class MainWindow(QMainWindow):
         syspower.clicked.connect(self.showSystemPower)
         syspower.setIcon(QIcon(":icons/system-shutdown"))
         syspower.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        mainLayout.addWidget(syspower, 1, 0)
+        mainLayout.addWidget(syspower, 1, column)
+        column += 1
 
         self.bc = BlindsControl(controller["Blinds"], self)
 
@@ -48,7 +51,8 @@ class MainWindow(QMainWindow):
         blinds.clicked.connect(lambda: self.showScreen(self.bc))
         blinds.setIcon(QIcon(":icons/blinds"))
         blinds.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        mainLayout.addWidget(blinds, 1, 2)
+        mainLayout.addWidget(blinds, 1, column)
+        column += 1
 
         self.sc = ProjectorScreensControl(controller["Screens"], self)
 
@@ -57,7 +61,8 @@ class MainWindow(QMainWindow):
         screens.clicked.connect(lambda: self.showScreen(self.sc))
         screens.setIcon(QIcon(":icons/screens"))
         screens.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        mainLayout.addWidget(screens, 1, 3)
+        mainLayout.addWidget(screens, 1, column)
+        column += 1
 
         if controller.hasDevice("Lights"):
             self.lightsMenu = LightingControl(controller["Lights"], self)
@@ -67,7 +72,8 @@ class MainWindow(QMainWindow):
             lights.clicked.connect(lambda: self.showScreen(self.lightsMenu))
             lights.setIcon(QIcon(":icons/lightbulb_on"))
             lights.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-            mainLayout.addWidget(lights, 1, 4)
+            mainLayout.addWidget(lights, 1, column)
+            column += 1
 
         self.advMenu = AdvancedMenu(self.controller, self)
 
@@ -76,12 +82,16 @@ class MainWindow(QMainWindow):
         adv.setIcon(QIcon(":icons/applications-system"))
         adv.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         adv.clicked.connect(lambda: self.showScreen(self.advMenu))
-        mainLayout.addWidget(adv, 1, 5)
+        mainLayout.addWidget(adv, 1, column)
+        column += 1
+
+        for i in range(column):
+            mainLayout.setColumnStretch(i, 1)
 
         tray = QHBoxLayout()
         tray.addWidget(Clock())
         tray.addWidget(SystemStatus(controller))
-        mainLayout.addLayout(tray, 1, 6)
+        mainLayout.addLayout(tray, 1, column)
 
         mainLayout.setRowStretch(0, 8)
         mainLayout.setRowStretch(1, 0)
