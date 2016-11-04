@@ -20,12 +20,9 @@ setup(
     author='James Muscat',
     author_email='jamesremuscat@gmail.com',
     url='https://github.com/staldates/av-control',
-    install_requires=['avx>=0.96.dev', "Pyro4>=4.20,!=4.45", 'PySide'],
+    install_requires=['avx>=0.98.0', "Pyro4>=4.20,!=4.45", 'PySide'],
     setup_requires=['nose>=1.0'],
     tests_require = ['mock'],
-    dependency_links = [
-        "lib/" # find local copies of packages here
-    ],
     packages=find_packages('src', exclude=["*.tests"]),
     package_dir = {'':'src'},
     entry_points={
