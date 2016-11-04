@@ -1,3 +1,6 @@
+from avx._version import __version__ as version
+
+
 class MockController(object):
     def __init__(self):
         self.devices = {}
@@ -10,3 +13,6 @@ class MockController(object):
 
     def __getitem__(self, item):
         return self.devices.get(item)
+
+    def getVersion(self):
+        return version
