@@ -49,6 +49,10 @@ QPushButton:flat {
   min-height: 32px;
 }
 
+Clock {
+  padding: 0 10px;
+}
+
 QMainWindow QLabel {
   color: white;
 }
