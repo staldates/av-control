@@ -7,7 +7,7 @@ from staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
 from staldates.ui.VideoSwitcher import VideoSwitcher
 from staldates.ui.widgets.Dialogs import PowerNotificationDialog
 from staldates.ui.widgets.BlindsControl import BlindsControlScreen
-from staldates.ui.widgets.ProjectorScreensControl import ProjectorScreensControl
+from staldates.ui.widgets.ProjectorScreensControl import ProjectorScreensControlScreen
 from staldates.ui.widgets.AdvancedMenu import AdvancedMenu
 from staldates.ui.widgets import Dialogs
 from staldates.ui.widgets.LightingControl import LightingControl
@@ -54,7 +54,7 @@ class MainWindow(QMainWindow):
         mainLayout.addWidget(blinds, 1, column)
         column += 1
 
-        self.sc = ProjectorScreensControl(controller["Screens"], self)
+        self.sc = ProjectorScreensControlScreen(controller["Screens"], self)
 
         screens = ExpandingButton()
         screens.setText("Screens")

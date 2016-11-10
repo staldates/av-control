@@ -6,6 +6,7 @@ from staldates.ui.widgets.Buttons import OptionButton
 from staldates.ui.widgets.Clock import Clock
 from staldates.ui.widgets.LogViewer import LogViewer
 from staldates.ui.widgets.Status import SystemStatus
+from staldates.ui.widgets.ProjectorScreensControl import ProjectorScreenControl
 
 
 class PowerRoomControl(QMainWindow):
@@ -62,6 +63,7 @@ class PowerRoomControls(QWidget):
         self.screenButtons.buttons()[lv_idx].clicked.connect(lambda: lv.displayLog(controller.getLog()))
 
         addScreen("Blinds", BlindsControl(controller['Blinds']), ":icons/blinds")
+        addScreen("Screens", ProjectorScreenControl(controller['Screens']), ":icons/screens")
 
         self.screenButtons.buttons()[0].setChecked(True)
 

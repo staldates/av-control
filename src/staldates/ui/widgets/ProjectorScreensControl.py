@@ -1,11 +1,11 @@
 from PySide.QtCore import Qt
-from PySide.QtGui import QButtonGroup, QGridLayout
+from PySide.QtGui import QButtonGroup, QGridLayout, QWidget, QVBoxLayout
 from staldates.ui.widgets.Buttons import IDedButton, SvgButton
 from staldates.ui.widgets.Dialogs import handlePyroErrors
 from staldates.ui.widgets.Screens import ScreenWithBackButton
 
 
-class ProjectorScreensControl(ScreenWithBackButton):
+class ProjectorScreensControlScreen(ScreenWithBackButton):
     '''
     Controls for the projector screens.
     '''
@@ -15,6 +15,16 @@ class ProjectorScreensControl(ScreenWithBackButton):
         ScreenWithBackButton.__init__(self, "Projector Screens", mainWindow)
 
     def makeContent(self):
+        layout = QVBoxLayout()
+        layout.addWidget(ProjectorScreenControl(self.screensDevice))
+        return layout
+
+
+class ProjectorScreenControl(QWidget):
+    def __init__(self, screensDevice, parent=None):
+        super(ProjectorScreenControl, self).__init__(parent)
+        self.screensDevice = screensDevice
+
         layout = QGridLayout()
 
         self.screens = QButtonGroup()
@@ -56,7 +66,7 @@ class ProjectorScreensControl(ScreenWithBackButton):
         layout.addWidget(btnStop, 2, 4, 2, 2)
         btnStop.clicked.connect(self.stop)
 
-        return layout
+        self.setLayout(layout)
 
     @handlePyroErrors
     def raiseUp(self):
