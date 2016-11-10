@@ -3,7 +3,7 @@ from PySide.QtGui import QGridLayout, QIcon, QMainWindow, QStackedWidget, QWidge
 from PySide.QtCore import Qt
 from staldates.ui.widgets.Buttons import ExpandingButton
 from staldates.ui.widgets.Clock import Clock
-from staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
+from staldates.ui.widgets.SystemPowerWidget import SystemPowerScreen
 from staldates.ui.VideoSwitcher import VideoSwitcher
 from staldates.ui.widgets.Dialogs import PowerNotificationDialog
 from staldates.ui.widgets.BlindsControl import BlindsControlScreen
@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
 
         column = 0
 
-        self.spc = SystemPowerWidget(controller, self)
+        self.spc = SystemPowerScreen(controller, self)
 
         syspower = ExpandingButton()
         syspower.setText("Power")

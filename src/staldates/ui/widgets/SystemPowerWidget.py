@@ -1,6 +1,6 @@
 from avx.Sequencer import ControllerEvent, DeviceEvent, LogEvent, SleepEvent
 from PySide.QtCore import Qt
-from PySide.QtGui import QHBoxLayout
+from PySide.QtGui import QHBoxLayout, QWidget
 from staldates.ui.widgets.Buttons import SvgButton
 from staldates.ui.widgets.Dialogs import handlePyroErrors
 from staldates.ui.widgets.Screens import ScreenWithBackButton
@@ -8,13 +8,22 @@ from staldates.ui.widgets.Screens import ScreenWithBackButton
 import logging
 
 
-class SystemPowerWidget(ScreenWithBackButton):
+class SystemPowerScreen(ScreenWithBackButton):
 
     def __init__(self, controller, mainWindow):
         self.controller = controller
         ScreenWithBackButton.__init__(self, "System Power", mainWindow)
 
     def makeContent(self):
+        layout = QHBoxLayout()
+        layout.addWidget(SystemPowerWidget(self.controller))
+        return layout
+
+
+class SystemPowerWidget(QWidget):
+    def __init__(self, controller, parent=None):
+        super(SystemPowerWidget, self).__init__(parent)
+        self.controller = controller
 
         buttons = QHBoxLayout()
 
@@ -30,7 +39,7 @@ class SystemPowerWidget(ScreenWithBackButton):
         self.btnOn.clicked.connect(self.powerOn)
         buttons.addWidget(self.btnOn)
 
-        return buttons
+        self.setLayout(buttons)
 
     @handlePyroErrors
     def powerOn(self):

@@ -4,9 +4,11 @@ from PySide.QtGui import QIcon, QMainWindow, QStackedWidget, QWidget, \
 from staldates.ui.widgets.BlindsControl import BlindsControl
 from staldates.ui.widgets.Buttons import OptionButton
 from staldates.ui.widgets.Clock import Clock
+from staldates.ui.widgets.Dialogs import PowerNotificationDialog
 from staldates.ui.widgets.LogViewer import LogViewer
-from staldates.ui.widgets.Status import SystemStatus
 from staldates.ui.widgets.ProjectorScreensControl import ProjectorScreenControl
+from staldates.ui.widgets.Status import SystemStatus
+from staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
 
 
 class PowerRoomControl(QMainWindow):
@@ -21,14 +23,15 @@ class PowerRoomControl(QMainWindow):
 
         self.setCentralWidget(PowerRoomControls(controller, self))
 
+        self.pnd = PowerNotificationDialog(self)
+        self.pnd.accepted.connect(self.hidePowerDialog)
+
     def showPowerDialog(self, message):
         self.pnd.message = message
         self.pnd.exec_()
 
     def hidePowerDialog(self):
         self.pnd.close()
-        if self.stack.currentWidget() == self.spc:
-            self.stepBack()
 
     def updateOutputMappings(self, mapping):
         pass
@@ -62,6 +65,7 @@ class PowerRoomControls(QWidget):
         lv_idx = addScreen("Logs", lv, ":icons/logs")
         self.screenButtons.buttons()[lv_idx].clicked.connect(lambda: lv.displayLog(controller.getLog()))
 
+        addScreen("Power", SystemPowerWidget(controller), ":icons/system-shutdown")
         addScreen("Blinds", BlindsControl(controller['Blinds']), ":icons/blinds")
         addScreen("Screens", ProjectorScreenControl(controller['Screens']), ":icons/screens")
 

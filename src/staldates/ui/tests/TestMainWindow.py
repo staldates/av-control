@@ -8,7 +8,7 @@ from staldates.ui.MainWindow import MainWindow
 from staldates.ui.tests.GuiTest import GuiTest
 from staldates.ui.tests.TestUtils import MockController
 from staldates.ui.VideoSwitcher import VideoSwitcher
-from staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
+from staldates.ui.widgets.SystemPowerWidget import SystemPowerScreen
 from staldates.ui.widgets.LogViewer import LogViewerScreen
 from staldates.ui.widgets.ProjectorScreensControl import ProjectorScreensControlScreen
 from avx.devices.Device import Device
@@ -38,7 +38,7 @@ class TestMainWindow(GuiTest):
 
         spcButton.click()
         spc = self.getCurrentScreen()
-        self.assertTrue(isinstance(spc, SystemPowerWidget))
+        self.assertTrue(isinstance(spc, SystemPowerScreen))
         self.findButton(spc, "On").click()
         self.assertEquals(self.mockController.sequence.call_count, 1)
 
