@@ -1,7 +1,11 @@
-from PySide.QtGui import QWidget, QVBoxLayout, QPixmap, QMessageBox, QPushButton
+from PySide.QtGui import QWidget, QVBoxLayout, QPixmap, QMessageBox, QPushButton,\
+    QGridLayout
 from Pyro4.errors import PyroError
 from enum import Enum
 from PySide.QtCore import QSize, QTimer
+from staldates.ui.widgets.OutputsGrid import OutputsGrid
+from staldates.ui.widgets.Labels import TitleLabel
+from staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
 
 
 class Status(Enum):
@@ -56,3 +60,27 @@ class ControllerConnectionStatus(QWidget):
             '<span style="color: white;">' + self.status.message + '</span>'
         )
         msgBox.exec_()
+
+
+class SystemStatus(QWidget):
+    def __init__(self, controller, parent=None):
+        super(SystemStatus, self).__init__(parent)
+        self.controller = controller
+
+        layout = QGridLayout()
+
+        layout.addWidget(TitleLabel("Video Outputs"), 0, 0)
+        self.outputsGrid = OutputsGrid()
+        layout.addWidget(self.outputsGrid, 1, 0, 3, 1)
+        self.outputsGrid.setEnabled(False)
+
+        layout.addWidget(TitleLabel("System Power"), 0, 1)
+        layout.addWidget(SystemPowerWidget(controller), 1, 1)
+
+        layout.setRowStretch(1, 1)
+        layout.setRowStretch(3, 1)
+
+        self.setLayout(layout)
+
+    def updateOutputMappings(self, mapping):
+        self.outputsGrid.updateOutputMappings(mapping)

@@ -7,8 +7,7 @@ from staldates.ui.widgets.Clock import Clock
 from staldates.ui.widgets.Dialogs import PowerNotificationDialog
 from staldates.ui.widgets.LogViewer import LogViewer
 from staldates.ui.widgets.ProjectorScreensControl import ProjectorScreenControl
-from staldates.ui.widgets.Status import ControllerConnectionStatus
-from staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
+from staldates.ui.widgets.Status import ControllerConnectionStatus, SystemStatus
 
 
 class PowerRoomControl(QMainWindow):
@@ -21,7 +20,8 @@ class PowerRoomControl(QMainWindow):
         self.resize(1024, 600)
         self.setWindowIcon(QIcon(":icons/video-display"))
 
-        self.setCentralWidget(PowerRoomControls(controller, self))
+        self.controls = PowerRoomControls(controller, self)
+        self.setCentralWidget(self.controls)
 
         self.pnd = PowerNotificationDialog(self)
         self.pnd.accepted.connect(self.hidePowerDialog)
@@ -34,7 +34,7 @@ class PowerRoomControl(QMainWindow):
         self.pnd.close()
 
     def updateOutputMappings(self, mapping):
-        pass
+        self.controls.systemStatus.updateOutputMappings(mapping)
 
 
 class PowerRoomControls(QWidget):
@@ -61,11 +61,14 @@ class PowerRoomControls(QWidget):
             bottomBar.addWidget(button)
             return idx
 
+        self.systemStatus = SystemStatus(controller)
+
+        addScreen("Status", self.systemStatus, ":icons/applications-system")
+
         lv = LogViewer()
         lv_idx = addScreen("Logs", lv, ":icons/logs")
         self.screenButtons.buttons()[lv_idx].clicked.connect(lambda: lv.displayLog(controller.getLog()))
 
-        addScreen("Power", SystemPowerWidget(controller), ":icons/system-shutdown")
         addScreen("Blinds", BlindsControl(controller['Blinds']), ":icons/blinds")
         addScreen("Screens", ProjectorScreenControl(controller['Screens']), ":icons/screens")
 
