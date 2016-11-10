@@ -7,7 +7,7 @@ from staldates.ui.widgets.Clock import Clock
 from staldates.ui.widgets.Dialogs import PowerNotificationDialog
 from staldates.ui.widgets.LogViewer import LogViewer
 from staldates.ui.widgets.ProjectorScreensControl import ProjectorScreenControl
-from staldates.ui.widgets.Status import SystemStatus
+from staldates.ui.widgets.Status import ControllerConnectionStatus
 from staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
 
 
@@ -72,7 +72,7 @@ class PowerRoomControls(QWidget):
         self.screenButtons.buttons()[0].setChecked(True)
 
         bottomBar.addWidget(Clock())
-        bottomBar.addWidget(SystemStatus(controller))
+        bottomBar.addWidget(ControllerConnectionStatus(controller))
 
         layout.addLayout(bottomBar, 1, 0)
         layout.setRowStretch(0, 8)

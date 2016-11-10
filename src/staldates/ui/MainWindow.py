@@ -11,7 +11,7 @@ from staldates.ui.widgets.ProjectorScreensControl import ProjectorScreensControl
 from staldates.ui.widgets.AdvancedMenu import AdvancedMenu
 from staldates.ui.widgets import Dialogs
 from staldates.ui.widgets.LightingControl import LightingControl
-from staldates.ui.widgets.Status import SystemStatus
+from staldates.ui.widgets.Status import ControllerConnectionStatus
 
 
 class MainWindow(QMainWindow):
@@ -90,7 +90,7 @@ class MainWindow(QMainWindow):
 
         tray = QHBoxLayout()
         tray.addWidget(Clock())
-        tray.addWidget(SystemStatus(controller))
+        tray.addWidget(ControllerConnectionStatus(controller))
         mainLayout.addLayout(tray, 1, column)
 
         mainLayout.setRowStretch(0, 8)

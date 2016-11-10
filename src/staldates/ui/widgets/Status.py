@@ -15,9 +15,9 @@ class Status(Enum):
         self.icon = icon
 
 
-class SystemStatus(QWidget):
+class ControllerConnectionStatus(QWidget):
     def __init__(self, controller, parent=None):
-        super(SystemStatus, self).__init__(parent)
+        super(ControllerConnectionStatus, self).__init__(parent)
         self.controller = controller
         self.status = Status.UNKNOWN
 
