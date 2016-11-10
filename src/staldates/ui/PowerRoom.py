@@ -1,8 +1,11 @@
-from PySide.QtGui import QIcon, QMainWindow, QStackedWidget, QWidget,\
+from PySide.QtCore import Qt
+from PySide.QtGui import QIcon, QMainWindow, QStackedWidget, QWidget, \
     QHBoxLayout, QVBoxLayout, QButtonGroup, QToolButton, QSizePolicy
+
 from staldates.ui.widgets.Clock import Clock
 from staldates.ui.widgets.LogViewer import LogViewer
 from staldates.ui.widgets.Status import SystemStatus
+from staldates.ui.widgets.BlindsControl import BlindsControl
 
 
 class PowerRoomControl(QMainWindow):
@@ -43,11 +46,14 @@ class PowerRoomControls(QWidget):
 
         self.screenButtons = QButtonGroup()
 
-        def addScreen(name, screenWidget):
+        def addScreen(name, screenWidget, icon=None):
             button = QToolButton()
             button.setText(name)
             button.setCheckable(True)
             button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+            if icon:
+                button.setIcon(QIcon(icon))
+                button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
             idx = stack.addWidget(screenWidget)
             button.clicked.connect(lambda: stack.setCurrentIndex(idx))
             self.screenButtons.addButton(button, idx)
@@ -55,8 +61,10 @@ class PowerRoomControls(QWidget):
             return idx
 
         lv = LogViewer()
-        lv_idx = addScreen("Logs", lv)
+        lv_idx = addScreen("Logs", lv, ":icons/logs")
         self.screenButtons.buttons()[lv_idx].clicked.connect(lambda: lv.displayLog(controller.getLog()))
+
+        addScreen("Blinds", BlindsControl(controller['Blinds']), ":icons/blinds")
 
         self.screenButtons.buttons()[0].setChecked(True)
 

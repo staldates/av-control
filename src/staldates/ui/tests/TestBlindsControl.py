@@ -2,7 +2,7 @@ from avx.devices.Device import Device
 from mock import MagicMock
 from staldates.ui.tests.GuiTest import GuiTest
 from staldates.ui.tests.TestUtils import MockController
-from staldates.ui.widgets.BlindsControl import BlindsControl
+from staldates.ui.widgets.BlindsControl import BlindsControlScreen
 from staldates.ui.MainWindow import MainWindow
 
 
@@ -16,7 +16,7 @@ class TestBlindsControl(GuiTest):
         self.mockMainWindow = MainWindow(self.mockController)
 
     def testBlinds(self):
-        bc = BlindsControl(self.mockBlindsDevice, self.mockMainWindow)
+        bc = BlindsControlScreen(self.mockBlindsDevice, self.mockMainWindow)
 
         self.mockBlindsDevice.raiseUp = MagicMock()
         self.mockBlindsDevice.lower = MagicMock()

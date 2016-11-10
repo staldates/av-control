@@ -12,6 +12,7 @@
         <file alias="lightbulb_on">resources/icons/lightbulb_on.svg</file>
         <file alias="list-add">resources/icons/list-add.svg</file>
         <file alias="list-remove">resources/icons/list-remove.svg</file>
+        <file alias="logs">resources/icons/accessories-text-editor.svg</file>
         <file alias="media-optical">resources/icons/media-optical.svg</file>
         <file alias="media-playback-pause">resources/icons/media-playback-pause.svg</file>
         <file alias="network-offline">resources/icons/network-offline.svg</file>

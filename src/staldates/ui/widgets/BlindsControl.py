@@ -1,11 +1,11 @@
 from PySide.QtCore import Qt
-from PySide.QtGui import QButtonGroup, QGridLayout
+from PySide.QtGui import QButtonGroup, QGridLayout, QWidget, QVBoxLayout
 from staldates.ui.widgets.Buttons import IDedButton, SvgButton
 from staldates.ui.widgets.Screens import ScreenWithBackButton
 from staldates.ui.widgets.Dialogs import handlePyroErrors
 
 
-class BlindsControl(ScreenWithBackButton):
+class BlindsControlScreen(ScreenWithBackButton):
     '''
     Controls for the blinds.
     '''
@@ -15,6 +15,15 @@ class BlindsControl(ScreenWithBackButton):
         ScreenWithBackButton.__init__(self, "Blinds", mainWindow)
 
     def makeContent(self):
+        layout = QVBoxLayout()
+        layout.addWidget(BlindsControl(self.blindsDevice))
+        return layout
+
+
+class BlindsControl(QWidget):
+    def __init__(self, blindsDevice):
+        super(BlindsControl, self).__init__()
+        self.blindsDevice = blindsDevice
         layout = QGridLayout()
 
         self.blinds = QButtonGroup()
@@ -51,7 +60,7 @@ class BlindsControl(ScreenWithBackButton):
         layout.addWidget(btnStop, 1, 4, 2, 2)
         btnStop.clicked.connect(self.stop)
 
-        return layout
+        self.setLayout(layout)
 
     @handlePyroErrors
     def raiseUp(self):
