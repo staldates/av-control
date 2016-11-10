@@ -1,11 +1,11 @@
-from PySide.QtCore import Qt
 from PySide.QtGui import QIcon, QMainWindow, QStackedWidget, QWidget, \
-    QHBoxLayout, QVBoxLayout, QButtonGroup, QToolButton, QSizePolicy
+    QHBoxLayout, QButtonGroup, QGridLayout
 
+from staldates.ui.widgets.BlindsControl import BlindsControl
+from staldates.ui.widgets.Buttons import OptionButton
 from staldates.ui.widgets.Clock import Clock
 from staldates.ui.widgets.LogViewer import LogViewer
 from staldates.ui.widgets.Status import SystemStatus
-from staldates.ui.widgets.BlindsControl import BlindsControl
 
 
 class PowerRoomControl(QMainWindow):
@@ -36,24 +36,21 @@ class PowerRoomControl(QMainWindow):
 class PowerRoomControls(QWidget):
     def __init__(self, controller, parent=None):
         QWidget.__init__(self, parent)
-        layout = QVBoxLayout()
+        layout = QGridLayout()
 
         stack = QStackedWidget()
 
-        layout.addWidget(stack)
+        layout.addWidget(stack, 0, 0)
 
         bottomBar = QHBoxLayout()
 
         self.screenButtons = QButtonGroup()
 
         def addScreen(name, screenWidget, icon=None):
-            button = QToolButton()
+            button = OptionButton()
             button.setText(name)
-            button.setCheckable(True)
-            button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
             if icon:
                 button.setIcon(QIcon(icon))
-                button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
             idx = stack.addWidget(screenWidget)
             button.clicked.connect(lambda: stack.setCurrentIndex(idx))
             self.screenButtons.addButton(button, idx)
@@ -71,5 +68,7 @@ class PowerRoomControls(QWidget):
         bottomBar.addWidget(Clock())
         bottomBar.addWidget(SystemStatus(controller))
 
-        layout.addLayout(bottomBar)
+        layout.addLayout(bottomBar, 1, 0)
+        layout.setRowStretch(0, 8)
+        layout.setRowStretch(1, 0)
         self.setLayout(layout)
