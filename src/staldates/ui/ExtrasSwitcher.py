@@ -8,7 +8,7 @@ from PySide.QtCore import Signal
 from staldates.ui.widgets.Buttons import InputButton
 from staldates.ui.widgets.Dialogs import handlePyroErrors
 from staldates.ui.widgets.ScanConverterControls import OverscanFreezeWidget
-from staldates import VisualsSystem
+from staldates.VisualsSystem import ExtrasSwitcherInputs
 
 
 class ExtrasSwitcher(QWidget):
@@ -16,7 +16,7 @@ class ExtrasSwitcher(QWidget):
     The extras switcher.
     '''
 
-    inputSelected = Signal(VisualsSystem.Input)
+    inputSelected = Signal(object)
 
     def __init__(self, controller):
         super(ExtrasSwitcher, self).__init__()
@@ -31,35 +31,35 @@ class ExtrasSwitcher(QWidget):
 
         btnE1 = InputButton(self)
         btnE1.setText("Extras 1")
-        btnE1.setInput(VisualsSystem.extras1)
+        btnE1.setInput(ExtrasSwitcherInputs.extras1)
         layout.addWidget(btnE1, 0, 0)
         inputs.addButton(btnE1, 1)
         btnE1.clicked.connect(self.takePreview)
 
         btnE2 = InputButton(self)
         btnE2.setText("Extras 2")
-        btnE2.setInput(VisualsSystem.extras2)
+        btnE2.setInput(ExtrasSwitcherInputs.extras2)
         layout.addWidget(btnE2, 0, 1)
         inputs.addButton(btnE2, 2)
         btnE2.clicked.connect(self.takePreview)
 
         btnE3 = InputButton(self)
         btnE3.setText("Extras 3")
-        btnE3.setInput(VisualsSystem.extras3)
+        btnE3.setInput(ExtrasSwitcherInputs.extras3)
         layout.addWidget(btnE3, 0, 2)
         inputs.addButton(btnE3, 3)
         btnE3.clicked.connect(self.takePreview)
 
         btnE4 = InputButton(self)
         btnE4.setText("Extras 4")
-        btnE4.setInput(VisualsSystem.extras4)
+        btnE4.setInput(ExtrasSwitcherInputs.extras4)
         layout.addWidget(btnE4, 0, 3)
         inputs.addButton(btnE4, 4)
         btnE4.clicked.connect(self.takePreview)
 
         btnEVideo = InputButton(self)
         btnEVideo.setText("Visuals PC video")
-        btnEVideo.setInput(VisualsSystem.visualsPCVideo)
+        btnEVideo.setInput(ExtrasSwitcherInputs.visualsPCVideo)
         layout.addWidget(btnEVideo, 0, 4)
         inputs.addButton(btnEVideo, 8)
         btnEVideo.clicked.connect(self.takePreview)
@@ -85,7 +85,7 @@ class ExtrasSwitcher(QWidget):
             return None
         return button.input
 
-    def takePreview(self):
+    def takePreview(self, *args):
         currentInput = self.currentInput()
         if currentInput:
             currentInput.preview(self.controller)

@@ -155,7 +155,7 @@ class TestVideoSwitcher(GuiTest):
 
     def assertPreviewCalledFor(self, inputID):
         self.main.sendInputToOutput.assert_called_with(inputID, 1)
-        return self.extras.sendInputToOutput.assert_called_with(ExtrasSwitcherInputs.mainSwitcherOutput.number, EXTRAS_OUTPUT_TO_PREVIEW)
+        return self.extras.sendInputToOutput.assert_called_with(ExtrasSwitcherInputs.mainSwitcherOutput.sourceChannel, EXTRAS_OUTPUT_TO_PREVIEW)
 
 if __name__ == "__main__":
     unittest.main()

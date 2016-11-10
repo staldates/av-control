@@ -7,8 +7,7 @@ from staldates.ui.EclipseControls import EclipseControls
 import logging
 from staldates.ui.StringConstants import StringConstants
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
-from staldates import VisualsSystem
-from staldates.VisualsSystem import ProxyInput
+from staldates.VisualsSystem import Input, MainSwitcherInputs
 
 
 class VideoSwitcher(QWidget):
@@ -31,28 +30,28 @@ class VideoSwitcher(QWidget):
 
         self.btnCamera1 = CameraSelectionButton(1)
         self.btnCamera1.setText("Camera 1")
-        self.btnCamera1.setInput(VisualsSystem.camera1)
+        self.btnCamera1.setInput(MainSwitcherInputs.camera1)
         inputsGrid.addWidget(self.btnCamera1)
         self.inputs.addButton(self.btnCamera1, 1)
         self.btnCamera1.setIcon(QIcon(":icons/camera-video"))
 
         self.btnCamera2 = CameraSelectionButton(2)
         self.btnCamera2.setText("Camera 2")
-        self.btnCamera2.setInput(VisualsSystem.camera2)
+        self.btnCamera2.setInput(MainSwitcherInputs.camera2)
         inputsGrid.addWidget(self.btnCamera2)
         self.inputs.addButton(self.btnCamera2, 2)
         self.btnCamera2.setIcon(QIcon(":icons/camera-video"))
 
         self.btnCamera3 = CameraSelectionButton(3)
         self.btnCamera3.setText("Camera 3")
-        self.btnCamera3.setInput(VisualsSystem.camera3)
+        self.btnCamera3.setInput(MainSwitcherInputs.camera3)
         inputsGrid.addWidget(self.btnCamera3)
         self.inputs.addButton(self.btnCamera3, 3)
         self.btnCamera3.setIcon(QIcon(":icons/camera-video"))
 
         self.btnDVD = InputButton()
         self.btnDVD.setText("DVD")
-        self.btnDVD.setInput(VisualsSystem.dvd)
+        self.btnDVD.setInput(MainSwitcherInputs.dvd)
         inputsGrid.addWidget(self.btnDVD)
         self.inputs.addButton(self.btnDVD, 4)
         self.btnDVD.setIcon(QIcon(":icons/media-optical"))
@@ -65,14 +64,14 @@ class VideoSwitcher(QWidget):
 
         self.btnVisualsPC = InputButton()
         self.btnVisualsPC.setText("Visuals PC")
-        self.btnVisualsPC.setInput(VisualsSystem.visualsPC)
+        self.btnVisualsPC.setInput(MainSwitcherInputs.visualsPC)
         inputsGrid.addWidget(self.btnVisualsPC)
         self.inputs.addButton(self.btnVisualsPC, 6)
         self.btnVisualsPC.setIcon(QIcon(":icons/computer"))
 
         self.btnBlank = InputButton()
         self.btnBlank.setText("Blank")
-        self.btnBlank.setInput(VisualsSystem.blank)
+        self.btnBlank.setInput(MainSwitcherInputs.blank)
         inputsGrid.addWidget(self.btnBlank)
         self.inputs.addButton(self.btnBlank, 0)
 
@@ -80,7 +79,7 @@ class VideoSwitcher(QWidget):
 
         self.extrasSwitcher = ExtrasSwitcher(self.controller)
         self.extrasSwitcher.inputSelected.connect(self.handleExtrasSelect)
-        self.btnExtras.setInput(ProxyInput(self.extrasSwitcher))
+        self.btnExtras.setInput(None)
         self.blank = QWidget(self)
         gridlayout.addWidget(self.blank, 1, 0, 1, 5)
 
@@ -189,11 +188,11 @@ class VideoSwitcher(QWidget):
         if inputChannel:
             inputChannel.toPCMix(self.controller)
 
-    @Slot(VisualsSystem.Input)
+    @Slot(Input)
     def handleExtrasSelect(self, extrasInput):
         if extrasInput is not None:
-            self.btnExtras.setText(extrasInput.name)
-            self.outputsGrid.inputNames[5] = extrasInput.name
+            self.btnExtras.setText(extrasInput.label)
+            self.outputsGrid.inputNames[5] = extrasInput.label
             self.outputsGrid.setEnabled(True)
         else:
             # Not sure under what circumstances, if any, this will arise
