@@ -9,7 +9,7 @@ from staldates.ui.tests.GuiTest import GuiTest
 from staldates.ui.tests.TestUtils import MockController
 from staldates.ui.VideoSwitcher import VideoSwitcher
 from staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
-from staldates.ui.widgets.LogViewer import LogViewer
+from staldates.ui.widgets.LogViewer import LogViewerScreen
 from staldates.ui.widgets.ProjectorScreensControl import ProjectorScreensControl
 from avx.devices.Device import Device
 
@@ -60,7 +60,7 @@ class TestMainWindow(GuiTest):
         logButton = self.findButton(top, "Log")
         logButton.click()
         lw = self.main.stack.currentWidget()
-        self.assertTrue(isinstance(lw, LogViewer))
+        self.assertTrue(isinstance(lw, LogViewerScreen))
         self.assertEqual(self.mockController.getLog.call_count, 1)
 
     def testScreens(self):

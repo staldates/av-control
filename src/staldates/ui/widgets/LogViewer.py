@@ -3,7 +3,7 @@ from staldates.ui.widgets.Dialogs import handlePyroErrors
 from staldates.ui.widgets.Screens import ScreenWithBackButton
 
 
-class LogViewer(ScreenWithBackButton):
+class LogViewerScreen(ScreenWithBackButton):
 
     def __init__(self, controller, mainWindow):
         self.controller = controller
@@ -13,7 +13,7 @@ class LogViewer(ScreenWithBackButton):
 
         layout = QVBoxLayout()
 
-        self.table = QTableWidget()
+        self.table = LogViewer()
         layout.addWidget(self.table)
 
         return layout
@@ -21,18 +21,25 @@ class LogViewer(ScreenWithBackButton):
     @handlePyroErrors
     def displayLog(self):
         entries = self.controller.getLog()
-        self.table.clearContents()
-        self.table.setRowCount(len(entries))
-        self.table.setColumnCount(3)
-        self.table.setHorizontalHeaderLabels(["Time", "Severity", "Message"])
+        self.table.displayLog(entries)
 
-        i = 0
-        for entry in entries:
-            self.table.setItem(i, 0, QTableWidgetItem(entry.asctime))
-            self.table.setItem(i, 1, QTableWidgetItem(entry.levelname))
-            self.table.setItem(i, 2, QTableWidgetItem(entry.message))
-            i = i + 1
 
-        self.table.resizeColumnsToContents()
-        self.table.horizontalHeader().setStretchLastSection(True)
-        self.table.scrollToBottom()
+class LogViewer(QTableWidget):
+    def __init__(self):
+        super(LogViewer, self).__init__()
+        self.setColumnCount(3)
+        self.setHorizontalHeaderLabels(["Time", "Severity", "Message"])
+        self.resizeColumnsToContents()
+
+    def displayLog(self, entries):
+        self.clearContents()
+        self.setRowCount(len(entries))
+
+        for i, entry in enumerate(entries):
+            self.setItem(i, 0, QTableWidgetItem(entry.asctime))
+            self.setItem(i, 1, QTableWidgetItem(entry.levelname))
+            self.setItem(i, 2, QTableWidgetItem(entry.message))
+
+        self.resizeColumnsToContents()
+        self.horizontalHeader().setStretchLastSection(True)
+        self.scrollToBottom()

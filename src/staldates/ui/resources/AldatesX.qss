@@ -11,19 +11,19 @@ OutputsGrid {
   background-color: #00527E;
 }
 
-InputButton, OutputButton, OptionButton, ExpandingButton, QComboBox, QListView {
+QAbstractButton, QComboBox, QListView {
   background-color: #1693A5;
   color: white;
   border-radius: 5px;
   selection-background-color: #003E5F;
 }
 
-ExpandingButton:pressed, ExpandingButton:checked {
+QAbstractButton:pressed, QAbstractButton:checked {
   background-color: #E4E4FF;
   color: black;
 }
 
-InputButton:disabled, OutputButton:disabled, OptionButton:disabled, ExpandingButton:disabled, QComboBox:disabled {
+QAbstractButton:disabled, QComboBox:disabled {
   background-color: #9FA5A5;
 }
 
@@ -36,7 +36,7 @@ CameraButton {
   background-color: #E4E4FF;
 }
 
-CameraButton:checked {
+CameraButton:checked, CameraButton:pressed {
   color: white;
   background-color: #1693A5;
 }
@@ -47,6 +47,7 @@ QPushButton:flat {
   margin: 0;
   min-width: 32px;
   min-height: 32px;
+  background: none;
 }
 
 Clock {
