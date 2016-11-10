@@ -1,7 +1,13 @@
 from staldates.ui.widgets.Dialogs import handlePyroErrors
+from enum import Enum
 
-EXTRAS_INPUT_FROM_MAIN = 7
 EXTRAS_OUTPUT_TO_PREVIEW = 3
+
+
+class IOEnum(Enum):
+    def __init__(self, number, label):
+        self.number = number
+        self.label = label
 
 
 class Input(object):
@@ -27,14 +33,14 @@ class MainInput(Input):
     @handlePyroErrors
     def preview(self, controller):
         controller["Main"].sendInputToOutput(self.sourceChannel, 1)
-        controller["Extras"].sendInputToOutput(EXTRAS_INPUT_FROM_MAIN, EXTRAS_OUTPUT_TO_PREVIEW)
+        controller["Extras"].sendInputToOutput(ExtrasSwitcherInputs.mainSwitcherOutput.number, EXTRAS_OUTPUT_TO_PREVIEW)
 
     @handlePyroErrors
     def toPCMix(self, controller):
         # 5 and 6 are wired opposite ways around on preview and main switchers
-        if self.sourceChannel == 5:
+        if self.sourceChannel == MainSwitcherInputs.extras.number:
             controller["Preview"].sendInputToOutput(6, 2)
-        elif self.sourceChannel == 6:
+        elif self.sourceChannel == MainSwitcherInputs.visualsPC:
             controller["Preview"].sendInputToOutput(5, 2)
         else:
             controller["Preview"].sendInputToOutput(self.sourceChannel, 2)
@@ -58,9 +64,9 @@ class BlankMainInput(MainInput):
 
 class ExtrasInput(Input):
 
-    def __init__(self, sourceChannel, name):
-        super(ExtrasInput, self).__init__(sourceChannel)
-        self.name = name
+    def __init__(self, ioenum):
+        super(ExtrasInput, self).__init__(ioenum.number)
+        self.name = ioenum.label
 
     @handlePyroErrors
     def preview(self, controller):
@@ -84,6 +90,7 @@ class ProxyInput(Input):
         self.extrasSwitcher = extrasSwitcher
 
     def preview(self, controller):
+        print "PROXY"
         self.extrasSwitcher.takePreview()
 
     def toPCMix(self, controller):
@@ -93,41 +100,40 @@ class ProxyInput(Input):
         pass
 
 
-#
-# Main switcher inputs:
-# 0 - Blank
-# 1 - Camera 1
-# 2 - Camera 2
-# 3 - Camera 3
-# 4 - DVD player
-# 5 - Extras switcher out 1
-# 6 - Visuals PC via scan converter
+class MainSwitcherInputs(IOEnum):
+    blank = (0, "Blank")
+    camera1 = (1, "Camera 1")
+    camera2 = (2, "Camera 2")
+    camera3 = (3, "Camera 3")
+    dvd = (4, "DVD")
+    extras = (5, "Extras")
+    visualsPC = (6, "Visuals PC")
 # 7 - empty (former RGBHV)
 # 8 - empty (former RGBHV)
-#
+
 
 blank = BlankMainInput()
-camera1 = MainInput(1)
-camera2 = MainInput(2)
-camera3 = MainInput(3)
-dvd = MainInput(4)
+camera1 = MainInput(MainSwitcherInputs.camera1.number)
+camera2 = MainInput(MainSwitcherInputs.camera2.number)
+camera3 = MainInput(MainSwitcherInputs.camera3.number)
+dvd = MainInput(MainSwitcherInputs.dvd.number)
 # Extras switcher not an explicit input
-visualsPC = MainInput(6)
+visualsPC = MainInput(MainSwitcherInputs.visualsPC.number)
 
-#
-# Extras switcher inputs:
-# 1 - Extras 1
-# 2 - Extras 2
-# 3 - Extras 3
-# 4 - Extras 4
+
+class ExtrasSwitcherInputs(IOEnum):
+    extras1 = (1, "Extras 1")
+    extras2 = (2, "Extras 2")
+    extras3 = (3, "Extras 3")
+    extras4 = (4, "Extras 4")
 # 5 - empty
 # 6 - empty
-# 7 - Main switcher output (not an explicit input)
-# 8 - Visuals PC video
-#
+    mainSwitcherOutput = (7, "Main output")
+    visualsPCVideo = (8, "PC video")
 
-extras1 = ExtrasInput(1, "Extras 1")
-extras2 = ExtrasInput(2, "Extras 2")
-extras3 = ExtrasInput(3, "Extras 3")
-extras4 = ExtrasInput(4, "Extras 4")
-visualsPCVideo = ExtrasInput(8, "PC video")
+
+extras1 = ExtrasInput(ExtrasSwitcherInputs.extras1)
+extras2 = ExtrasInput(ExtrasSwitcherInputs.extras2)
+extras3 = ExtrasInput(ExtrasSwitcherInputs.extras3)
+extras4 = ExtrasInput(ExtrasSwitcherInputs.extras4)
+visualsPCVideo = ExtrasInput(ExtrasSwitcherInputs.visualsPCVideo)

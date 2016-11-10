@@ -12,7 +12,8 @@ from staldates.ui.VideoSwitcher import VideoSwitcher
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
 from staldates.ui.tests.GuiTest import GuiTest
 from staldates.ui.tests.TestUtils import MockController
-from staldates.VisualsSystem import EXTRAS_INPUT_FROM_MAIN, EXTRAS_OUTPUT_TO_PREVIEW
+from staldates.VisualsSystem import EXTRAS_OUTPUT_TO_PREVIEW,\
+    ExtrasSwitcherInputs
 
 
 class TestVideoSwitcher(GuiTest):
@@ -154,7 +155,7 @@ class TestVideoSwitcher(GuiTest):
 
     def assertPreviewCalledFor(self, inputID):
         self.main.sendInputToOutput.assert_called_with(inputID, 1)
-        return self.extras.sendInputToOutput.assert_called_with(EXTRAS_INPUT_FROM_MAIN, EXTRAS_OUTPUT_TO_PREVIEW)
+        return self.extras.sendInputToOutput.assert_called_with(ExtrasSwitcherInputs.mainSwitcherOutput.number, EXTRAS_OUTPUT_TO_PREVIEW)
 
 if __name__ == "__main__":
     unittest.main()
