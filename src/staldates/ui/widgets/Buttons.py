@@ -26,6 +26,8 @@ class InputButton(ExpandingButton):
 
     def setInput(self, myInput):
         self.input = myInput
+        if myInput:
+            self.setText(myInput.label)
 
     def event(self, evt):
         if evt.type() == QEvent.Gesture:
