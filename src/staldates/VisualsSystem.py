@@ -19,6 +19,12 @@ class Input(Enum):
         pass
 
 
+class Output(Enum):
+    def __init__(self, destChannel, label):
+        self.destChannel = destChannel
+        self.label = label
+
+
 class MainSwitcherInputs(Input):
     blank = (0, "Blank")
     camera1 = (1, "Camera 1")
@@ -34,22 +40,34 @@ class MainSwitcherInputs(Input):
     def preview(self, controller):
         if self.sourceChannel == 0:
             return
-        controller["Main"].sendInputToOutput(self.sourceChannel, 1)
-        controller["Extras"].sendInputToOutput(ExtrasSwitcherInputs.mainSwitcherOutput.sourceChannel, EXTRAS_OUTPUT_TO_PREVIEW)
+        controller[MainSwitcher.device].sendInputToOutput(self.sourceChannel, MainSwitcher.output.extras_switcher_input.destChannel)
+        controller[ExtrasSwitcher.device].sendInputToOutput(ExtrasSwitcher.input.mainSwitcherOutput.sourceChannel, ExtrasSwitcher.output.preview_monitor.destChannel)
 
     @handlePyroErrors
     def toPCMix(self, controller):
         # 5 and 6 are wired opposite ways around on preview and main switchers
         if self == MainSwitcherInputs.extras:
-            controller["Preview"].sendInputToOutput(6, 2)
+            controller[PreviewSwitcher.device].sendInputToOutput(PreviewSwitcher.input.extras.sourceChannel, PreviewSwitcher.output.pc_mix.destChannel)
         elif self == MainSwitcherInputs.visualsPC:
-            controller["Preview"].sendInputToOutput(5, 2)
+            controller[PreviewSwitcher.device].sendInputToOutput(PreviewSwitcher.input.visualsPC.sourceChannel, PreviewSwitcher.output.pc_mix.destChannel)
         else:
-            controller["Preview"].sendInputToOutput(self.sourceChannel, 2)
+            controller[PreviewSwitcher.device].sendInputToOutput(self.sourceChannel, PreviewSwitcher.output.pc_mix.destChannel)
 
     @handlePyroErrors
     def toMain(self, controller, mainChannel):
-        controller["Main"].sendInputToOutput(self.sourceChannel, mainChannel)
+        controller[MainSwitcher.device].sendInputToOutput(self.sourceChannel, mainChannel)
+
+
+class MainSwitcherOutputs(Output):
+    all = (0, "All")
+    extras_switcher_input = (1, "Extras switcher input")
+    monitor1 = (2, "Monitor 1")  # Formerly projectors
+    font = (3, "Font")
+    church = (4, "Church")
+    welcome = (5, "Welcome")
+    gallery = (6, "Gallery")
+    special = (7, "Stage")
+    record = (8, "Record")
 
 
 class ExtrasSwitcherInputs(Input):
@@ -64,14 +82,52 @@ class ExtrasSwitcherInputs(Input):
 
     @handlePyroErrors
     def preview(self, controller):
-        controller["Extras"].sendInputToOutput(self.sourceChannel, EXTRAS_OUTPUT_TO_PREVIEW)
+        controller[ExtrasSwitcher.device].sendInputToOutput(self.sourceChannel, ExtrasSwitcher.output.preview_monitor.destChannel)
 
     @handlePyroErrors
     def toPCMix(self, controller):
-        controller["Extras"].sendInputToOutput(self.sourceChannel, 2)
-        controller["Preview"].sendInputToOutput(6, 2)
+        controller[ExtrasSwitcher.device].sendInputToOutput(self.sourceChannel, ExtrasSwitcher.output.preview_switcher_input.destChannel)
+        controller[PreviewSwitcher.device].sendInputToOutput(PreviewSwitcher.input.extras.sourceChannel, PreviewSwitcher.output.pc_mix.destChannel)
 
     @handlePyroErrors
     def toMain(self, controller, mainChannel):
-        controller["Extras"].sendInputToOutput(self.sourceChannel, 1)
-        controller["Main"].sendInputToOutput(5, mainChannel)
+        controller[ExtrasSwitcher.device].sendInputToOutput(self.sourceChannel, ExtrasSwitcher.output.main_switcher_input.destChannel)
+        controller[MainSwitcher.device].sendInputToOutput(5, mainChannel)
+
+
+class ExtrasSwitcherOutputs(Output):
+    main_switcher_input = (1, "Main switcher")
+    preview_switcher_input = (2, "Preview switcher")
+    preview_monitor = (3, "Preview monitor")
+
+
+class PreviewSwitcherInputs(Input):
+    camera1 = (1, "Camera 1")
+    camera2 = (2, "Camera 1")
+    camera3 = (3, "Camera 1")
+    dvd = (4, "DVD")
+    visualsPC = (5, "Visuals PC")
+    extras = (6, "Extras")
+
+
+class PreviewSwitcherOutputs(Output):
+    unused = (1, "Unused")
+    pc_mix = (2, "PC Mix")
+
+
+class MainSwitcher(object):
+    device = "Main"
+    input = MainSwitcherInputs
+    output = MainSwitcherOutputs
+
+
+class PreviewSwitcher(object):
+    device = "Preview"
+    input = PreviewSwitcherInputs
+    output = PreviewSwitcherOutputs
+
+
+class ExtrasSwitcher(object):
+    device = "Extras"
+    input = ExtrasSwitcherInputs
+    output = ExtrasSwitcherOutputs
