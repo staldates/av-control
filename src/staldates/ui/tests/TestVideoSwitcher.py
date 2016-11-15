@@ -12,8 +12,7 @@ from staldates.ui.VideoSwitcher import VideoSwitcher
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
 from staldates.ui.tests.GuiTest import GuiTest
 from staldates.ui.tests.TestUtils import MockController
-from staldates.VisualsSystem import EXTRAS_OUTPUT_TO_PREVIEW,\
-    ExtrasSwitcherInputs
+from staldates.VisualsSystem import ExtrasSwitcher
 
 
 class TestVideoSwitcher(GuiTest):
@@ -63,7 +62,7 @@ class TestVideoSwitcher(GuiTest):
         self.extras.sendInputToOutput.assert_not_called()  # main sw not involved and no input selected
         self.vs.extrasSwitcher.inputs.buttons()[4].click()  # Visuals PC video
         self.assertEqual("PC video", self.vs.btnExtras.text())
-        self.extras.sendInputToOutput.assert_called_with(8, EXTRAS_OUTPUT_TO_PREVIEW)
+        self.extras.sendInputToOutput.assert_called_with(8, ExtrasSwitcher.output.preview_monitor.channel)
         self.assertEqual(self.vs.extrasSwitcher.inputs.checkedButton(), self.vs.extrasSwitcher.inputs.buttons()[4])
         outputsGrid.btnAll.click()  # This one click should trigger two takes, one on each switcher
         self.extras.sendInputToOutput.assert_called_with(8, 1)
@@ -130,7 +129,7 @@ class TestVideoSwitcher(GuiTest):
         # Make sure there's an actual channel selected
         self.vs.extrasSwitcher.inputs.buttons()[3].click()
         self.assertEqual("Extras 4", self.vs.btnExtras.text())
-        self.extras.sendInputToOutput.assert_called_with(4, EXTRAS_OUTPUT_TO_PREVIEW)
+        self.extras.sendInputToOutput.assert_called_with(4, ExtrasSwitcher.output.preview_monitor.channel)
         QTest.keyClick(self.vs, Qt.Key_Space)
         self.main.sendInputToOutput.assert_called_with(5, 0)
 
@@ -155,7 +154,7 @@ class TestVideoSwitcher(GuiTest):
 
     def assertPreviewCalledFor(self, inputID):
         self.main.sendInputToOutput.assert_called_with(inputID, 1)
-        return self.extras.sendInputToOutput.assert_called_with(ExtrasSwitcherInputs.mainSwitcherOutput.sourceChannel, EXTRAS_OUTPUT_TO_PREVIEW)
+        return self.extras.sendInputToOutput.assert_called_with(ExtrasSwitcher.input.mainSwitcherOutput.channel, ExtrasSwitcher.output.preview_monitor.channel)
 
 if __name__ == "__main__":
     unittest.main()

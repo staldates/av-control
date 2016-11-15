@@ -7,7 +7,7 @@ from staldates.ui.EclipseControls import EclipseControls
 import logging
 from staldates.ui.StringConstants import StringConstants
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
-from staldates.VisualsSystem import Input, MainSwitcherInputs
+from staldates.VisualsSystem import IOEnum, MainSwitcherInputs, MainSwitcher
 
 
 class VideoSwitcher(QWidget):
@@ -144,11 +144,10 @@ class VideoSwitcher(QWidget):
 
     def handleInputSelect(self):
         inputID = self.inputs.checkedId()
-        logging.debug("Input selected: " + str(inputID))
-        if inputID >= 0:
-            myInput = self.inputs.checkedButton().input
-            if myInput:
-                myInput.preview(self.controller)
+        myInput = self.inputs.checkedButton().input
+        logging.debug("Input selected: " + str(myInput))
+        if inputID >= 0 and myInput:
+            myInput.preview(self.controller)
         self.gridlayout.removeWidget(self.gridlayout.itemAtPosition(1, 0).widget())
         for p in self.panels:
             p.hide()
@@ -157,10 +156,10 @@ class VideoSwitcher(QWidget):
         chosenPanel.show()
 
         # Prevent certain options from being selectable
-        if inputID == 6 or inputID == 0:
+        if myInput == MainSwitcher.input.visualsPC or myInput == MainSwitcher.input.blank:
             self.outputsGrid.setEnabled(True)
             self.outputsGrid.btnPCMix.setEnabled(False)
-        elif inputID == 5 and self.extrasSwitcher.currentInput() is None:
+        elif myInput is None:
             self.outputsGrid.setEnabled(False)
             self.outputsGrid.btnPCMix.setEnabled(True)
         else:
@@ -169,30 +168,25 @@ class VideoSwitcher(QWidget):
 
     def handleOutputSelect(self):
         outputChannel = self.sender().ID
-        inputID = self.inputs.checkedId()
-        checkedExtrasButton = self.extrasSwitcher.inputs.checkedButton()
-        inputChannel = checkedExtrasButton.input if (inputID == 5 and checkedExtrasButton) else self.inputs.checkedButton().input
+        inputChannel = self.inputs.checkedButton().input
         if inputChannel:
             inputChannel.toMain(self.controller, outputChannel)
 
     def handlePCMixSelect(self):
-        inputID = self.inputs.checkedId()
-        checkedExtrasButton = self.extrasSwitcher.inputs.checkedButton()
-        inputChannel = checkedExtrasButton.input if (inputID == 5 and checkedExtrasButton) else self.inputs.checkedButton().input
+        inputChannel = self.inputs.checkedButton().input
         if inputChannel:
             inputChannel.toPCMix(self.controller)
 
-    @Slot(Input)
+    @Slot(IOEnum)
     def handleExtrasSelect(self, extrasInput):
         if extrasInput is not None:
-            self.btnExtras.setText(extrasInput.label)
             self.outputsGrid.inputNames[5] = extrasInput.label
-            self.outputsGrid.setEnabled(True)
         else:
             # Not sure under what circumstances, if any, this will arise
             self.btnExtras.setText("Extras")
             self.outputsGrid.inputNames[5] = "Extras"
-            self.outputsGrid.setEnabled(False)
+        self.btnExtras.setInput(extrasInput)
+        self.handleInputSelect()
 
     def showAdvPanel(self):
         sender = self.sender()
