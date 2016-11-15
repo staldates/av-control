@@ -17,7 +17,7 @@ class PowerRoomControl(QMainWindow):
         self.controller = controller
 
         self.setWindowTitle("av-control - power room interface")
-        self.resize(1024, 600)
+        self.resize(800, 600)
         self.setWindowIcon(QIcon(":icons/video-display"))
 
         self.controls = PowerRoomControls(controller, self)
