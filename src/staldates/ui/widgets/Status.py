@@ -75,7 +75,7 @@ class SystemStatus(QWidget):
         self.outputsGrid.setEnabled(False)
 
         layout.addWidget(TitleLabel("System Power"), 0, 1)
-        layout.addWidget(SystemPowerWidget(controller), 1, 1)
+        layout.addWidget(SystemPowerWidget(controller, layout=QVBoxLayout), 1, 1)
 
         layout.setRowStretch(1, 1)
         layout.setRowStretch(3, 1)

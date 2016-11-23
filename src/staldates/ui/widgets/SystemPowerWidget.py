@@ -21,11 +21,11 @@ class SystemPowerScreen(ScreenWithBackButton):
 
 
 class SystemPowerWidget(QWidget):
-    def __init__(self, controller, parent=None):
+    def __init__(self, controller, parent=None, layout=QHBoxLayout):
         super(SystemPowerWidget, self).__init__(parent)
         self.controller = controller
 
-        buttons = QHBoxLayout()
+        buttons = layout()
 
         self.btnOff = SvgButton(":icons/lightbulb_off", 128, 128)
         self.btnOff.setText("Off")
