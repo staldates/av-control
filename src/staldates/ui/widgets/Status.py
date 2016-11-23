@@ -1,11 +1,12 @@
 from PySide.QtGui import QWidget, QVBoxLayout, QPixmap, QMessageBox, QPushButton,\
-    QGridLayout
+    QGridLayout, QLabel
 from Pyro4.errors import PyroError
 from enum import Enum
 from PySide.QtCore import QSize, QTimer
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
 from staldates.ui.widgets.Labels import TitleLabel
 from staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
+from staldates.ui.widgets.Buttons import OptionButton
 
 
 class Status(Enum):
@@ -63,7 +64,7 @@ class ControllerConnectionStatus(QWidget):
 
 
 class SystemStatus(QWidget):
-    def __init__(self, controller, parent=None):
+    def __init__(self, controller, stack, buttonGroup, parent=None):
         super(SystemStatus, self).__init__(parent)
         self.controller = controller
 
@@ -76,6 +77,16 @@ class SystemStatus(QWidget):
 
         layout.addWidget(TitleLabel("System Power"), 0, 1)
         layout.addWidget(SystemPowerWidget(controller, layout=QVBoxLayout), 1, 1)
+
+        admin = OptionButton()
+        admin.setText("Admin")
+
+        adminPanel = QLabel("Soon")
+        idx = stack.addWidget(adminPanel)
+        admin.clicked.connect(lambda: stack.setCurrentIndex(idx))
+        buttonGroup.addButton(admin, idx)
+
+        layout.addWidget(admin, 3, 1)
 
         layout.setRowStretch(1, 1)
         layout.setRowStretch(3, 1)

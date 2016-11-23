@@ -61,7 +61,7 @@ class PowerRoomControls(QWidget):
             bottomBar.addWidget(button)
             return idx
 
-        self.systemStatus = SystemStatus(controller)
+        self.systemStatus = SystemStatus(controller, stack, self.screenButtons)
 
         addScreen("Status", self.systemStatus, ":icons/applications-system")
 
@@ -72,7 +72,8 @@ class PowerRoomControls(QWidget):
         addScreen("Blinds", BlindsControl(controller['Blinds']), ":icons/blinds")
         addScreen("Screens", ProjectorScreenControl(controller['Screens']), ":icons/screens")
 
-        self.screenButtons.buttons()[0].setChecked(True)
+        self.screenButtons.buttons()[1].setChecked(True)
+        stack.setCurrentIndex(1)
 
         bottomBar.addWidget(Clock())
         bottomBar.addWidget(ControllerConnectionStatus(controller))
