@@ -71,5 +71,16 @@ QComboBox {
 
 QComboBox::drop-down {
   border: 0;
+}
 
+PinProtectedScreen QWidget {
+  background-color: #5F1900;
+}
+
+PinProtectedScreen QAbstractButton {
+  background-color: #A51D16;
+}
+
+PinProtectedScreen QAbstractButton:pressed, PinProtectedScreen QAbstractButton:checked {
+  background-color: #FFFDE4;
 }

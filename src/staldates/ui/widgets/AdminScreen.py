@@ -1,4 +1,5 @@
-from PySide.QtGui import QWidget, QStackedLayout, QGridLayout, QLabel
+from PySide.QtGui import QWidget, QStackedLayout, QGridLayout, QLabel,\
+    QVBoxLayout, QFrame
 from staldates.ui.widgets.Labels import TitleLabel
 from staldates.ui.widgets.Buttons import ExpandingButton
 from PySide.QtCore import QTimer
@@ -83,3 +84,18 @@ class PinProtectedScreen(QWidget):
 class AdminScreen(PinProtectedScreen):
     def __init__(self, pin=None, parent=None):
         PinProtectedScreen.__init__(self, pin=pin, parent=parent)
+
+    def innerScreen(self):
+        layout = QVBoxLayout()
+
+        layout.addWidget(TitleLabel("Administrative functions"))
+
+        btnRestartAVX = ExpandingButton(text="Restart AVX controller process")
+        layout.addWidget(btnRestartAVX)
+
+        btnRestartMachine = ExpandingButton(text="Restart control server")
+        layout.addWidget(btnRestartMachine)
+
+        widget = QFrame()
+        widget.setLayout(layout)
+        return widget
