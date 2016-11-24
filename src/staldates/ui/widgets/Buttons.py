@@ -6,11 +6,13 @@ from PySide.QtSvg import QSvgRenderer
 
 class ExpandingButton(QToolButton):
 
-    def __init__(self, parent=None):
+    def __init__(self, text=None, parent=None):
         super(ExpandingButton, self).__init__(parent)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setIconSize(QSize(48, 48))
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        if text:
+            self.setText(text)
 
 
 class InputButton(ExpandingButton):
