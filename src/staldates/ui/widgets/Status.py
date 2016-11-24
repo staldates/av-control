@@ -1,5 +1,5 @@
 from PySide.QtGui import QWidget, QVBoxLayout, QPixmap, QMessageBox, QPushButton,\
-    QGridLayout, QLabel
+    QGridLayout
 from Pyro4.errors import PyroError
 from enum import Enum
 from PySide.QtCore import QSize, QTimer
@@ -7,6 +7,7 @@ from staldates.ui.widgets.OutputsGrid import OutputsGrid
 from staldates.ui.widgets.Labels import TitleLabel
 from staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
 from staldates.ui.widgets.Buttons import OptionButton
+from staldates.ui.widgets.AdminScreen import AdminScreen
 
 
 class Status(Enum):
@@ -81,7 +82,7 @@ class SystemStatus(QWidget):
         admin = OptionButton()
         admin.setText("Admin")
 
-        adminPanel = QLabel("Soon")
+        adminPanel = AdminScreen("1234")
         idx = stack.addWidget(adminPanel)
         admin.clicked.connect(lambda: stack.setCurrentIndex(idx))
         buttonGroup.addButton(admin, idx)
