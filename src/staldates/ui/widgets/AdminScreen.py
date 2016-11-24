@@ -41,7 +41,7 @@ class PinProtectedScreen(QWidget):
         layout.addWidget(pinEntry, 1, 1, 1, 3)
 
         def numberButton(num):
-            btn = ExpandingButton(num)
+            btn = ExpandingButton(text=num)
 
             def btnClick():
                 pinEntry.setText(pinEntry.text() + num)
@@ -59,13 +59,13 @@ class PinProtectedScreen(QWidget):
         layout.addWidget(numberButton("2"), 4, 2)
         layout.addWidget(numberButton("3"), 4, 3)
 
-        delBtn = ExpandingButton("<")
+        delBtn = ExpandingButton(text="<")
         delBtn.clicked.connect(lambda: pinEntry.setText(pinEntry.text()[0:-1]))
         layout.addWidget(delBtn, 5, 1)
 
         layout.addWidget(numberButton("0"), 5, 2)
 
-        clrBtn = ExpandingButton("Clear")
+        clrBtn = ExpandingButton(text="Clear")
         clrBtn.clicked.connect(lambda: pinEntry.setText(""))
         layout.addWidget(clrBtn, 5, 3)
 
