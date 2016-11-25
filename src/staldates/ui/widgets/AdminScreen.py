@@ -3,6 +3,7 @@ from PySide.QtGui import QWidget, QStackedLayout, QGridLayout, QLabel,\
 from staldates.ui.widgets.Labels import TitleLabel
 from staldates.ui.widgets.Buttons import ExpandingButton
 from PySide.QtCore import QTimer
+from staldates.admin import restart_avx_controller, restart_server
 
 
 TIMEOUT = 1000 * 60 * 5  # five minutes until PIN entry expires
@@ -91,9 +92,11 @@ class AdminScreen(PinProtectedScreen):
         layout.addWidget(TitleLabel("Administrative functions"))
 
         btnRestartAVX = ExpandingButton(text="Restart AVX controller process")
+        btnRestartAVX.clicked.connect(restart_avx_controller)
         layout.addWidget(btnRestartAVX)
 
         btnRestartMachine = ExpandingButton(text="Restart control server")
+        btnRestartMachine.clicked.connect(restart_server)
         layout.addWidget(btnRestartMachine)
 
         widget = QFrame()
