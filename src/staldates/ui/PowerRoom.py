@@ -12,7 +12,7 @@ from staldates.ui.widgets.Status import ControllerConnectionStatus, SystemStatus
 
 class PowerRoomControl(QMainWindow):
 
-    def __init__(self, controller):
+    def __init__(self, controller, adminPin):
         super(PowerRoomControl, self).__init__()
         self.controller = controller
 
@@ -20,7 +20,7 @@ class PowerRoomControl(QMainWindow):
         self.resize(800, 600)
         self.setWindowIcon(QIcon(":icons/video-display"))
 
-        self.controls = PowerRoomControls(controller, self)
+        self.controls = PowerRoomControls(controller, adminPin, self)
         self.setCentralWidget(self.controls)
 
         self.pnd = PowerNotificationDialog(self)
@@ -38,7 +38,7 @@ class PowerRoomControl(QMainWindow):
 
 
 class PowerRoomControls(QWidget):
-    def __init__(self, controller, parent=None):
+    def __init__(self, controller, adminPin=None, parent=None):
         QWidget.__init__(self, parent)
         layout = QGridLayout()
 
@@ -61,7 +61,7 @@ class PowerRoomControls(QWidget):
             bottomBar.addWidget(button)
             return idx
 
-        self.systemStatus = SystemStatus(controller, stack, self.screenButtons)
+        self.systemStatus = SystemStatus(controller, stack, self.screenButtons, adminPin)
 
         addScreen("Status", self.systemStatus, ":icons/applications-system")
 

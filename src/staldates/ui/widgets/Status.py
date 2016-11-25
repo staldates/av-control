@@ -65,7 +65,7 @@ class ControllerConnectionStatus(QWidget):
 
 
 class SystemStatus(QWidget):
-    def __init__(self, controller, stack, buttonGroup, parent=None):
+    def __init__(self, controller, stack, buttonGroup, pin=None, parent=None):
         super(SystemStatus, self).__init__(parent)
         self.controller = controller
 
@@ -82,7 +82,7 @@ class SystemStatus(QWidget):
         admin = OptionButton()
         admin.setText("Admin")
 
-        adminPanel = AdminScreen("1234")
+        adminPanel = AdminScreen(pin)
         idx = stack.addWidget(adminPanel)
         admin.clicked.connect(lambda: stack.setCurrentIndex(idx))
         buttonGroup.addButton(admin, idx)

@@ -5,6 +5,7 @@ import argparse
 import atexit
 import fcntl  # @UnresolvedImport
 import logging
+import os
 import sys
 
 import Pyro4
@@ -63,7 +64,8 @@ def main():
     try:
         controller = Controller.fromPyro(args.c)
 
-        myapp = PowerRoomControl(controller)
+        adminPin = os.environ.get("ADMIN_PIN", None)
+        myapp = PowerRoomControl(controller, adminPin)
 
         client = AvControlClient(myapp)
         client.setDaemon(True)
