@@ -4,7 +4,7 @@ Created on 15 Apr 2013
 @author: jrem
 '''
 from avx.devices.Device import Device
-from avx.devices.VISCACamera import Shutter, Aperture, Gain
+from avx.devices.serial.VISCACamera import Shutter, Aperture, Gain
 from mock import MagicMock
 from PySide.QtCore import Qt
 from PySide.QtTest import QTest
