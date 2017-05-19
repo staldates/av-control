@@ -118,10 +118,13 @@ def zoom_speed_from_axis(axis):
 
 
 class CameraJoystickAdapter(Thread):
-    def __init__(self, js):
+    def __init__(self, js, map_pan=pan_speed_from_axis, map_tilt=tilt_speed_from_axis, map_zoom=zoom_speed_from_axis):
         super(CameraJoystickAdapter, self).__init__()
         js.add_axis_handler(self._handle_axis)
         self._axes = [0, 0, 0, 0]
+        self.map_pan = map_pan
+        self.map_tilt = map_tilt
+        self.map_zoom = map_zoom
         self.set_camera(None)
 
     def set_camera(self, camera):
@@ -144,8 +147,8 @@ class CameraJoystickAdapter(Thread):
         if self._camera is None:
             return
         direction = Direction.from_axes(self._axes[0], self._axes[1])
-        pan_speed = pan_speed_from_axis(self._axes[0])
-        tilt_speed = tilt_speed_from_axis(self._axes[1])
+        pan_speed = self.map_pan(self._axes[0])
+        tilt_speed = self.map_tilt(self._axes[1])
 
         if (direction, pan_speed, tilt_speed) != self._last_sent_pan_tilt:
             self._last_sent_pan_tilt = (direction, pan_speed, tilt_speed)
@@ -153,7 +156,7 @@ class CameraJoystickAdapter(Thread):
             getattr(self._camera, direction.value)(pan_speed, tilt_speed)
 
         zoom_dir = Zoom.from_axis(self._axes[3])
-        zoom_speed = zoom_speed_from_axis(self._axes[3])
+        zoom_speed = self.map_zoom(self._axes[3])
 
         if (zoom_dir, zoom_speed) != self._last_sent_zoom:
             self._last_sent_zoom = (zoom_dir, zoom_speed)
