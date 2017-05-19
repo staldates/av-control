@@ -1,6 +1,8 @@
-from avx.Sequencer import ControllerEvent, DeviceEvent, LogEvent, SleepEvent
+from avx.Sequencer import ControllerEvent, DeviceEvent, LogEvent, SleepEvent,\
+    BroadcastEvent
 from PySide.QtCore import Qt
 from PySide.QtGui import QHBoxLayout
+from staldates import MessageTypes
 from staldates.ui.widgets.Buttons import SvgButton
 from staldates.ui.widgets.Dialogs import handlePyroErrors
 from staldates.ui.widgets.Screens import ScreenWithBackButton
@@ -35,7 +37,7 @@ class SystemPowerWidget(ScreenWithBackButton):
     @handlePyroErrors
     def powerOn(self):
         self.controller.sequence(
-            ControllerEvent("showPowerOnDialogOnClients"),
+            BroadcastEvent(MessageTypes.SHOW_POWER_ON, "Client", None),
             LogEvent(logging.INFO, "Turning system power on"),
             DeviceEvent("Power", "on", 1),
             SleepEvent(3),
@@ -45,14 +47,14 @@ class SystemPowerWidget(ScreenWithBackButton):
             SleepEvent(3),
             DeviceEvent("Power", "on", 4),
             ControllerEvent("initialise"),  # By this time all things we care about to initialise will have been switched on
-            ControllerEvent("hidePowerDialogOnClients"),
+            BroadcastEvent(MessageTypes.HIDE_POWER, "Client", None),
             LogEvent(logging.INFO, "Power on sequence complete")
         )
 
     @handlePyroErrors
     def powerOff(self):
         self.controller.sequence(
-            ControllerEvent("showPowerOffDialogOnClients"),
+            BroadcastEvent(MessageTypes.SHOW_POWER_OFF, "Client", None),
             LogEvent(logging.INFO, "Turning system power off"),
             DeviceEvent("Power", "off", 4),
             SleepEvent(3),
@@ -61,6 +63,6 @@ class SystemPowerWidget(ScreenWithBackButton):
             DeviceEvent("Power", "off", 2),
             SleepEvent(3),
             DeviceEvent("Power", "off", 1),
-            ControllerEvent("hidePowerDialogOnClients"),
+            BroadcastEvent(MessageTypes.HIDE_POWER, "Client", None),
             LogEvent(logging.INFO, "Power off sequence complete")
         )

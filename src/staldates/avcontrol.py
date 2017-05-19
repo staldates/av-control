@@ -5,10 +5,11 @@ import logging
 import Pyro4
 import sys
 
-from avx.Client import Client
+from avx.Client import Client, MessageTypes as GlobalMessageTypes
 from avx.controller.Controller import Controller, VersionMismatchError
 from PySide.QtCore import Qt, QFile, QObject, QCoreApplication, QEvent
 from PySide.QtGui import QApplication
+from staldates import MessageTypes
 from staldates.ui import resources  # @UnusedImport  # Initialises the Qt resources
 from staldates.ui.MainWindow import MainWindow
 from staldates.ui.StringConstants import StringConstants
@@ -29,21 +30,16 @@ class AvControlClient(Client):
         invoke_in_main_thread(self.avcontrol.errorBox, text)
         return True
 
-    def showPowerOnDialog(self):
-        invoke_in_main_thread(self.avcontrol.showPowerDialog, StringConstants.poweringOn)
-        return True
-
-    def showPowerOffDialog(self):
-        invoke_in_main_thread(self.avcontrol.showPowerDialog, StringConstants.poweringOff)
-        return True
-
-    def hidePowerDialog(self):
-        invoke_in_main_thread(self.avcontrol.hidePowerDialog)
-        return True
-
-    def updateOutputMappings(self, mapping):
-        invoke_in_main_thread(self.avcontrol.updateOutputMappings, mapping)
-        return True
+    @Pyro4.expose
+    def handleMessage(self, msgType, sourceDeviceID, data):
+        if msgType == MessageTypes.SHOW_POWER_ON:
+            invoke_in_main_thread(self.avcontrol.showPowerDialog, StringConstants.poweringOn)
+        elif msgType == MessageTypes.SHOW_POWER_OFF:
+            invoke_in_main_thread(self.avcontrol.showPowerDialog, StringConstants.poweringOff)
+        elif msgType == MessageTypes.HIDE_POWER:
+            invoke_in_main_thread(self.avcontrol.hidePowerDialog)
+        elif msgType == GlobalMessageTypes.OUTPUT_MAPPING:
+            invoke_in_main_thread(self.avcontrol.updateOutputMappings, sourceDeviceID, data)
 
 
 class InvokeEvent(QEvent):
@@ -62,6 +58,7 @@ class Invoker(QObject):
         event.fn(*event.args, **event.kwargs)
 
         return True
+
 
 _invoker = Invoker()
 
@@ -127,6 +124,7 @@ def main():
 
     except VersionMismatchError as e:
         Dialogs.errorBox(str(e))
+
 
 if __name__ == '__main__':
     main()

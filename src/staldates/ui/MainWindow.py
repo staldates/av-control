@@ -128,5 +128,5 @@ class MainWindow(QMainWindow):
         if self.stack.currentWidget() == self.spc:
             self.stepBack()
 
-    def updateOutputMappings(self, mapping):
-        self.mainScreen.updateOutputMappings(mapping)
+    def updateOutputMappings(self, deviceID, mapping):
+        self.mainScreen.updateOutputMappings({deviceID: mapping})
