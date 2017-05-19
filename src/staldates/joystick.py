@@ -102,13 +102,13 @@ class Zoom(Enum):
 def pan_speed_from_axis(axis):
     # Must return between 1 and 24 inclusive (0 when stopped)
     raw = abs(axis)
-    return math.ceil(24 * raw / 32767)
+    return 1 + math.ceil(23 * raw / 32767)
 
 
 def tilt_speed_from_axis(axis):
     # Must return between 1 and 20 inclusive (0 when stopped)
     raw = abs(axis)
-    return math.ceil(20 * raw / 32767)
+    return 1 + math.ceil(19 * raw / 32767)
 
 
 def zoom_speed_from_axis(axis):
@@ -149,6 +149,7 @@ class CameraJoystickAdapter(Thread):
 
         if (direction, pan_speed, tilt_speed) != self._last_sent_pan_tilt:
             self._last_sent_pan_tilt = (direction, pan_speed, tilt_speed)
+            print self._last_sent_pan_tilt
             getattr(self._camera, direction.value)(pan_speed, tilt_speed)
 
         zoom_dir = Zoom.from_axis(self._axes[3])
@@ -156,6 +157,7 @@ class CameraJoystickAdapter(Thread):
 
         if (zoom_dir, zoom_speed) != self._last_sent_zoom:
             self._last_sent_zoom = (zoom_dir, zoom_speed)
+            print self._last_sent_zoom
             if zoom_dir == Zoom.STOP:
                 self._camera.zoomStop()
             else:
