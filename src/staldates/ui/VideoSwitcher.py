@@ -184,6 +184,10 @@ class VideoSwitcher(QWidget):
             self.outputsGrid.setEnabled(True)
             self.outputsGrid.btnPCMix.setEnabled(True)
 
+        if inputID == 7:  # Camera 4
+            self.extrasSwitcher.inputs.button(1).setChecked(True)
+            self.handleExtrasSelect(VisualsSystem.extras1)
+
     def handleOutputSelect(self):
         outputChannel = self.sender().ID
         inputID = self.inputs.checkedId()
