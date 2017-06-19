@@ -50,6 +50,14 @@ class VideoSwitcher(QWidget):
         self.inputs.addButton(self.btnCamera3, 3)
         self.btnCamera3.setIcon(QIcon(":icons/camera-video"))
 
+        if self.controller.hasDevice("Camera 4"):
+            self.btnCamera4 = CameraSelectionButton(4)
+            self.btnCamera4.setText("Camera 4")
+            self.btnCamera4.setInput(VisualsSystem.camera4)
+            inputsGrid.addWidget(self.btnCamera4)
+            self.inputs.addButton(self.btnCamera4, 7)
+            self.btnCamera4.setIcon(QIcon(":icons/camera-video"))
+
         self.btnDVD = InputButton()
         self.btnDVD.setText("DVD")
         self.btnDVD.setInput(VisualsSystem.dvd)
@@ -105,6 +113,7 @@ class VideoSwitcher(QWidget):
             QLabel(StringConstants.noDevice),  # DVD - no controls
             self.extrasSwitcher if self.controller.hasDevice("Extras") else QLabel(StringConstants.noDevice),  # Extras
             EclipseControls(self.controller["Main Scan Converter"]) if self.controller.hasDevice("Main Scan Converter") else QLabel(StringConstants.noDevice),  # Visuals PC
+            CameraControl(self.controller["Camera 4"]) if self.controller.hasDevice("Camera 4") else QLabel(StringConstants.noDevice),
         ]
         self.advPanels = [
             None,
@@ -113,7 +122,8 @@ class VideoSwitcher(QWidget):
             AdvancedCameraControl("Camera 3", self.controller["Camera 3"], self.mainWindow) if self.controller.hasDevice("Camera 1") else None,
             None,
             None,
-            None
+            None,
+            AdvancedCameraControl("Camera 4", self.controller["Camera 4"], self.mainWindow) if self.controller.hasDevice("Camera 4") else None,
         ]
 
     def setInputClickHandlers(self):
@@ -173,6 +183,10 @@ class VideoSwitcher(QWidget):
         else:
             self.outputsGrid.setEnabled(True)
             self.outputsGrid.btnPCMix.setEnabled(True)
+
+        if inputID == 7:  # Camera 4
+            self.extrasSwitcher.inputs.button(1).setChecked(True)
+            self.handleExtrasSelect(VisualsSystem.extras1)
 
     def handleOutputSelect(self):
         outputChannel = self.sender().ID

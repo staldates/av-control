@@ -131,3 +131,7 @@ extras2 = ExtrasInput(2, "Extras 2")
 extras3 = ExtrasInput(3, "Extras 3")
 extras4 = ExtrasInput(4, "Extras 4")
 visualsPCVideo = ExtrasInput(8, "PC video")
+
+# Special
+
+camera4 = ExtrasInput(1, "Camera 4")
