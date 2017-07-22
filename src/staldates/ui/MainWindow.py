@@ -7,7 +7,6 @@ from staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
 from staldates.ui.VideoSwitcher import VideoSwitcher
 from staldates.ui.widgets.Dialogs import PowerNotificationDialog
 from staldates.ui.widgets.BlindsControl import BlindsControl
-from staldates.ui.widgets.ProjectorScreensControl import ProjectorScreensControl
 from staldates.ui.widgets.AdvancedMenu import AdvancedMenu
 from staldates.ui.widgets import Dialogs
 from staldates.ui.widgets.LightingControl import LightingControl
@@ -52,16 +51,6 @@ class MainWindow(QMainWindow):
         blinds.setIcon(QIcon(":icons/blinds"))
         blinds.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         mainLayout.addWidget(blinds, 1, column)
-        column += 1
-
-        self.sc = ProjectorScreensControl(controller["Screens"], self)
-
-        screens = ExpandingButton()
-        screens.setText("Screens")
-        screens.clicked.connect(lambda: self.showScreen(self.sc))
-        screens.setIcon(QIcon(":icons/screens"))
-        screens.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        mainLayout.addWidget(screens, 1, column)
         column += 1
 
         if controller.hasDevice("Lights"):

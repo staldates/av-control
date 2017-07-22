@@ -10,7 +10,6 @@ from staldates.ui.tests.TestUtils import MockController
 from staldates.ui.VideoSwitcher import VideoSwitcher
 from staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
 from staldates.ui.widgets.LogViewer import LogViewer
-from staldates.ui.widgets.ProjectorScreensControl import ProjectorScreensControl
 from avx.devices.Device import Device
 
 
@@ -62,30 +61,6 @@ class TestMainWindow(GuiTest):
         lw = self.main.stack.currentWidget()
         self.assertTrue(isinstance(lw, LogViewer))
         self.assertEqual(self.mockController.getLog.call_count, 1)
-
-    def testScreens(self):
-        self.findButton(self.main, "Screens").click()
-        top = self.getCurrentScreen()
-        self.assertTrue(isinstance(top, ProjectorScreensControl))
-
-        self.findButton(top, "Raise").click()
-        self.screens.raiseUp.assert_called_once_with(0)
-
-        self.findButton(top, "Lower").click()
-        self.screens.lower.assert_called_once_with(0)
-
-        self.findButton(top, "Stop").click()
-        self.screens.stop.assert_called_once_with(0)
-
-        self.screens.lower.reset_mock()
-        self.screens.raiseUp.reset_mock()
-
-        self.findButton(top, "Left").click()
-        self.findButton(top, "Raise").click()
-        self.screens.raiseUp.assert_called_once_with(1)
-        self.findButton(top, "Right").click()
-        self.findButton(top, "Lower").click()
-        self.screens.lower.assert_called_once_with(2)
 
 
 class FakeLogEntry(object):
