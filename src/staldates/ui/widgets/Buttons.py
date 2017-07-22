@@ -17,15 +17,33 @@ class InputButton(ExpandingButton):
 
     longpress = Signal()
 
-    def __init__(self, parent=None):
+    def __init__(self, myInput, parent=None):
         super(InputButton, self).__init__(parent)
         self.setCheckable(True)
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
-        self.input = None
         self.grabGesture(Qt.TapAndHoldGesture)
 
-    def setInput(self, myInput):
+        self.stateDisplay = QLabel()
+        layout = QVBoxLayout()
+        layout.addWidget(self.stateDisplay)
+        layout.setAlignment(Qt.AlignBottom | Qt.AlignHCenter)
+        self.setLayout(layout)
+
         self.input = myInput
+        self.input.changedState.connect(self._update_from_input)
+        self._update_from_input()
+
+    def _update_from_input(self):
+        self.setText(self.input.label)
+        if self.input.icon:
+            self.setIcon(self.input.icon)
+
+        if self.input.isLive:
+            self.stateDisplay.setText("LIVE")
+        elif self.input.isPreview:
+            self.stateDisplay.setText("PREV")
+        else:
+            self.stateDisplay.setText("")
 
     def event(self, evt):
         if evt.type() == QEvent.Gesture:
