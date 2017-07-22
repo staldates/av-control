@@ -11,6 +11,7 @@ from staldates.ui.widgets.AdvancedMenu import AdvancedMenu
 from staldates.ui.widgets import Dialogs
 from staldates.ui.widgets.LightingControl import LightingControl
 from staldates.ui.widgets.Status import SystemStatus
+from staldates.VisualsSystem import SwitcherState
 
 
 class MainWindow(QMainWindow):
@@ -23,7 +24,10 @@ class MainWindow(QMainWindow):
         self.resize(1024, 600)
         self.setWindowIcon(QIcon(":icons/video-display"))
 
-        self.mainScreen = VideoSwitcher(controller, self)
+        atem = controller['atem']
+        self.switcherState = SwitcherState(atem)
+
+        self.mainScreen = VideoSwitcher(atem, self, self.switcherState)
         self.stack = QStackedWidget()
         self.stack.addWidget(self.mainScreen)
 
