@@ -6,22 +6,31 @@ from PySide.QtSvg import QSvgRenderer
 
 class ExpandingButton(QToolButton):
 
+    longpress = Signal()
+
     def __init__(self, parent=None):
         super(ExpandingButton, self).__init__(parent)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setIconSize(QSize(48, 48))
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.grabGesture(Qt.TapAndHoldGesture)
+
+    def event(self, evt):
+        if evt.type() == QEvent.Gesture:
+            gesture = evt.gesture(Qt.TapAndHoldGesture)
+            if gesture:
+                if gesture.state() == Qt.GestureState.GestureFinished:
+                    self.longpress.emit()
+                    return True
+        return super(ExpandingButton, self).event(evt)
 
 
 class InputButton(ExpandingButton):
-
-    longpress = Signal()
 
     def __init__(self, myInput, parent=None):
         super(InputButton, self).__init__(parent)
         self.setCheckable(True)
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
-        self.grabGesture(Qt.TapAndHoldGesture)
 
         self.stateDisplay = QLabel()
         layout = QVBoxLayout()
@@ -45,15 +54,6 @@ class InputButton(ExpandingButton):
         else:
             self.stateDisplay.setText("")
 
-    def event(self, evt):
-        if evt.type() == QEvent.Gesture:
-            gesture = evt.gesture(Qt.TapAndHoldGesture)
-            if gesture:
-                if gesture.state() == Qt.GestureState.GestureFinished:
-                    self.longpress.emit()
-                    return True
-        return super(InputButton, self).event(evt)
-
 
 class IDedButton(ExpandingButton):
 
@@ -62,19 +62,32 @@ class IDedButton(ExpandingButton):
         self.ID = ID
 
 
-class OutputButton(IDedButton):
+class OutputButton(ExpandingButton):
 
-    def __init__(self, ID, parent=None):
-        super(OutputButton, self).__init__(ID, parent)
-        self.inputDisplay = QLabel()
-        self.inputDisplay.setText("-")
+    longpress = Signal()
+
+    def __init__(self, myOutput, parent=None):
+        super(OutputButton, self).__init__(parent)
+        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+        self.grabGesture(Qt.TapAndHoldGesture)
+
+        self.stateDisplay = QLabel()
         layout = QVBoxLayout()
-        layout.addWidget(self.inputDisplay)
+        layout.addWidget(self.stateDisplay)
         layout.setAlignment(Qt.AlignBottom | Qt.AlignHCenter)
         self.setLayout(layout)
 
-    def setInputText(self, text):
-        self.inputDisplay.setText(text)
+        self.output = myOutput
+        self.output.changedState.connect(self._update_from_output)
+        self._update_from_output()
+
+    def _update_from_output(self):
+        self.setText(self.output.label)
+
+        if self.output.source:
+            self.stateDisplay.setText(self.output.source.label)
+        else:
+            self.stateDisplay.setText("-")
 
 
 class OptionButton(ExpandingButton):

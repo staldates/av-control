@@ -1,6 +1,7 @@
 from PySide.QtGui import QWidget, QGridLayout, QHBoxLayout, QButtonGroup
 from staldates.ui.widgets.Buttons import InputButton
 from avx.devices.net.atem.constants import VideoSource
+from staldates.ui.widgets.OutputsGrid import OutputsGrid
 
 
 class VideoSwitcher(QWidget):
@@ -34,6 +35,12 @@ class VideoSwitcher(QWidget):
             inputs_grid.addWidget(btn)
 
         layout.addLayout(inputs_grid, 0, 0, 1, 7)
+
+        og = OutputsGrid(self.switcherState)
+        layout.addWidget(og, 1, 5, 1, 2)
+
+        layout.setRowStretch(0, 1)
+        layout.setRowStretch(1, 5)
 
         self.setLayout(layout)
 

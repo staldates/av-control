@@ -71,7 +71,7 @@ class Output(QObject):
 def _default_outputs():
     return {
         0: Output("Record", VideoSource.AUX_1),
-        1: Output("Stagess", VideoSource.AUX_2),
+        1: Output("Stage", VideoSource.AUX_2),
         2: Output("Gallery", VideoSource.AUX_3),
         3: Output("Aux 4", VideoSource.AUX_4),
         4: Output("Aux 5", VideoSource.AUX_5),
@@ -87,7 +87,7 @@ class SwitcherState(QObject):
         if atem:
             self.updateInputs(atem.getInputs())
             self.updateTally(atem.getTally())
-            print self.outputs
+            self.updateOutputs(atem.getAuxState())
 
     def updateInputs(self, inputs):
         for source, props in inputs.iteritems():
@@ -106,6 +106,16 @@ class SwitcherState(QObject):
                 self.inputs[source].set_preview(tally['prv'])
                 self.inputs[source].set_live(tally['pgm'])
 
+    def updateOutputs(self, auxMap):
+        for aux, source in auxMap.iteritems():
+            if aux in self.outputs:
+                if source in self.inputs:
+                    self.outputs[aux].set_source(self.inputs[source])
+                else:
+                    self.outputs[aux].set_source(source)
+
     def handleMessage(self, msgType, data):
         if msgType == MessageTypes.TALLY:
             self.updateTally(data)
+        elif msgType == MessageTypes.AUX_OUTPUT_MAPPING:
+            self.updateOutputs(data)
