@@ -49,13 +49,17 @@ class SwitcherState(QObject):
 
         if atem:
             self.updateInputs(atem.getInputs())
+            self.updateTally(atem.getTally())
 
     def updateInputs(self, inputs):
         pass
 
+    def updateTally(self, tallyMap):
+        for source, tally in tallyMap.iteritems():
+            if source in self.inputs:
+                self.inputs[source].set_preview(tally['prv'])
+                self.inputs[source].set_live(tally['pgm'])
+
     def handleMessage(self, msgType, data):
         if msgType == MessageTypes.TALLY:
-            for source, tally in data.iteritems():
-                if source in self.inputs:
-                    self.inputs[source].set_preview(tally['prv'])
-                    self.inputs[source].set_live(tally['pgm'])
+            self.updateTally(data)

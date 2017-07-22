@@ -1,4 +1,4 @@
-from PySide.QtGui import QWidget, QGridLayout, QHBoxLayout
+from PySide.QtGui import QWidget, QGridLayout, QHBoxLayout, QButtonGroup
 from staldates.ui.widgets.Buttons import InputButton
 from avx.devices.net.atem.constants import VideoSource
 
@@ -16,6 +16,7 @@ class VideoSwitcher(QWidget):
         layout = QGridLayout()
 
         inputs_grid = QHBoxLayout()
+        self.inputs = QButtonGroup()
 
         input_buttons_config = [
             (VideoSource.INPUT_1, None, None),
@@ -27,8 +28,14 @@ class VideoSwitcher(QWidget):
         ]
 
         for source, _, _ in input_buttons_config:
-            inputs_grid.addWidget(InputButton(self.switcherState.inputs[source]))
+            btn = InputButton(self.switcherState.inputs[source])
+            btn.clicked.connect(self.preview)
+            self.inputs.addButton(btn)
+            inputs_grid.addWidget(btn)
 
         layout.addLayout(inputs_grid, 0, 0, 1, 7)
 
         self.setLayout(layout)
+
+    def preview(self):
+        self.atem.setPreview(self.inputs.checkedButton().input.source)
