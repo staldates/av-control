@@ -24,7 +24,7 @@ class MainWindow(QMainWindow):
         self.resize(1024, 600)
         self.setWindowIcon(QIcon(":icons/video-display"))
 
-        atem = controller['atem']
+        atem = controller['ATEM']
         self.switcherState = SwitcherState(atem)
 
         self.mainScreen = VideoSwitcher(atem, self, self.switcherState)
