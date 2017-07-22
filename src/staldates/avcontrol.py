@@ -5,14 +5,12 @@ import logging
 import Pyro4
 import sys
 
-from avx.Client import Client, MessageTypes as GlobalMessageTypes
+from avx.Client import Client
 from avx.controller.Controller import Controller, VersionMismatchError
 from PySide.QtCore import Qt, QFile, QObject, QCoreApplication, QEvent
 from PySide.QtGui import QApplication
-from staldates import MessageTypes
 from staldates.ui import resources  # @UnusedImport  # Initialises the Qt resources
 from staldates.ui.MainWindow import MainWindow
-from staldates.ui.StringConstants import StringConstants
 from staldates.ui.widgets import Dialogs
 from staldates.ui.widgets.Dialogs import handlePyroErrors
 
@@ -32,14 +30,7 @@ class AvControlClient(Client):
 
     @Pyro4.expose
     def handleMessage(self, msgType, sourceDeviceID, data):
-        if msgType == MessageTypes.SHOW_POWER_ON:
-            invoke_in_main_thread(self.avcontrol.showPowerDialog, StringConstants.poweringOn)
-        elif msgType == MessageTypes.SHOW_POWER_OFF:
-            invoke_in_main_thread(self.avcontrol.showPowerDialog, StringConstants.poweringOff)
-        elif msgType == MessageTypes.HIDE_POWER:
-            invoke_in_main_thread(self.avcontrol.hidePowerDialog)
-        elif msgType == GlobalMessageTypes.OUTPUT_MAPPING:
-            invoke_in_main_thread(self.avcontrol.updateOutputMappings, sourceDeviceID, data)
+        invoke_in_main_thread(self.avcontrol.handleMessage, msgType, sourceDeviceID, data)
 
 
 class InvokeEvent(QEvent):

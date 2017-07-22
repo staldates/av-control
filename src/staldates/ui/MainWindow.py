@@ -12,6 +12,8 @@ from staldates.ui.widgets import Dialogs
 from staldates.ui.widgets.LightingControl import LightingControl
 from staldates.ui.widgets.Status import SystemStatus
 from staldates.VisualsSystem import SwitcherState
+from staldates import MessageTypes
+from staldates.ui.StringConstants import StringConstants
 
 
 class MainWindow(QMainWindow):
@@ -123,3 +125,13 @@ class MainWindow(QMainWindow):
 
     def updateOutputMappings(self, deviceID, mapping):
         self.mainScreen.updateOutputMappings({deviceID: mapping})
+
+    def handleMessage(self, msgType, sourceDeviceID, data):
+        if msgType == MessageTypes.SHOW_POWER_ON:
+            self.showPowerDialog(StringConstants.poweringOn)
+        elif msgType == MessageTypes.SHOW_POWER_OFF:
+            self.showPowerDialog(StringConstants.poweringOff)
+        elif msgType == MessageTypes.HIDE_POWER:
+            self.hidePowerDialog()
+        elif sourceDeviceID == "ATEM":
+            self.switcherState.handleMessage(msgType, data)
