@@ -6,24 +6,32 @@ from avx.devices.net.atem.constants import VideoSource, MessageTypes
 
 class TestSwitcherState(TestCase):
 
-    def setUp(self):
-        self.atem = MagicMock()
-        self.ss = SwitcherState(self.atem)
-
     def testTally(self):
-        inp = self.ss.inputs[VideoSource.INPUT_1]
+        atem = MagicMock()
+        ss = SwitcherState(atem)
+        inp = ss.inputs[VideoSource.INPUT_1]
 
         self.assertFalse(inp.isLive)
         self.assertFalse(inp.isPreview)
 
-        self.ss.handleMessage(MessageTypes.TALLY, {VideoSource.INPUT_1: {'pgm': False, 'prv': True}})
+        ss.handleMessage(MessageTypes.TALLY, {VideoSource.INPUT_1: {'pgm': False, 'prv': True}})
         self.assertFalse(inp.isLive)
         self.assertTrue(inp.isPreview)
 
-        self.ss.handleMessage(MessageTypes.TALLY, {VideoSource.INPUT_1: {'pgm': True, 'prv': False}})
+        ss.handleMessage(MessageTypes.TALLY, {VideoSource.INPUT_1: {'pgm': True, 'prv': False}})
         self.assertTrue(inp.isLive)
         self.assertFalse(inp.isPreview)
 
-        self.ss.handleMessage(MessageTypes.TALLY, {VideoSource.INPUT_1: {'pgm': True, 'prv': True}})
+        ss.handleMessage(MessageTypes.TALLY, {VideoSource.INPUT_1: {'pgm': True, 'prv': True}})
         self.assertTrue(inp.isLive)
         self.assertTrue(inp.isPreview)
+
+    def testLoadInputList(self):
+        atem = MagicMock()
+
+        atem.getInputs.return_value = {VideoSource.COLOUR_1: {'name_long': 'A long name for a new input'}}
+        ss = SwitcherState(atem)
+
+        atem.getInputs.assert_called_once()
+        self.assertTrue(VideoSource.COLOUR_1 in ss.inputs)
+        self.assertEqual('A long name for a new input', ss.inputs[VideoSource.COLOUR_1].label)

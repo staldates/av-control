@@ -52,7 +52,11 @@ class SwitcherState(QObject):
             self.updateTally(atem.getTally())
 
     def updateInputs(self, inputs):
-        pass
+        for source, props in inputs.iteritems():
+            if source in self.inputs:
+                self.inputs[source].set_label(props['name_long'])
+            else:
+                self.inputs[source] = Input(source, props['name_long'], None)
 
     def updateTally(self, tallyMap):
         for source, tally in tallyMap.iteritems():
