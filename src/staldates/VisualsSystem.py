@@ -39,7 +39,7 @@ def _default_inputs():
         (VideoSource.INPUT_4, "DVD", QIcon(":icons/media-optical")),
         (VideoSource.INPUT_5, "Visuals PC", QIcon(":icons/computer")),
         (VideoSource.INPUT_6, "PC Video", QIcon(":icons/video-display")),
-        (VideoSource.BLACK, "Black", None)
+        (VideoSource.BLACK, "Black", QIcon(":icons/blackscreen"))
     ]}
 
 

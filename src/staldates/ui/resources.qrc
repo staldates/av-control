@@ -2,6 +2,7 @@
     <qresource prefix="/icons">
         <file alias="applications-system">resources/icons/applications-system.svg</file>
         <file alias="blinds">resources/icons/blinds.svg</file>
+        <file alias="blackscreen">resources/icons/blackscreen.svg</file>
         <file alias="camera-video">resources/icons/camera-video.svg</file>
         <file alias="computer">resources/icons/computer.svg</file>
         <file alias="go-down">resources/icons/go-down.svg</file>
