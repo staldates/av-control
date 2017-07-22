@@ -43,13 +43,51 @@ def _default_inputs():
     ]}
 
 
+class Output(QObject):
+
+    changedState = Signal()
+
+    def __init__(self, label, label_source):
+        super(Output, self).__init__()
+        self.label = label
+        self.source = None
+        self.label_source = label_source
+
+    # Change the note of which source is being sent to this aux
+    def set_source(self, source):
+        if source != self.source:
+            self.source = source
+            self.changedState.emit()
+
+    def set_label(self, label):
+        if label != self.label:
+            self.label = label
+            self.changedState.emit()
+
+    def __repr__(self, *args, **kwargs):
+        return "<Output: {} (Internal ID {}) Showing: {} >".format(self.label, self.label_source, self.source)
+
+
+def _default_outputs():
+    return {
+        0: Output("Record", VideoSource.AUX_1),
+        1: Output("Stagess", VideoSource.AUX_2),
+        2: Output("Gallery", VideoSource.AUX_3),
+        3: Output("Aux 4", VideoSource.AUX_4),
+        4: Output("Aux 5", VideoSource.AUX_5),
+        5: Output("Aux 6", VideoSource.AUX_6),
+    }
+
+
 class SwitcherState(QObject):
     def __init__(self, atem):
         self.inputs = _default_inputs()
+        self.outputs = _default_outputs()
 
         if atem:
             self.updateInputs(atem.getInputs())
             self.updateTally(atem.getTally())
+            print self.outputs
 
     def updateInputs(self, inputs):
         for source, props in inputs.iteritems():
@@ -57,6 +95,10 @@ class SwitcherState(QObject):
                 self.inputs[source].set_label(props['name_long'])
             else:
                 self.inputs[source] = Input(source, props['name_long'], None)
+
+        for output in self.outputs.values():
+            if output.label_source in inputs:
+                output.set_label(inputs[output.label_source]['name_long'])
 
     def updateTally(self, tallyMap):
         for source, tally in tallyMap.iteritems():
