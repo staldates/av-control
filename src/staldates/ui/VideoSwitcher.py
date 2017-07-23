@@ -69,7 +69,7 @@ class VideoSwitcher(QWidget):
         self.atem.setAuxSource(auxIndex + 1, self.inputs.checkedButton().input.source)
 
     def sendToAll(self):
-        self.take()
+        self.atem.setProgram(self.inputs.checkedButton().input.source)
         for aux in self.switcherState.outputs.keys():
             self.sendToAux(aux)
 
