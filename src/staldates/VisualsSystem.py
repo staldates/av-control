@@ -83,7 +83,9 @@ class DSK(QObject):
 
     changedState = Signal()
 
-    def __init__(self):
+    def __init__(self, idx):
+        super(DSK, self).__init__()
+        self.idx = idx
         self.onAir = False
 
     def set_on_air(self, onAir):
@@ -91,12 +93,15 @@ class DSK(QObject):
             self.onAir = onAir
             self.changedState.emit()
 
+    def __repr__(self, *args, **kwargs):
+        return "<DSK #{} (on air: {}) >".format(self.idx, self.onAir)
+
 
 class SwitcherState(QObject):
     def __init__(self, atem):
         self.inputs = _default_inputs()
         self.outputs = _default_outputs()
-        self.dsks = {0: DSK(), 1: DSK()}
+        self.dsks = {0: DSK(1), 1: DSK(2)}
 
         if atem:
             self.updateInputs(atem.getInputs())
@@ -134,6 +139,7 @@ class SwitcherState(QObject):
         for idx, dsk in dskMap.iteritems():
             if idx in self.dsks:
                 self.dsks[idx].set_on_air(dsk['on_air'])
+        print self.dsks
 
     def handleMessage(self, msgType, data):
         if msgType == MessageTypes.TALLY:

@@ -4,6 +4,7 @@ from staldates.ui.widgets.Buttons import InputButton
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
 from staldates.ui.CameraControls import CameraControl, AdvancedCameraControl
 from staldates.ui.StringConstants import StringConstants
+from staldates.ui.widgets.OverlayControl import OverlayControl
 
 
 class VideoSwitcher(QWidget):
@@ -32,7 +33,7 @@ class VideoSwitcher(QWidget):
             ifDevice("Camera 2", VideoSource.INPUT_2, CameraControl(self.controller["Camera 2"]), AdvancedCameraControl("Camera 2", self.controller["Camera 2"], self.mainWindow)),
             ifDevice("Camera 3", VideoSource.INPUT_3, CameraControl(self.controller["Camera 3"]), AdvancedCameraControl("Camera 3", self.controller["Camera 3"], self.mainWindow)),
             (VideoSource.INPUT_4, QLabel(StringConstants.noDevice), None),
-            (VideoSource.INPUT_5, None, None),
+            (VideoSource.INPUT_5, OverlayControl(self.switcherState.dsks[0], self.atem), None),
             (VideoSource.INPUT_6, QLabel(StringConstants.noDevice), None),
             (VideoSource.BLACK, None, None)
         ]
