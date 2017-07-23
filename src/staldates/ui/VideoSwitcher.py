@@ -2,7 +2,7 @@ from avx.devices.net.atem.constants import VideoSource
 from PySide.QtGui import QWidget, QGridLayout, QHBoxLayout, QButtonGroup, QLabel
 from staldates.ui.widgets.Buttons import InputButton
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
-from staldates.ui.CameraControls import CameraControl
+from staldates.ui.CameraControls import CameraControl, AdvancedCameraControl
 from staldates.ui.StringConstants import StringConstants
 
 
@@ -22,9 +22,15 @@ class VideoSwitcher(QWidget):
         inputs_grid = QHBoxLayout()
         self.inputs = QButtonGroup()
 
+        def ifDevice(deviceID, *args):
+            if self.controller.hasDevice(deviceID):
+                return args
+            return (None, None, None)
+
         self.input_buttons_config = [
-            (VideoSource.INPUT_1, CameraControl(self.controller["Camera 1"]) if self.controller.hasDevice("Camera 1") else None, None),
-            (VideoSource.INPUT_2, CameraControl(self.controller["Camera 2"]) if self.controller.hasDevice("Camera 2") else None, None),
+            ifDevice("Camera 1", VideoSource.INPUT_1, CameraControl(self.controller["Camera 1"]), AdvancedCameraControl("Camera 1", self.controller["Camera 1"], self.mainWindow)),
+            ifDevice("Camera 2", VideoSource.INPUT_2, CameraControl(self.controller["Camera 2"]), AdvancedCameraControl("Camera 2", self.controller["Camera 2"], self.mainWindow)),
+            ifDevice("Camera 3", VideoSource.INPUT_3, CameraControl(self.controller["Camera 3"]), AdvancedCameraControl("Camera 3", self.controller["Camera 3"], self.mainWindow)),
             (VideoSource.INPUT_4, QLabel(StringConstants.noDevice), None),
             (VideoSource.INPUT_5, None, None),
             (VideoSource.INPUT_6, QLabel(StringConstants.noDevice), None),
@@ -32,14 +38,15 @@ class VideoSwitcher(QWidget):
         ]
 
         for source, panel, adv_panel in self.input_buttons_config:
-            btn = InputButton(self.switcherState.inputs[source])
-            btn.setProperty("panel", panel)
-            btn.setProperty("adv_panel", adv_panel)
-            btn.clicked.connect(self.preview)
-            btn.clicked.connect(self.displayPanel)
-            btn.longpress.connect(self.displayAdvPanel)
-            self.inputs.addButton(btn)
-            inputs_grid.addWidget(btn)
+            if source:
+                btn = InputButton(self.switcherState.inputs[source])
+                btn.setProperty("panel", panel)
+                btn.setProperty("adv_panel", adv_panel)
+                btn.clicked.connect(self.preview)
+                btn.clicked.connect(self.displayPanel)
+                btn.longpress.connect(self.displayAdvPanel)
+                self.inputs.addButton(btn)
+                inputs_grid.addWidget(btn)
 
         layout.addLayout(inputs_grid, 0, 0, 1, 7)
 
@@ -96,4 +103,6 @@ class VideoSwitcher(QWidget):
                 self.blankWidget.show()
 
     def displayAdvPanel(self):
-        pass
+        adv_panel = self.sender().property("adv_panel")
+        if adv_panel:
+            self.mainWindow.showScreen(adv_panel)
