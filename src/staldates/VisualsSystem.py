@@ -87,10 +87,16 @@ class DSK(QObject):
         super(DSK, self).__init__()
         self.idx = idx
         self.onAir = False
+        self.rate = 1
 
     def set_on_air(self, onAir):
         if self.onAir != onAir:
             self.onAir = onAir
+            self.changedState.emit()
+
+    def set_rate(self, rate):
+        if self.rate != rate:
+            self.rate = rate
             self.changedState.emit()
 
     def __repr__(self, *args, **kwargs):
@@ -139,7 +145,7 @@ class SwitcherState(QObject):
         for idx, dsk in dskMap.iteritems():
             if idx in self.dsks:
                 self.dsks[idx].set_on_air(dsk['on_air'])
-        print self.dsks
+                self.dsks[idx].set_rate(dsk['rate'])
 
     def handleMessage(self, msgType, data):
         if msgType == MessageTypes.TALLY:
