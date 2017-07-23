@@ -29,7 +29,7 @@ class MainWindow(QMainWindow):
         atem = controller['ATEM']
         self.switcherState = SwitcherState(atem)
 
-        self.mainScreen = VideoSwitcher(atem, self, self.switcherState)
+        self.mainScreen = VideoSwitcher(controller, self, self.switcherState)
         self.stack = QStackedWidget()
         self.stack.addWidget(self.mainScreen)
 
