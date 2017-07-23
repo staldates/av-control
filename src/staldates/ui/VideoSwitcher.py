@@ -21,7 +21,7 @@ class VideoSwitcher(QWidget):
         inputs_grid = QHBoxLayout()
         self.inputs = QButtonGroup()
 
-        input_buttons_config = [
+        self.input_buttons_config = [
             (VideoSource.INPUT_1, CameraControl(self.controller["Camera 1"]) if self.controller.hasDevice("Camera 1") else None, None),
             (VideoSource.INPUT_2, CameraControl(self.controller["Camera 2"]) if self.controller.hasDevice("Camera 2") else None, None),
             (VideoSource.INPUT_4, None, None),
@@ -30,7 +30,7 @@ class VideoSwitcher(QWidget):
             (VideoSource.BLACK, None, None)
         ]
 
-        for source, panel, adv_panel in input_buttons_config:
+        for source, panel, adv_panel in self.input_buttons_config:
             btn = InputButton(self.switcherState.inputs[source])
             btn.setProperty("panel", panel)
             btn.setProperty("adv_panel", adv_panel)
