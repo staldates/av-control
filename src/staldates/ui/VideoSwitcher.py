@@ -1,8 +1,9 @@
 from avx.devices.net.atem.constants import VideoSource
-from PySide.QtGui import QWidget, QGridLayout, QHBoxLayout, QButtonGroup
+from PySide.QtGui import QWidget, QGridLayout, QHBoxLayout, QButtonGroup, QLabel
 from staldates.ui.widgets.Buttons import InputButton
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
 from staldates.ui.CameraControls import CameraControl
+from staldates.ui.StringConstants import StringConstants
 
 
 class VideoSwitcher(QWidget):
@@ -24,9 +25,9 @@ class VideoSwitcher(QWidget):
         self.input_buttons_config = [
             (VideoSource.INPUT_1, CameraControl(self.controller["Camera 1"]) if self.controller.hasDevice("Camera 1") else None, None),
             (VideoSource.INPUT_2, CameraControl(self.controller["Camera 2"]) if self.controller.hasDevice("Camera 2") else None, None),
-            (VideoSource.INPUT_4, None, None),
+            (VideoSource.INPUT_4, QLabel(StringConstants.noDevice), None),
             (VideoSource.INPUT_5, None, None),
-            (VideoSource.INPUT_6, None, None),
+            (VideoSource.INPUT_6, QLabel(StringConstants.noDevice), None),
             (VideoSource.BLACK, None, None)
         ]
 
