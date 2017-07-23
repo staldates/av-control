@@ -79,15 +79,30 @@ def _default_outputs():
     }
 
 
+class DSK(QObject):
+
+    changedState = Signal()
+
+    def __init__(self):
+        self.onAir = False
+
+    def set_on_air(self, onAir):
+        if self.onAir != onAir:
+            self.onAir = onAir
+            self.changedState.emit()
+
+
 class SwitcherState(QObject):
     def __init__(self, atem):
         self.inputs = _default_inputs()
         self.outputs = _default_outputs()
+        self.dsks = {0: DSK(), 1: DSK()}
 
         if atem:
             self.updateInputs(atem.getInputs())
             self.updateTally(atem.getTally())
             self.updateOutputs(atem.getAuxState())
+            self.updateDSKs(atem.getDSKState())
 
     def updateInputs(self, inputs):
         for source, props in inputs.iteritems():
@@ -115,8 +130,15 @@ class SwitcherState(QObject):
                     print "BAD THINGS"
                     self.outputs[aux].set_source(source)
 
+    def updateDSKs(self, dskMap):
+        for idx, dsk in dskMap.iteritems():
+            if idx in self.dsks:
+                self.dsks[idx].set_on_air(dsk['on_air'])
+
     def handleMessage(self, msgType, data):
         if msgType == MessageTypes.TALLY:
             self.updateTally(data)
         elif msgType == MessageTypes.AUX_OUTPUT_MAPPING:
             self.updateOutputs(data)
+        elif msgType == MessageTypes.DSK_STATE:
+            self.updateDSKs(data)
