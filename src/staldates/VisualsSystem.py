@@ -112,6 +112,7 @@ class SwitcherState(QObject):
                 if source in self.inputs:
                     self.outputs[aux].set_source(self.inputs[source])
                 else:
+                    print "BAD THINGS"
                     self.outputs[aux].set_source(source)
 
     def handleMessage(self, msgType, data):

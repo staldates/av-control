@@ -84,7 +84,7 @@ class OutputButton(ExpandingButton):
     def _update_from_output(self):
         self.setText(self.output.label)
 
-        if self.output.source:
+        if self.output.source and hasattr(self.output.source, "label"):
             self.stateDisplay.setText(self.output.source.label)
         else:
             self.stateDisplay.setText("-")
