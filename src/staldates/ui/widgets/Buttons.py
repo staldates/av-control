@@ -32,12 +32,6 @@ class InputButton(ExpandingButton):
         self.setCheckable(True)
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
 
-        self.stateDisplay = QLabel()
-        layout = QVBoxLayout()
-        layout.addWidget(self.stateDisplay)
-        layout.setAlignment(Qt.AlignBottom | Qt.AlignHCenter)
-        self.setLayout(layout)
-
         self.input = myInput
         self.input.changedState.connect(self._update_from_input)
         self._update_from_input()
@@ -47,12 +41,11 @@ class InputButton(ExpandingButton):
         if self.input.icon:
             self.setIcon(self.input.icon)
 
-        if self.input.isLive:
-            self.stateDisplay.setText("LIVE")
-        elif self.input.isPreview:
-            self.stateDisplay.setText("PREV")
-        else:
-            self.stateDisplay.setText("")
+        self.setProperty("isLive", self.input.isLive)
+        self.setProperty("isPreview", self.input.isPreview)
+
+        self.style().unpolish(self)
+        self.style().polish(self)
 
 
 class IDedButton(ExpandingButton):

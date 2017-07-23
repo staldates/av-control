@@ -15,13 +15,21 @@ class TestButtons(GuiTest):
         my_input.set_label("A new label")
         self.assertEqual("A new label", ib.text())
 
-        self.assertEqual("", ib.stateDisplay.text())
+        self.assertFalse(ib.property("isLive"))
+        self.assertFalse(ib.property("isPreview"))
+
         my_input.set_live(True)
-        self.assertEqual("LIVE", ib.stateDisplay.text())
+        self.assertTrue(ib.property("isLive"))
+        self.assertFalse(ib.property("isPreview"))
+
         my_input.set_live(False)
-        self.assertEqual("", ib.stateDisplay.text())
+        self.assertFalse(ib.property("isLive"))
+        self.assertFalse(ib.property("isPreview"))
 
         my_input.set_preview(True)
-        self.assertEqual("PREV", ib.stateDisplay.text())
+        self.assertFalse(ib.property("isLive"))
+        self.assertTrue(ib.property("isPreview"))
+
         my_input.set_preview(False)
-        self.assertEqual("", ib.stateDisplay.text())
+        self.assertFalse(ib.property("isLive"))
+        self.assertFalse(ib.property("isPreview"))
