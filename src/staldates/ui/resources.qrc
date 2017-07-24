@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/icons">
+        <file alias="aldates">resources/icons/aldates.svg</file>
         <file alias="applications-system">resources/icons/applications-system.svg</file>
         <file alias="blinds">resources/icons/blinds.svg</file>
         <file alias="blackscreen">resources/icons/blackscreen.svg</file>

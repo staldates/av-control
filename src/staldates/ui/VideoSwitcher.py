@@ -35,6 +35,7 @@ class VideoSwitcher(QWidget):
             (VideoSource.INPUT_4, QLabel(StringConstants.noDevice), None),
             (VideoSource.INPUT_5, OverlayControl(self.switcherState.dsks[0], self.atem), None),
             (VideoSource.INPUT_6, QLabel(StringConstants.noDevice), None),
+            (VideoSource.MEDIA_PLAYER_1, None, None),
             (VideoSource.BLACK, None, None)
         ]
 
