@@ -1,6 +1,7 @@
 from PySide.QtGui import QWidget, QGridLayout, QLabel, QSpinBox
 from staldates.ui.widgets.Buttons import ExpandingButton
 from PySide.QtCore import Qt
+from avx.devices.net.atem.constants import VideoSource
 
 
 class OverlayControl(QWidget):
@@ -47,6 +48,7 @@ class OverlayControl(QWidget):
         layout.setRowStretch(2, 1)
         layout.setRowStretch(3, 1)
 
+        self.resetParams()
         self.update_from_dsk()
 
         self.setLayout(layout)
@@ -66,3 +68,8 @@ class OverlayControl(QWidget):
 
     def setRate(self, rate):
         self.atem.setDSKRate(self.dsk.idx, rate)
+
+    def resetParams(self):
+        self.atem.setDSKFillSource(self.dsk.idx, VideoSource.INPUT_5)
+        self.atem.setDSKKeySource(self.dsk.idx, VideoSource.INPUT_5)
+        self.atem.setDSKParams(self.dsk.idx, preMultiplied=False, gain=500, clip=250)
