@@ -32,11 +32,11 @@ OutputButton>QLabel {
   font-size: 12pt;
 }
 
-InputButton[isPreview="true"] {
+QToolButton[isPreview="true"] {
   border: 3px solid #50FF50;
 }
 
-InputButton[isLive="true"] {
+QToolButton[isLive="true"] {
   border: 3px solid red;
 }
 
