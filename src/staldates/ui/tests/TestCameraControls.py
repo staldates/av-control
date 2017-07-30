@@ -62,7 +62,7 @@ class Test(GuiTest):
         self.assertTrue(buttons[1].isChecked())
         self.assertFalse(buttons[0].isChecked())
         buttons[0].click()
-        self.assertEqual(0, self.cc.presetGroup.checkedId())
+        self.assertEqual(1, self.cc.presetGroup.checkedId())
         self.assertTrue(buttons[0].isChecked())
         self.assertFalse(buttons[1].isChecked())
 
@@ -118,10 +118,10 @@ class Test(GuiTest):
 
     def testPresets(self):
         self.findButton(self.cc, "2").click()
-        self.cam.recallPreset.assert_called_once_with(1)
+        self.cam.recallPreset.assert_called_once_with(2)
         self.findButton(self.cc, "Set").click()  # finds the first one
-        self.cam.storePreset.assert_called_once_with(0)
-        self.assertEquals(0, self.cc.presetGroup.checkedId())
+        self.cam.storePreset.assert_called_once_with(1)
+        self.assertEquals(1, self.cc.presetGroup.checkedId())
 
 # Tests for advanced camera controls
 

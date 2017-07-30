@@ -147,10 +147,10 @@ class CameraControl(QWidget):
 
         self.presetGroup = QButtonGroup()
 
-        for i in range(0, 6):
+        for i in range(1, 7):
             btnPresetRecall = CameraButton()
             presets.addWidget(btnPresetRecall, 0, i, 1, 1)
-            btnPresetRecall.setText(str(i + 1))
+            btnPresetRecall.setText(str(i))
             _safelyConnect(btnPresetRecall.clicked, lambda i=i: self.recallPreset(i))
             btnPresetRecall.setCheckable(True)
             self.presetGroup.addButton(btnPresetRecall, i)
@@ -186,7 +186,7 @@ class CameraControl(QWidget):
     def storePreset(self, index):
         print "Storing preset " + str(index)
         result = self.camera.storePreset(index)
-        self.presetGroup.buttons()[index].setChecked(True)
+        self.presetGroup.buttons()[index - 1].setChecked(True)
         return result
 
     @handlePyroErrors
