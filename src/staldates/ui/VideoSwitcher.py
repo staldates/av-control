@@ -23,19 +23,18 @@ class VideoSwitcher(QWidget):
         inputs_grid = QHBoxLayout()
         self.inputs = QButtonGroup()
 
-        def ifDevice(deviceID, *args):
+        def ifDevice(deviceID, func):
             if self.controller.hasDevice(deviceID):
-                return args
+                return func()
             return (None, None, None)
 
         self.input_buttons_config = [
-            ifDevice("Camera 1", VideoSource.INPUT_1, CameraControl(self.controller["Camera 1"]), AdvancedCameraControl("Camera 1", self.controller["Camera 1"], self.mainWindow)),
-            ifDevice("Camera 2", VideoSource.INPUT_2, CameraControl(self.controller["Camera 2"]), AdvancedCameraControl("Camera 2", self.controller["Camera 2"], self.mainWindow)),
-            ifDevice("Camera 3", VideoSource.INPUT_3, CameraControl(self.controller["Camera 3"]), AdvancedCameraControl("Camera 3", self.controller["Camera 3"], self.mainWindow)),
+            ifDevice("Camera 1", lambda: (VideoSource.INPUT_1, CameraControl(self.controller["Camera 1"]), AdvancedCameraControl("Camera 1", self.controller["Camera 1"], self.mainWindow))),
+            ifDevice("Camera 2", lambda: (VideoSource.INPUT_2, CameraControl(self.controller["Camera 2"]), AdvancedCameraControl("Camera 2", self.controller["Camera 2"], self.mainWindow))),
+            ifDevice("Camera 3", lambda: (VideoSource.INPUT_3, CameraControl(self.controller["Camera 3"]), AdvancedCameraControl("Camera 3", self.controller["Camera 3"], self.mainWindow))),
             (VideoSource.INPUT_4, QLabel(StringConstants.noDevice), None),
             (VideoSource.INPUT_5, OverlayControl(self.switcherState.dsks[0], self.atem), None),
             (VideoSource.INPUT_6, QLabel(StringConstants.noDevice), None),
-            (VideoSource.MEDIA_PLAYER_1, None, None),
             (VideoSource.BLACK, None, None)
         ]
 
