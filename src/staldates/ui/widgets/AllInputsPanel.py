@@ -1,9 +1,8 @@
 from PySide.QtCore import Signal
-from PySide.QtGui import QWidget, QVBoxLayout, QScrollArea, QGridLayout,\
-    QButtonGroup
+from PySide.QtGui import QWidget, QGridLayout, QButtonGroup, QIcon
 from staldates.VisualsSystem import Input
 from avx.devices.net.atem.constants import VideoSource
-from staldates.ui.widgets.Buttons import InputButton
+from staldates.ui.widgets.Buttons import InputButton, ExpandingButton
 
 
 class AllInputsPanel(QWidget):
@@ -14,42 +13,69 @@ class AllInputsPanel(QWidget):
         super(AllInputsPanel, self).__init__(parent)
 
         self.switcherState = switcherState
+        self.selectedInput = None
+        self.page = 0
 
-        layout = QVBoxLayout()
-
-        scrollArea = QScrollArea()
-
+        self.layout = QGridLayout()
         self.input_buttons = QButtonGroup()
 
-        self.inputsGrid = QGridLayout()
-        scrollArea.setLayout(self.inputsGrid)
+        self.btnPageUp = ExpandingButton()
+        self.btnPageUp.setIcon(QIcon(":icons/go-up"))
+        self.btnPageUp.clicked.connect(lambda: self.setPage(self.page - 1))
+        self.layout.addWidget(self.btnPageUp, 0, 5, 3, 1)
 
-        layout.addWidget(scrollArea)
-        self.setLayout(layout)
+        self.btnPageDown = ExpandingButton()
+        self.btnPageDown.setIcon(QIcon(":icons/go-down"))
+        self.btnPageDown.clicked.connect(lambda: self.setPage(self.page + 1))
+        self.layout.addWidget(self.btnPageDown, 3, 5, 3, 1)
+
+        for col in range(5):
+            self.layout.setColumnStretch(col, 1)
+            for row in range(3):
+                btn = InputButton(None)
+                self.layout.addWidget(btn, row * 2, col, 2, 1)
+                self.input_buttons.addButton(btn)
+                btn.clicked.connect(self.selectInput)
+                btn.setFixedWidth(120)
+
+        self.setLayout(self.layout)
 
         self.displayInputs()
 
     def displayInputs(self):
-        for btn in self.input_buttons.buttons()[:]:
-            self.inputsGrid.removeWidget(btn)
-            self.input_buttons.removeButton(btn)
 
         idx = 0
-        for vs in VideoSource:
+        start = self.page * 15
+        end = start + 15
+
+        self.input_buttons.setExclusive(False)
+        for btn in self.input_buttons.buttons():
+            btn.hide()
+            btn.setChecked(False)
+        self.input_buttons.setExclusive(True)
+
+        for vs in list(VideoSource)[start:end]:
             if vs in self.switcherState.inputs.keys():
                 inp = self.switcherState.inputs[vs]
                 if inp.canBeUsed:
-                    btn = InputButton(inp)
-
-                    btn.clicked.connect(self.selectInput)
-
-                    row = idx / 5
+                    row = (idx / 5) * 2
                     col = idx % 5
-                    self.inputsGrid.addWidget(btn, row, col)
-                    self.input_buttons.addButton(btn)
-                    btn.setMinimumHeight(100)
+
+                    btn = self.layout.itemAtPosition(row, col).widget()
+                    btn.setInput(inp)
+                    btn.setChecked(inp == self.selectedInput)
+                    btn.show()
+
                     idx += 1
+
+        self.btnPageUp.setEnabled(self.page > 0)
+        self.btnPageDown.setEnabled(end < len(self.switcherState.inputs))
+
+    def setPage(self, page):
+        self.page = page
+        self.displayInputs()
 
     def selectInput(self):
         inputBtn = self.sender()
+        self.selectedInput = inputBtn.input
         self.inputSelected.emit(inputBtn.input)

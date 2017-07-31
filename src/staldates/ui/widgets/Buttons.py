@@ -49,6 +49,8 @@ class InputButton(ExpandingButton):
         self.setText(self.input.label)
         if self.input.icon:
             self.setIcon(self.input.icon)
+        else:
+            self.setIcon(QIcon())
 
         self.setProperty("isLive", self.input.isLive)
         self.setProperty("isPreview", self.input.isPreview)
