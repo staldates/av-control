@@ -4,6 +4,7 @@ from staldates.ui.widgets.Buttons import InputButton
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
 from staldates.ui.CameraControls import CameraControl, AdvancedCameraControl
 from staldates.ui.StringConstants import StringConstants
+from staldates.ui.widgets.AllInputsPanel import AllInputsPanel
 from staldates.ui.widgets.OverlayControl import OverlayControl
 from staldates.VisualsSystem import with_atem
 
@@ -50,11 +51,21 @@ class VideoSwitcher(QWidget):
                 self.inputs.addButton(btn)
                 inputs_grid.addWidget(btn)
 
-        extrasBtn = InputButton(None)
-        self.inputs.addButton(extrasBtn)
-        extrasBtn.clicked.connect(self.preview)
-        extrasBtn.clicked.connect(self.displayPanel)
-        inputs_grid.insertWidget(len(self.input_buttons_config) - 2, extrasBtn)
+        self.extrasBtn = InputButton(None)
+        self.inputs.addButton(self.extrasBtn)
+        self.extrasBtn.clicked.connect(self.preview)
+        self.extrasBtn.clicked.connect(self.displayPanel)
+
+        self.allInputs = AllInputsPanel(self.switcherState)
+        self.extrasBtn.setProperty("panel", self.allInputs)
+
+        def setExtraInput(inp):
+            self.extrasBtn.setInput(inp)
+            self.preview()
+
+        self.allInputs.inputSelected.connect(setExtraInput)
+
+        inputs_grid.insertWidget(len(self.input_buttons_config) - 2, self.extrasBtn)
 
         layout.addLayout(inputs_grid, 0, 0, 1, 7)
 
