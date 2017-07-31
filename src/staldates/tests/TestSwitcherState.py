@@ -29,7 +29,7 @@ class TestSwitcherState(TestCase):
     def testLoadInputList(self):
         atem = MagicMock()
 
-        atem.getInputs.return_value = {VideoSource.COLOUR_1: {'name_long': 'A long name for a new input'}}
+        atem.getInputs.return_value = {VideoSource.COLOUR_1: {'name_long': 'A long name for a new input', 'me_availability': {'ME1': True}}}
         ss = SwitcherState(atem)
 
         atem.getInputs.assert_called_once()
