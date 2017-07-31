@@ -1,5 +1,6 @@
 from PySide.QtCore import Signal
-from PySide.QtGui import QWidget, QVBoxLayout, QScrollArea, QGridLayout
+from PySide.QtGui import QWidget, QVBoxLayout, QScrollArea, QGridLayout,\
+    QButtonGroup
 from staldates.VisualsSystem import Input
 from avx.devices.net.atem.constants import VideoSource
 from staldates.ui.widgets.Buttons import InputButton
@@ -18,6 +19,8 @@ class AllInputsPanel(QWidget):
 
         scrollArea = QScrollArea()
 
+        self.input_buttons = QButtonGroup()
+
         self.inputsGrid = QGridLayout()
         scrollArea.setLayout(self.inputsGrid)
 
@@ -27,9 +30,9 @@ class AllInputsPanel(QWidget):
         self.displayInputs()
 
     def displayInputs(self):
-        while not self.inputsGrid.isEmpty():
-            item = self.inputsGrid.takeAt(0)
-            self.inputsGrid.removeItem(item)
+        for btn in self.input_buttons.buttons()[:]:
+            self.inputsGrid.removeWidget(btn)
+            self.input_buttons.removeButton(btn)
 
         idx = 0
         for vs in VideoSource:
@@ -43,6 +46,8 @@ class AllInputsPanel(QWidget):
                     row = idx / 5
                     col = idx % 5
                     self.inputsGrid.addWidget(btn, row, col)
+                    self.input_buttons.addButton(btn)
+                    btn.setMinimumHeight(100)
                     idx += 1
 
     def selectInput(self):
