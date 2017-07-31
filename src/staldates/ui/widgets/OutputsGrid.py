@@ -22,11 +22,14 @@ class OutputsGrid(QFrame):
         btnMain.clicked.connect(self.take.emit)
         layout.addWidget(btnMain, 0, 0, 1, 2)
 
+        self.aux_buttons = []
+
         for idx, output in switcherState.outputs.iteritems():
             ob = OutputButton(output)
             layout.addWidget(ob, 1 + (idx / 2), idx % 2)
             ob.clicked.connect(self.signalMapper.map)
             self.signalMapper.setMapping(ob, idx)
+            self.aux_buttons.append(ob)
 
         self.signalMapper.mapped.connect(self.registerClick)
 
@@ -35,10 +38,10 @@ class OutputsGrid(QFrame):
         btnMainToAll.clicked.connect(self.mainToAll.emit)
         layout.addWidget(btnMainToAll, 4, 0)
 
-        btnAll = ExpandingButton()
-        btnAll.setText("All")
-        btnAll.clicked.connect(self.all.emit)
-        layout.addWidget(btnAll, 4, 1)
+        self.btnAll = ExpandingButton()
+        self.btnAll.setText("All")
+        self.btnAll.clicked.connect(self.all.emit)
+        layout.addWidget(self.btnAll, 4, 1)
 
         layout.setColumnMinimumWidth(0, 100)
         layout.setColumnMinimumWidth(1, 100)
@@ -49,3 +52,8 @@ class OutputsGrid(QFrame):
 
     def registerClick(self, idx):
         self.selected.emit(idx)
+
+    def setAuxesEnabled(self, enabled):
+        for button in self.aux_buttons:
+            button.setEnabled(enabled)
+        self.btnAll.setEnabled(enabled)

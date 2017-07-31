@@ -58,14 +58,14 @@ class VideoSwitcher(QWidget):
 
         layout.addLayout(inputs_grid, 0, 0, 1, 7)
 
-        og = OutputsGrid(self.switcherState)
+        self.og = OutputsGrid(self.switcherState)
 
-        og.take.connect(self.take)
-        og.selected.connect(self.sendToAux)
-        og.mainToAll.connect(self.sendMainToAllAuxes)
-        og.all.connect(self.sendToAll)
+        self.og.take.connect(self.take)
+        self.og.selected.connect(self.sendToAux)
+        self.og.mainToAll.connect(self.sendMainToAllAuxes)
+        self.og.all.connect(self.sendToAll)
 
-        layout.addWidget(og, 1, 5, 1, 2)
+        layout.addWidget(self.og, 1, 5, 1, 2)
 
         self.blankWidget = QWidget()
         layout.addWidget(self.blankWidget, 1, 0, 1, 5)
@@ -78,7 +78,10 @@ class VideoSwitcher(QWidget):
     @with_atem
     def preview(self):
         if self.inputs.checkedButton().input:
+            self.og.setAuxesEnabled(True)
             self.atem.setPreview(self.inputs.checkedButton().input.source)
+        else:
+            self.og.setAuxesEnabled(False)
 
     @with_atem
     def take(self):
