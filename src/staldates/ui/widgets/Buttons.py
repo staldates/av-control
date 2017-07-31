@@ -25,6 +25,24 @@ class ExpandingButton(QToolButton):
         return super(ExpandingButton, self).event(evt)
 
 
+def _add_line_breaks(text, every_n=10):
+    if len(text) <= every_n:
+        return text
+    by_word = text.split(' ')
+
+    lines = []
+    line = ''
+    while len(by_word) > 0:
+        next_word = by_word.pop(0)
+        if len(line) + len(next_word) + 1 > every_n:
+            lines.append(line.strip())
+            line = ''
+        line += next_word + ' '
+    lines.append(line.strip())
+
+    return '\n'.join(lines)
+
+
 class InputButton(ExpandingButton):
 
     def __init__(self, myInput, parent=None):
@@ -46,7 +64,7 @@ class InputButton(ExpandingButton):
             self.setText("Extras")
 
     def _update_from_input(self):
-        self.setText(self.input.label)
+        self.setText(_add_line_breaks(self.input.label))
         if self.input.icon:
             self.setIcon(self.input.icon)
         else:
