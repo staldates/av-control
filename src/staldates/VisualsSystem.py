@@ -1,6 +1,18 @@
 from avx.devices.net.atem import VideoSource, MessageTypes
+from avx.devices.net.atem.utils import NotInitializedException
 from PySide.QtCore import QObject, Signal
 from PySide.QtGui import QIcon
+from staldates.ui.widgets.Dialogs import errorBox
+
+
+def with_atem(func):
+    def inner(elf, *args):
+        if elf.atem:
+            try:
+                func(elf, *args)
+            except NotInitializedException:
+                errorBox("Controller is not connected to the visuals switcher!")
+    return inner
 
 
 class Input(QObject):

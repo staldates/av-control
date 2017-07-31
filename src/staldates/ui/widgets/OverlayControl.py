@@ -1,7 +1,8 @@
+from avx.devices.net.atem.constants import VideoSource
+from PySide.QtCore import Qt
 from PySide.QtGui import QWidget, QGridLayout, QLabel, QSpinBox
 from staldates.ui.widgets.Buttons import ExpandingButton
-from PySide.QtCore import Qt
-from avx.devices.net.atem.constants import VideoSource
+from staldates.VisualsSystem import with_atem
 
 
 class OverlayControl(QWidget):
@@ -60,20 +61,20 @@ class OverlayControl(QWidget):
         self.onAirButton.style().polish(self.onAirButton)
         self.rate.setValue(self.dsk.rate)
 
+    @with_atem
     def setOnAir(self):
-        if self.atem:
-            self.atem.setDSKOnAir(self.dsk.idx, self.onAirButton.isChecked())
+        self.atem.setDSKOnAir(self.dsk.idx, self.onAirButton.isChecked())
 
+    @with_atem
     def takeAuto(self):
-        if self.atem:
-            self.atem.performDSKAuto(self.dsk.idx)
+        self.atem.performDSKAuto(self.dsk.idx)
 
+    @with_atem
     def setRate(self, rate):
-        if self.atem:
-            self.atem.setDSKRate(self.dsk.idx, rate)
+        self.atem.setDSKRate(self.dsk.idx, rate)
 
+    @with_atem
     def resetParams(self):
-        if self.atem:
             self.atem.setDSKFillSource(self.dsk.idx, VideoSource.INPUT_5)
             self.atem.setDSKKeySource(self.dsk.idx, VideoSource.INPUT_5)
             self.atem.setDSKParams(self.dsk.idx, preMultiplied=False, gain=500, clip=250)

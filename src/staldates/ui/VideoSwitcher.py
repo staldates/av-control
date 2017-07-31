@@ -5,6 +5,7 @@ from staldates.ui.widgets.OutputsGrid import OutputsGrid
 from staldates.ui.CameraControls import CameraControl, AdvancedCameraControl
 from staldates.ui.StringConstants import StringConstants
 from staldates.ui.widgets.OverlayControl import OverlayControl
+from staldates.VisualsSystem import with_atem
 
 
 class VideoSwitcher(QWidget):
@@ -68,20 +69,25 @@ class VideoSwitcher(QWidget):
 
         self.setLayout(layout)
 
+    @with_atem
     def preview(self):
         self.atem.setPreview(self.inputs.checkedButton().input.source)
 
+    @with_atem
     def take(self):
         self.atem.performCut()
 
+    @with_atem
     def sendToAux(self, auxIndex):
         self.atem.setAuxSource(auxIndex + 1, self.inputs.checkedButton().input.source)
 
+    @with_atem
     def sendToAll(self):
         self.atem.setProgram(self.inputs.checkedButton().input.source)
         for aux in self.switcherState.outputs.keys():
             self.sendToAux(aux)
 
+    @with_atem
     def sendMainToAllAuxes(self):
         for aux in self.switcherState.outputs.keys():
             self.atem.setAuxSource(aux + 1, VideoSource.ME_1_PROGRAM)
