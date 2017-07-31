@@ -15,6 +15,7 @@ class AllInputsPanel(QWidget):
         self.switcherState = switcherState
         self.selectedInput = None
         self.page = 0
+        self.sources = []
 
         self.layout = QGridLayout()
         self.input_buttons = QButtonGroup()
@@ -40,7 +41,12 @@ class AllInputsPanel(QWidget):
 
         self.setLayout(self.layout)
 
+        self.switcherState.inputsChanged.connect(self.setSources)
+        self.setSources()
         self.displayInputs()
+
+    def setSources(self):
+        self.sources = [vs for vs in VideoSource if vs in self.switcherState.inputs.keys()]
 
     def displayInputs(self):
 
@@ -54,19 +60,17 @@ class AllInputsPanel(QWidget):
             btn.setChecked(False)
         self.input_buttons.setExclusive(True)
 
-        for vs in list(VideoSource)[start:end]:
-            if vs in self.switcherState.inputs.keys():
-                inp = self.switcherState.inputs[vs]
-                if inp.canBeUsed:
-                    row = (idx / 5) * 2
-                    col = idx % 5
+        for vs in self.sources[start:end]:
+            inp = self.switcherState.inputs[vs]
+            row = (idx / 5) * 2
+            col = idx % 5
 
-                    btn = self.layout.itemAtPosition(row, col).widget()
-                    btn.setInput(inp)
-                    btn.setChecked(inp == self.selectedInput)
-                    btn.show()
+            btn = self.layout.itemAtPosition(row, col).widget()
+            btn.setInput(inp)
+            btn.setChecked(inp == self.selectedInput)
+            btn.show()
 
-                    idx += 1
+            idx += 1
 
         self.btnPageUp.setEnabled(self.page > 0)
         self.btnPageDown.setEnabled(end < len(self.switcherState.inputs))
