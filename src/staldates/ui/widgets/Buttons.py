@@ -31,10 +31,19 @@ class InputButton(ExpandingButton):
         super(InputButton, self).__init__(parent)
         self.setCheckable(True)
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+        self.input = None
+        self.setInput(myInput)
 
+    def setInput(self, myInput):
+        if self.input:
+            self.input.changedState.disconnect(self._update_from_input)
         self.input = myInput
-        self.input.changedState.connect(self._update_from_input)
-        self._update_from_input()
+        if self.input:
+            self.input.changedState.connect(self._update_from_input)
+            self._update_from_input()
+        else:
+            self.setIcon(QIcon())
+            self.setText("Extras")
 
     def _update_from_input(self):
         self.setText(self.input.label)

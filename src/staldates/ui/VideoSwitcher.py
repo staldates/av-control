@@ -50,6 +50,12 @@ class VideoSwitcher(QWidget):
                 self.inputs.addButton(btn)
                 inputs_grid.addWidget(btn)
 
+        extrasBtn = InputButton(None)
+        self.inputs.addButton(extrasBtn)
+        extrasBtn.clicked.connect(self.preview)
+        extrasBtn.clicked.connect(self.displayPanel)
+        inputs_grid.insertWidget(len(self.input_buttons_config) - 2, extrasBtn)
+
         layout.addLayout(inputs_grid, 0, 0, 1, 7)
 
         og = OutputsGrid(self.switcherState)
@@ -71,7 +77,8 @@ class VideoSwitcher(QWidget):
 
     @with_atem
     def preview(self):
-        self.atem.setPreview(self.inputs.checkedButton().input.source)
+        if self.inputs.checkedButton().input:
+            self.atem.setPreview(self.inputs.checkedButton().input.source)
 
     @with_atem
     def take(self):
@@ -79,13 +86,15 @@ class VideoSwitcher(QWidget):
 
     @with_atem
     def sendToAux(self, auxIndex):
-        self.atem.setAuxSource(auxIndex + 1, self.inputs.checkedButton().input.source)
+        if self.inputs.checkedButton().input:
+            self.atem.setAuxSource(auxIndex + 1, self.inputs.checkedButton().input.source)
 
     @with_atem
     def sendToAll(self):
-        self.atem.setProgram(self.inputs.checkedButton().input.source)
-        for aux in self.switcherState.outputs.keys():
-            self.sendToAux(aux)
+        if self.inputs.checkedButton().input:
+            self.atem.setProgram(self.inputs.checkedButton().input.source)
+            for aux in self.switcherState.outputs.keys():
+                self.sendToAux(aux)
 
     @with_atem
     def sendMainToAllAuxes(self):
