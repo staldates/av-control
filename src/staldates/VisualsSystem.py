@@ -26,6 +26,7 @@ class Input(QObject):
         self.icon = icon
         self.isLive = False
         self.isPreview = False
+        self.canBeUsed = True
 
     def set_label(self, new_label):
         if new_label != self.label:
@@ -117,7 +118,12 @@ class DSK(QObject):
 
 
 class SwitcherState(QObject):
+
+    inputsChanged = Signal()
+
     def __init__(self, atem):
+        super(SwitcherState, self).__init__()
+        self.atem = atem
         self.inputs = _default_inputs()
         self.outputs = _default_outputs()
         self.dsks = {0: DSK(1), 1: DSK(2)}
@@ -134,6 +140,8 @@ class SwitcherState(QObject):
                 self.inputs[source].set_label(props['name_long'])
             else:
                 self.inputs[source] = Input(source, props['name_long'], None)
+            self.inputs[source].canBeUsed = props['me_availability']['ME1']
+        self.inputsChanged.emit()
 
         for output in self.outputs.values():
             if output.label_source in inputs:
@@ -167,3 +175,5 @@ class SwitcherState(QObject):
             self.updateOutputs(data)
         elif msgType == MessageTypes.DSK_STATE:
             self.updateDSKs(data)
+        elif msgType == MessageTypes.INPUTS_CHANGED:
+            self.updateInputs(self.atem.getInputs())
