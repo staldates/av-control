@@ -67,51 +67,57 @@ class Test(GuiTest):
         self.assertFalse(buttons[1].isChecked())
 
     def testMoveCamera(self):
+        self.cc.panSpeed = 1
+        self.cc.tiltSpeed = 2
+
         self.cc.btnUp.pressed.emit()
-        self.cam.moveUp.assert_called_once_with()
+        self.cam.moveUp.assert_called_once_with(1, 2)
         self.cc.btnUp.released.emit()
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
         self.cc.btnDown.pressed.emit()
-        self.cam.moveDown.assert_called_once_with()
+        self.cam.moveDown.assert_called_once_with(1, 2)
         self.cc.btnDown.released.emit()
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
         self.cc.btnLeft.pressed.emit()
-        self.cam.moveLeft.assert_called_once_with()
+        self.cam.moveLeft.assert_called_once_with(1, 2)
         self.cc.btnLeft.released.emit()
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
         self.cc.btnRight.pressed.emit()
-        self.cam.moveRight.assert_called_once_with()
+        self.cam.moveRight.assert_called_once_with(1, 2)
         self.cc.btnRight.released.emit()
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
     def testMoveCameraWithKeyboard(self):
+        self.cc.panSpeed = 1
+        self.cc.tiltSpeed = 2
+
         QTest.keyPress(self.cc, Qt.Key_Up)
-        self.cam.moveUp.assert_called_once_with()
+        self.cam.moveUp.assert_called_once_with(1, 2)
         QTest.keyRelease(self.cc, Qt.Key_Up)
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
         QTest.keyPress(self.cc, Qt.Key_Down)
-        self.cam.moveDown.assert_called_once_with()
+        self.cam.moveDown.assert_called_once_with(1, 2)
         QTest.keyRelease(self.cc, Qt.Key_Down)
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
         QTest.keyPress(self.cc, Qt.Key_Left)
-        self.cam.moveLeft.assert_called_once_with()
+        self.cam.moveLeft.assert_called_once_with(1, 2)
         QTest.keyRelease(self.cc, Qt.Key_Left)
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
         QTest.keyPress(self.cc, Qt.Key_Right)
-        self.cam.moveRight.assert_called_once_with()
+        self.cam.moveRight.assert_called_once_with(1, 2)
         QTest.keyRelease(self.cc, Qt.Key_Right)
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
