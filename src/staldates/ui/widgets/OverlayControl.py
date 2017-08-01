@@ -1,8 +1,9 @@
 from avx.devices.net.atem.constants import VideoSource
 from PySide.QtCore import Qt
-from PySide.QtGui import QWidget, QGridLayout, QLabel, QSpinBox
+from PySide.QtGui import QWidget, QGridLayout, QLabel
 from staldates.ui.widgets.Buttons import ExpandingButton
 from staldates.VisualsSystem import with_atem
+from staldates.ui.widgets.TouchSpinner import FrameRateTouchSpinner
 
 
 class OverlayControl(QWidget):
@@ -37,11 +38,10 @@ class OverlayControl(QWidget):
         lblRate.setAlignment(Qt.AlignHCenter | Qt.AlignBottom)
         layout.addWidget(lblRate, 2, 0)
 
-        self.rate = QSpinBox()
+        self.rate = FrameRateTouchSpinner()
         self.rate.setMinimum(1)
         self.rate.setMaximum(250)
         self.rate.valueChanged.connect(self.setRate)
-        self.rate.setAlignment(Qt.AlignHCenter)
         layout.addWidget(self.rate, 3, 0)
 
         layout.setRowStretch(0, 0)
