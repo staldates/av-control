@@ -75,23 +75,24 @@ class MainWindow(QMainWindow):
             mainLayout.addWidget(lights, 1, column)
             column += 1
 
-        self.recorderScreen = RecorderControl(hyperdeck, self.hyperdeckState, self)
-        recorder = ExpandingButton()
-        recorder.setText("Recorder")
-        recorder.setIcon(QIcon(":icons/drive-optical"))
-        recorder.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        recorder.clicked.connect(lambda: self.showScreen(self.recorderScreen))
-        mainLayout.addWidget(recorder, 1, column)
-        column += 1
+        if controller.hasDevice("Recorder"):
+            self.recorderScreen = RecorderControl(hyperdeck, self.hyperdeckState, self)
+            recorder = ExpandingButton()
+            recorder.setText("Recorder")
+            recorder.setIcon(QIcon(":icons/drive-optical"))
+            recorder.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+            recorder.clicked.connect(lambda: self.showScreen(self.recorderScreen))
+            mainLayout.addWidget(recorder, 1, column)
+            column += 1
 
-        def update_recorder_icon(transport):
-            if transport['status'] == TransportState.RECORD:
-                recorder.setIcon(QIcon(":icons/media-record"))
-            elif transport['status'] == TransportState.PLAYING:
-                recorder.setIcon(QIcon(":icons/media-playback-start"))
-            else:
-                recorder.setIcon(QIcon(":icons/drive-optical"))
-        self.hyperdeckState.transportChange.connect(update_recorder_icon)
+            def update_recorder_icon(transport):
+                if transport['status'] == TransportState.RECORD:
+                    recorder.setIcon(QIcon(":icons/media-record"))
+                elif transport['status'] == TransportState.PLAYING:
+                    recorder.setIcon(QIcon(":icons/media-playback-start"))
+                else:
+                    recorder.setIcon(QIcon(":icons/drive-optical"))
+            self.hyperdeckState.transportChange.connect(update_recorder_icon)
 
         self.advMenu = AdvancedMenu(self.controller, self)
 
