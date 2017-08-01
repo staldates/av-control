@@ -181,7 +181,7 @@ class SwitcherState(QObject):
 
 class HyperdeckState(QObject):
 
-    transportChange = Signal()
+    transportChange = Signal(dict)
 
     def __init__(self, hyperdeck):
         super(HyperdeckState, self).__init__()

@@ -14,6 +14,7 @@ from staldates.ui.widgets.Status import SystemStatus
 from staldates.VisualsSystem import SwitcherState, HyperdeckState
 from staldates import MessageTypes
 from staldates.ui.StringConstants import StringConstants
+from staldates.ui.widgets.RecorderControl import RecorderControl
 
 
 class MainWindow(QMainWindow):
@@ -73,10 +74,12 @@ class MainWindow(QMainWindow):
             mainLayout.addWidget(lights, 1, column)
             column += 1
 
+        self.recorderScreen = RecorderControl(hyperdeck, self.hyperdeckState, self)
         recorder = ExpandingButton()
         recorder.setText("Recorder")
         recorder.setIcon(QIcon(":icons/drive-optical"))
         recorder.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+        recorder.clicked.connect(lambda: self.showScreen(self.recorderScreen))
         mainLayout.addWidget(recorder, 1, column)
         column += 1
 
@@ -145,3 +148,5 @@ class MainWindow(QMainWindow):
             self.hidePowerDialog()
         elif sourceDeviceID == "ATEM":
             self.switcherState.handleMessage(msgType, data)
+        elif sourceDeviceID == "Recorder":
+            self.hyperdeckState.handleMessage(msgType, data)
