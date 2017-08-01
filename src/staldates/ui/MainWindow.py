@@ -11,7 +11,7 @@ from staldates.ui.widgets.AdvancedMenu import AdvancedMenu
 from staldates.ui.widgets import Dialogs
 from staldates.ui.widgets.LightingControl import LightingControl
 from staldates.ui.widgets.Status import SystemStatus
-from staldates.VisualsSystem import SwitcherState
+from staldates.VisualsSystem import SwitcherState, HyperdeckState
 from staldates import MessageTypes
 from staldates.ui.StringConstants import StringConstants
 
@@ -28,6 +28,9 @@ class MainWindow(QMainWindow):
 
         atem = controller['ATEM']
         self.switcherState = SwitcherState(atem)
+
+        hyperdeck = controller['Recorder']
+        self.hyperdeckState = HyperdeckState(hyperdeck)
 
         self.mainScreen = VideoSwitcher(controller, self, self.switcherState)
         self.stack = QStackedWidget()
@@ -69,6 +72,13 @@ class MainWindow(QMainWindow):
             lights.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
             mainLayout.addWidget(lights, 1, column)
             column += 1
+
+        recorder = ExpandingButton()
+        recorder.setText("Recorder")
+        recorder.setIcon(QIcon(":icons/drive-optical"))
+        recorder.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+        mainLayout.addWidget(recorder, 1, column)
+        column += 1
 
         self.advMenu = AdvancedMenu(self.controller, self)
 

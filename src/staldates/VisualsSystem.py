@@ -1,5 +1,6 @@
-from avx.devices.net.atem import VideoSource, MessageTypes
+from avx.devices.net.atem import VideoSource, MessageTypes as ATEMMessageTypes
 from avx.devices.net.atem.utils import NotInitializedException
+from avx.devices.net.hyperdeck import TransportState, MessageTypes as HyperDeckMessageTypes
 from PySide.QtCore import QObject, Signal
 from PySide.QtGui import QIcon
 from staldates.ui.widgets.Dialogs import errorBox
@@ -168,11 +169,32 @@ class SwitcherState(QObject):
                 self.dsks[idx].set_rate(dsk['rate'])
 
     def handleMessage(self, msgType, data):
-        if msgType == MessageTypes.TALLY:
+        if msgType == ATEMMessageTypes.TALLY:
             self.updateTally(data)
-        elif msgType == MessageTypes.AUX_OUTPUT_MAPPING:
+        elif msgType == ATEMMessageTypes.AUX_OUTPUT_MAPPING:
             self.updateOutputs(data)
-        elif msgType == MessageTypes.DSK_STATE:
+        elif msgType == ATEMMessageTypes.DSK_STATE:
             self.updateDSKs(data)
-        elif msgType == MessageTypes.INPUTS_CHANGED:
+        elif msgType == ATEMMessageTypes.INPUTS_CHANGED:
             self.updateInputs(self.atem.getInputs())
+
+
+class HyperdeckState(QObject):
+
+    transportChange = Signal()
+
+    def __init__(self, hyperdeck):
+        super(HyperdeckState, self).__init__()
+        self.deck = hyperdeck
+
+        self.transport = {
+            "status": TransportState.STOPPED
+        }
+
+        if self.deck:
+            self.transport = self.deck.getTransportState()
+
+    def handleMessage(self, msgType, data):
+        if msgType == HyperDeckMessageTypes.TRANSPORT_STATE_CHANGED:
+            self.transport = data
+            self.transportChange.emit(data)
