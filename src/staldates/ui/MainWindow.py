@@ -15,6 +15,7 @@ from staldates.VisualsSystem import SwitcherState, HyperdeckState
 from staldates import MessageTypes
 from staldates.ui.StringConstants import StringConstants
 from staldates.ui.widgets.RecorderControl import RecorderControl
+from avx.devices.net.hyperdeck import TransportState
 
 
 class MainWindow(QMainWindow):
@@ -82,6 +83,15 @@ class MainWindow(QMainWindow):
         recorder.clicked.connect(lambda: self.showScreen(self.recorderScreen))
         mainLayout.addWidget(recorder, 1, column)
         column += 1
+
+        def update_recorder_icon(transport):
+            if transport['status'] == TransportState.RECORD:
+                recorder.setIcon(QIcon(":icons/media-record"))
+            elif transport['status'] == TransportState.PLAYING:
+                recorder.setIcon(QIcon(":icons/media-playback-start"))
+            else:
+                recorder.setIcon(QIcon(":icons/drive-optical"))
+        self.hyperdeckState.transportChange.connect(update_recorder_icon)
 
         self.advMenu = AdvancedMenu(self.controller, self)
 
