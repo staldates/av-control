@@ -6,6 +6,7 @@
         <file alias="blackscreen">resources/icons/blackscreen.svg</file>
         <file alias="camera-video">resources/icons/camera-video.svg</file>
         <file alias="computer">resources/icons/computer.svg</file>
+        <file alias="drive-optical">resources/icons/drive-optical.svg</file>
         <file alias="go-down">resources/icons/go-down.svg</file>
         <file alias="go-next">resources/icons/go-next.svg</file>
         <file alias="go-previous">resources/icons/go-previous.svg</file>
@@ -16,6 +17,11 @@
         <file alias="list-remove">resources/icons/list-remove.svg</file>
         <file alias="media-optical">resources/icons/media-optical.svg</file>
         <file alias="media-playback-pause">resources/icons/media-playback-pause.svg</file>
+        <file alias="media-playback-start">resources/icons/media-playback-start.svg</file>
+        <file alias="media-playback-stop">resources/icons/media-playback-stop.svg</file>
+        <file alias="media-record">resources/icons/media-record.svg</file>
+        <file alias="media-skip-backward">resources/icons/media-skip-backward.svg</file>
+        <file alias="media-skip-forward">resources/icons/media-skip-forward.svg</file>
         <file alias="network-offline">resources/icons/network-offline.svg</file>
         <file alias="preferences-desktop-screensaver">resources/icons/preferences-desktop-screensaver.svg</file>
         <file alias="preferences-system-windows">resources/icons/preferences-system-windows.svg</file>
