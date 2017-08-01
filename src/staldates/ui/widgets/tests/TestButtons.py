@@ -13,7 +13,7 @@ class TestButtons(GuiTest):
         self.assertEqual("My input", ib.text())
 
         my_input.set_label("A new label")
-        self.assertEqual("A new label", ib.text())
+        self.assertEqual("A new\nlabel", ib.text())
 
         self.assertFalse(ib.property("isLive"))
         self.assertFalse(ib.property("isPreview"))
