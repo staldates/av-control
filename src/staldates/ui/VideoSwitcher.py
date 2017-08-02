@@ -68,8 +68,8 @@ class VideoSwitcher(QWidget):
 
         self.blackBtn = FlashingInputButton(self.switcherState.inputs[VideoSource.BLACK])
         inputs_grid.addWidget(self.blackBtn)
-        self.blackBtn.flashing = self.switcherState.ftb_active
-        self.switcherState.fadeToBlackStateChanged.connect(self.blackBtn.setFlashing)
+        self.blackBtn.flashing = self.switcherState.ftb.active
+        self.switcherState.ftb.activeChanged.connect(self.blackBtn.setFlashing)
 
         layout.addLayout(inputs_grid, 0, 0, 1, 7)
 

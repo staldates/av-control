@@ -117,10 +117,30 @@ class DSK(QObject):
         return "<DSK #{} (on air: {}) >".format(self.idx, self.onAir)
 
 
+class FadeToBlack(QObject):
+
+    activeChanged = Signal(bool)
+    rateChanged = Signal(int)
+
+    def __init__(self):
+        super(FadeToBlack, self).__init__()
+        self.active = False
+        self.rate = 25
+
+    def set_active(self, active):
+        if self.active != active:
+            self.active = active
+            self.activeChanged.emit(active)
+
+    def set_rate(self, rate):
+        if self.rate != rate:
+            self.rate = rate
+            self.rateChanged.emit(rate)
+
+
 class SwitcherState(QObject):
 
     inputsChanged = Signal()
-    fadeToBlackStateChanged = Signal(bool)
 
     def __init__(self, atem):
         super(SwitcherState, self).__init__()
@@ -128,7 +148,7 @@ class SwitcherState(QObject):
         self.inputs = _default_inputs()
         self.outputs = _default_outputs()
         self.dsks = {0: DSK(1), 1: DSK(2)}
-        self.ftb_active = False
+        self.ftb = FadeToBlack()
 
         if atem:
             try:
@@ -176,9 +196,7 @@ class SwitcherState(QObject):
 
     def updateFTBState(self, state):
         active = state and (state['full_black'] or state['in_transition'])
-        if active != self.ftb_active:
-            self.ftb_active = active
-            self.fadeToBlackStateChanged.emit(active)
+        self.ftb.set_active(active)
 
     def handleMessage(self, msgType, data):
         if msgType == ATEMMessageTypes.TALLY:
