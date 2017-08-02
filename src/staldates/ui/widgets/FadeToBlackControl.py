@@ -28,9 +28,11 @@ class FadeToBlackControl(QWidget):
         layout.addWidget(self.btnFade, 1, 1)
 
         self.ftb.rateChanged.connect(self.rate.setValue)
-        self.rate.valueChanged.connect(self.atem.setFadeToBlackRate)
         self.ftb.activeChanged.connect(self.btnFade.setChecked)
-        self.btnFade.clicked.connect(self.atem.performFadeToBlack)
+
+        if self.atem:
+            self.rate.valueChanged.connect(self.atem.setFadeToBlackRate)
+            self.btnFade.clicked.connect(self.atem.performFadeToBlack)
 
         layout.setRowStretch(0, 1)
         layout.setRowStretch(1, 1)
