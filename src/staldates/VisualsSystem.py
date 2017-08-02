@@ -157,7 +157,7 @@ class SwitcherState(QObject):
                 self.updateOutputs(atem.getAuxState())
                 self.updateDSKs(atem.getDSKState())
                 self.updateFTBState(atem.getFadeToBlackState(me=1))
-                self.updateFTBRate({0: atem.getFadeToBlackProperties(me=1)['rate']})
+                self.updateFTBRate(atem.getFadeToBlackProperties(me=1)['rate'])
             except NotInitializedException:
                 pass
 

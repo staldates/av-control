@@ -7,6 +7,7 @@ from staldates.ui.StringConstants import StringConstants
 from staldates.ui.widgets.AllInputsPanel import AllInputsPanel
 from staldates.ui.widgets.OverlayControl import OverlayControl
 from staldates.VisualsSystem import with_atem
+from staldates.ui.widgets.FadeToBlackControl import FadeToBlackControl
 
 
 class VideoSwitcher(QWidget):
@@ -68,6 +69,11 @@ class VideoSwitcher(QWidget):
 
         self.blackBtn = FlashingInputButton(self.switcherState.inputs[VideoSource.BLACK])
         inputs_grid.addWidget(self.blackBtn)
+        self.inputs.addButton(self.blackBtn)
+        self.blackBtn.clicked.connect(self.preview)
+        self.blackBtn.clicked.connect(self.displayPanel)
+        self.ftb = FadeToBlackControl(self.switcherState.ftb, self.atem)
+        self.blackBtn.setProperty("panel", self.ftb)
         self.blackBtn.flashing = self.switcherState.ftb.active
         self.switcherState.ftb.activeChanged.connect(self.blackBtn.setFlashing)
 
