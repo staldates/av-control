@@ -120,6 +120,7 @@ class DSK(QObject):
 class SwitcherState(QObject):
 
     inputsChanged = Signal()
+    fadeToBlackStateChanged = Signal(bool)
 
     def __init__(self, atem):
         super(SwitcherState, self).__init__()
@@ -127,12 +128,17 @@ class SwitcherState(QObject):
         self.inputs = _default_inputs()
         self.outputs = _default_outputs()
         self.dsks = {0: DSK(1), 1: DSK(2)}
+        self.ftb_active = False
 
         if atem:
-            self.updateInputs(atem.getInputs())
-            self.updateTally(atem.getTally())
-            self.updateOutputs(atem.getAuxState())
-            self.updateDSKs(atem.getDSKState())
+            try:
+                self.updateInputs(atem.getInputs())
+                self.updateTally(atem.getTally())
+                self.updateOutputs(atem.getAuxState())
+                self.updateDSKs(atem.getDSKState())
+                self.updateFTBState(atem.getFadeToBlackState(me=1))
+            except NotInitializedException:
+                pass
 
     def updateInputs(self, inputs):
         for source, props in inputs.iteritems():
@@ -168,6 +174,12 @@ class SwitcherState(QObject):
                 self.dsks[idx].set_on_air(dsk['on_air'])
                 self.dsks[idx].set_rate(dsk['rate'])
 
+    def updateFTBState(self, state):
+        active = state and (state['full_black'] or state['in_transition'])
+        if active != self.ftb_active:
+            self.ftb_active = active
+            self.fadeToBlackStateChanged.emit(active)
+
     def handleMessage(self, msgType, data):
         if msgType == ATEMMessageTypes.TALLY:
             self.updateTally(data)
@@ -177,6 +189,9 @@ class SwitcherState(QObject):
             self.updateDSKs(data)
         elif msgType == ATEMMessageTypes.INPUTS_CHANGED:
             self.updateInputs(self.atem.getInputs())
+        elif msgType == ATEMMessageTypes.FTB_CHANGED:
+            if 0 in data:
+                self.updateFTBState(data[0])
 
 
 class HyperdeckState(QObject):

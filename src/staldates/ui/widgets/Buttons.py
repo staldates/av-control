@@ -86,6 +86,9 @@ class FlashingInputButton(InputButton):
         self._timer.timeout.connect(self._flash)
         self._timer.start(500)
 
+    def setFlashing(self, flashing):
+        self.flashing = flashing
+
     def _flash(self):
         if self.flashing and self._flashState == 0:
             self._flashState = 1
