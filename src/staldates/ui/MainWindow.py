@@ -31,9 +31,6 @@ class MainWindow(QMainWindow):
         atem = controller['ATEM']
         self.switcherState = SwitcherState(atem)
 
-        hyperdeck = controller['Recorder']
-        self.hyperdeckState = HyperdeckState(hyperdeck)
-
         self.mainScreen = VideoSwitcher(controller, self, self.switcherState)
         self.stack = QStackedWidget()
         self.stack.addWidget(self.mainScreen)
@@ -76,6 +73,8 @@ class MainWindow(QMainWindow):
             column += 1
 
         if controller.hasDevice("Recorder"):
+            hyperdeck = controller['Recorder']
+            self.hyperdeckState = HyperdeckState(hyperdeck)
             self.recorderScreen = RecorderControl(hyperdeck, self.hyperdeckState, self)
             recorder = ExpandingButton()
             recorder.setText("Recorder")
