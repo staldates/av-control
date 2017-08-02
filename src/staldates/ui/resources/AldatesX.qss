@@ -58,6 +58,11 @@ QPushButton:flat {
   min-height: 32px;
 }
 
+FlashingInputButton[flashing="true"] {
+  background-color: red;
+  color: white;
+}
+
 Clock {
   padding: 0 10px;
 }

@@ -1,6 +1,6 @@
 from avx.devices.net.atem.constants import VideoSource
 from PySide.QtGui import QWidget, QGridLayout, QHBoxLayout, QButtonGroup, QLabel
-from staldates.ui.widgets.Buttons import InputButton
+from staldates.ui.widgets.Buttons import InputButton, FlashingInputButton
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
 from staldates.ui.CameraControls import CameraControl, AdvancedCameraControl
 from staldates.ui.StringConstants import StringConstants
@@ -36,8 +36,7 @@ class VideoSwitcher(QWidget):
             ifDevice("Camera 3", lambda: (VideoSource.INPUT_3, CameraControl(self.controller["Camera 3"]), AdvancedCameraControl("Camera 3", self.controller["Camera 3"], self.mainWindow))),
             (VideoSource.INPUT_4, QLabel(StringConstants.noDevice), None),
             (VideoSource.INPUT_5, OverlayControl(self.switcherState.dsks[0], self.atem), None),
-            (VideoSource.INPUT_6, QLabel(StringConstants.noDevice), None),
-            (VideoSource.BLACK, None, None)
+            (VideoSource.INPUT_6, QLabel(StringConstants.noDevice), None)
         ]
 
         for source, panel, adv_panel in self.input_buttons_config:
@@ -65,7 +64,10 @@ class VideoSwitcher(QWidget):
 
         self.allInputs.inputSelected.connect(setExtraInput)
 
-        inputs_grid.insertWidget(len(self.input_buttons_config) - 2, self.extrasBtn)
+        inputs_grid.addWidget(self.extrasBtn)
+
+        self.blackBtn = FlashingInputButton(self.switcherState.inputs[VideoSource.BLACK])
+        inputs_grid.addWidget(self.blackBtn)
 
         layout.addLayout(inputs_grid, 0, 0, 1, 7)
 

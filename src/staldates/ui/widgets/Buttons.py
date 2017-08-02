@@ -1,6 +1,6 @@
 from PySide.QtGui import QLabel, QToolButton, QSizePolicy, QVBoxLayout, QImage,\
     QPainter, QPixmap, QIcon
-from PySide.QtCore import Qt, QSize, Signal, QEvent
+from PySide.QtCore import Qt, QSize, Signal, QEvent, QTimer
 from PySide.QtSvg import QSvgRenderer
 
 
@@ -73,6 +73,26 @@ class InputButton(ExpandingButton):
         self.setProperty("isLive", self.input.isLive)
         self.setProperty("isPreview", self.input.isPreview)
 
+        self.style().unpolish(self)
+        self.style().polish(self)
+
+
+class FlashingInputButton(InputButton):
+    def __init__(self, myInput, parent=None):
+        super(FlashingInputButton, self).__init__(myInput, parent)
+        self.flashing = False
+        self._flashState = 0
+        self._timer = QTimer()
+        self._timer.timeout.connect(self._flash)
+        self._timer.start(500)
+
+    def _flash(self):
+        if self.flashing and self._flashState == 0:
+            self._flashState = 1
+            self.setProperty("flashing", True)
+        elif self.property("flashing"):
+            self._flashState = 0
+            self.setProperty("flashing", False)
         self.style().unpolish(self)
         self.style().polish(self)
 
