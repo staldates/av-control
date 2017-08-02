@@ -157,6 +157,7 @@ class SwitcherState(QObject):
                 self.updateOutputs(atem.getAuxState())
                 self.updateDSKs(atem.getDSKState())
                 self.updateFTBState(atem.getFadeToBlackState(me=1))
+                self.updateFTBRate({0: atem.getFadeToBlackProperties(me=1)['rate']})
             except NotInitializedException:
                 pass
 
@@ -198,6 +199,9 @@ class SwitcherState(QObject):
         active = state and (state['full_black'] or state['in_transition'])
         self.ftb.set_active(active)
 
+    def updateFTBRate(self, rate):
+        self.ftb.set_rate(rate)
+
     def handleMessage(self, msgType, data):
         if msgType == ATEMMessageTypes.TALLY:
             self.updateTally(data)
@@ -210,6 +214,9 @@ class SwitcherState(QObject):
         elif msgType == ATEMMessageTypes.FTB_CHANGED:
             if 0 in data:
                 self.updateFTBState(data[0])
+        elif msgType == ATEMMessageTypes.FTB_RATE_CHANGED:
+            if 0 in data:
+                self.updateFTBRate(data[0])
 
 
 class HyperdeckState(QObject):
