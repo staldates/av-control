@@ -16,6 +16,7 @@ class TouchSpinner(QWidget):
 
         btnMinus = ExpandingButton()
         btnMinus.setIcon(QIcon(":icons/list-remove"))
+        btnMinus.setText("-")
         btnMinus.clicked.connect(lambda: self.setValue(self._value - 1))
         layout.addWidget(btnMinus, 1)
 
@@ -25,6 +26,7 @@ class TouchSpinner(QWidget):
 
         btnPlus = ExpandingButton()
         btnPlus.setIcon(QIcon(":icons/list-add"))
+        btnPlus.setText("+")
         btnPlus.clicked.connect(lambda: self.setValue(self._value + 1))
         layout.addWidget(btnPlus, 1)
 

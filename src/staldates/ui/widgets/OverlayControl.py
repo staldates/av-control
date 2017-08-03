@@ -41,6 +41,7 @@ class OverlayControl(QWidget):
         self.rate = FrameRateTouchSpinner()
         self.rate.setMinimum(1)
         self.rate.setMaximum(250)
+        self.rate.setValue(25)
         self.rate.valueChanged.connect(self.setRate)
         layout.addWidget(self.rate, 3, 0)
 
