@@ -56,6 +56,7 @@ class SystemPowerWidget(ScreenWithBackButton):
         self.controller.sequence(
             BroadcastEvent(MessageTypes.SHOW_POWER_OFF, "Client", None),
             LogEvent(logging.INFO, "Turning system power off"),
+            ControllerEvent("deinitialise"),
             DeviceEvent("Power", "off", 4),
             SleepEvent(3),
             DeviceEvent("Power", "off", 3),
