@@ -150,14 +150,17 @@ class SwitcherState(QObject):
         self.dsks = {0: DSK(1), 1: DSK(2)}
         self.ftb = FadeToBlack()
 
-        if atem:
+        self._initFromAtem()
+
+    def _initFromAtem(self):
+        if self.atem:
             try:
-                self.updateInputs(atem.getInputs())
-                self.updateTally(atem.getTally())
-                self.updateOutputs(atem.getAuxState())
-                self.updateDSKs(atem.getDSKState())
-                self.updateFTBState(atem.getFadeToBlackState(me=1))
-                self.updateFTBRate(atem.getFadeToBlackProperties(me=1)['rate'])
+                self.updateInputs(self.atem.getInputs())
+                self.updateTally(self.atem.getTally())
+                self.updateOutputs(self.atem.getAuxState())
+                self.updateDSKs(self.atem.getDSKState())
+                self.updateFTBState(self.atem.getFadeToBlackState(me=1))
+                self.updateFTBRate(self.atem.getFadeToBlackProperties(me=1)['rate'])
             except NotInitializedException:
                 pass
 
@@ -217,6 +220,8 @@ class SwitcherState(QObject):
         elif msgType == ATEMMessageTypes.FTB_RATE_CHANGED:
             if 0 in data:
                 self.updateFTBRate(data[0])
+        elif msgType == ATEMMessageTypes.ATEM_CONNECTED:
+            self._initFromAtem()
 
 
 class HyperdeckState(QObject):
