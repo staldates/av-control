@@ -10,6 +10,7 @@ class TestOverlayControl(GuiTest):
         self.dsk = MagicMock()
         self.dsk.idx = 0
         self.dsk.onAir = False
+        self.dsk.rate = 10
 
         self.oc = OverlayControl(self.dsk, self.atem)
 
@@ -23,13 +24,13 @@ class TestOverlayControl(GuiTest):
     def testSetRate(self):
         self.atem.reset_mock()
         self.findButton(self.oc, "+").click()
-        self.atem.setDSKRate.assert_called_once_with(0, 250)
-        self.assertEqual(250, self.oc.rate.value())
+        self.atem.setDSKRate.assert_called_once_with(0, 11)
+        self.assertEqual(11, self.oc.rate.value())
 
         self.atem.reset_mock()
         self.findButton(self.oc, "-").click()
-        self.atem.setDSKRate.assert_called_once_with(0, 249)
-        self.assertEqual(249, self.oc.rate.value())
+        self.atem.setDSKRate.assert_called_once_with(0, 10)
+        self.assertEqual(10, self.oc.rate.value())
 
     def testOnAir(self):
         btnOnAir = self.findButton(self.oc, "On Air")
