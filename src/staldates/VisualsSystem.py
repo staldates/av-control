@@ -141,6 +141,7 @@ class FadeToBlack(QObject):
 class SwitcherState(QObject):
 
     inputsChanged = Signal()
+    connectionChanged = Signal(bool)
 
     def __init__(self, atem):
         super(SwitcherState, self).__init__()
@@ -149,12 +150,14 @@ class SwitcherState(QObject):
         self.outputs = _default_outputs()
         self.dsks = {0: DSK(1), 1: DSK(2)}
         self.ftb = FadeToBlack()
+        self.connected = False
 
         self._initFromAtem()
 
     def _initFromAtem(self):
         if self.atem:
             try:
+                self.updateConnectedness(self.atem.isConnected())
                 self.updateInputs(self.atem.getInputs())
                 self.updateTally(self.atem.getTally())
                 self.updateOutputs(self.atem.getAuxState())
@@ -163,6 +166,11 @@ class SwitcherState(QObject):
                 self.updateFTBRate(self.atem.getFadeToBlackProperties(me=1)['rate'])
             except NotInitializedException:
                 pass
+
+    def updateConnectedness(self, isConnected):
+        if isConnected != self.connected:
+            self.connected = isConnected
+            self.connectionChanged.emit(isConnected)
 
     def updateInputs(self, inputs):
         for source, props in inputs.iteritems():
@@ -222,6 +230,8 @@ class SwitcherState(QObject):
                 self.updateFTBRate(data[0])
         elif msgType == ATEMMessageTypes.ATEM_CONNECTED:
             self._initFromAtem()
+        elif msgType == ATEMMessageTypes.ATEM_DISCONNECTED:
+            self.updateConnectedness(False)
 
 
 class HyperdeckState(QObject):
