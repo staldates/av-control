@@ -21,7 +21,7 @@ class RecorderControl(ScreenWithBackButton):
         super(RecorderControl, self).__init__("Recorder", mainWindow)
         self.state.transportChange.connect(self.updateState)
         if self.hyperdeck:
-            self.updateState(self.hyperdeck.getTransportState())
+            self.updateState(state.transport)
 
     def makeContent(self):
         layout = QGridLayout()
@@ -52,6 +52,7 @@ class RecorderControl(ScreenWithBackButton):
         return layout
 
     def updateState(self, state):
-        self.btnRecord.setChecked(state['status'] == TransportState.RECORD)
-        self.btnPlay.setChecked(state['status'] == TransportState.PLAYING)
-        self.btnStop.setChecked(state['status'] != TransportState.RECORD and state['status'] != TransportState.PLAYING)
+        if 'status' in state:
+            self.btnRecord.setChecked(state['status'] == TransportState.RECORD)
+            self.btnPlay.setChecked(state['status'] == TransportState.PLAYING)
+            self.btnStop.setChecked(state['status'] != TransportState.RECORD and state['status'] != TransportState.PLAYING)
