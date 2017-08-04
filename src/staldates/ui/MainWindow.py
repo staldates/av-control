@@ -33,8 +33,9 @@ class MainWindow(QMainWindow):
 
         self.mainScreen = VideoSwitcher(controller, self, self.switcherState)
 
-        self.mainScreen.setEnabled(self.switcherState.connected)
-        self.switcherState.connectionChanged.connect(self.mainScreen.setEnabled)
+        # This is possibly a bad / too complicated idea...
+        # self.mainScreen.setEnabled(self.switcherState.connected)
+        # self.switcherState.connectionChanged.connect(self.mainScreen.setEnabled)
 
         self.stack = QStackedWidget()
         self.stack.addWidget(self.mainScreen)
