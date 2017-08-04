@@ -59,11 +59,7 @@ class VideoSwitcher(QWidget):
         self.allInputs = AllInputsPanel(self.switcherState)
         self.extrasBtn.setProperty("panel", self.allInputs)
 
-        def setExtraInput(inp):
-            self.extrasBtn.setInput(inp)
-            self.preview()
-
-        self.allInputs.inputSelected.connect(setExtraInput)
+        self.allInputs.inputSelected.connect(self.setExtraInput)
 
         inputs_grid.addWidget(self.extrasBtn)
 
@@ -96,11 +92,15 @@ class VideoSwitcher(QWidget):
 
         self.setLayout(layout)
 
-    @with_atem
+    def setExtraInput(self, inp):
+        self.extrasBtn.setInput(inp)
+        self.preview()
+
     def preview(self):
         if self.inputs.checkedButton().input:
             self.og.setAuxesEnabled(True)
-            self.atem.setPreview(self.inputs.checkedButton().input.source)
+            if self.atem:
+                self.atem.setPreview(self.inputs.checkedButton().input.source)
         else:
             self.og.setAuxesEnabled(False)
 
@@ -143,6 +143,19 @@ class VideoSwitcher(QWidget):
                 self.blankWidget.show()
 
     def displayAdvPanel(self):
-        adv_panel = self.sender().property("adv_panel")
-        if adv_panel:
-            self.mainWindow.showScreen(adv_panel)
+        panel = self.sender().property("adv_panel")
+        if panel:
+            layout = self.layout()
+            existing = layout.itemAtPosition(1, 0)
+            if existing:
+                widget = existing.widget()
+                widget.hide()
+                layout.removeWidget(widget)
+                if panel:
+                    # display panel
+                    layout.addWidget(panel, 1, 0, 1, 5)
+                    panel.show()
+                else:
+                    # hide panel
+                    layout.addWidget(self.blankWidget, 1, 0, 1, 5)
+                    self.blankWidget.show()
