@@ -18,7 +18,7 @@ class OutputsGrid(QFrame):
         layout = QGridLayout()
 
         btnMain = ExpandingButton()
-        btnMain.setText("Church / Main")
+        btnMain.setText("Take / Church")
         btnMain.clicked.connect(self.take.emit)
         layout.addWidget(btnMain, 0, 0, 1, 2)
 

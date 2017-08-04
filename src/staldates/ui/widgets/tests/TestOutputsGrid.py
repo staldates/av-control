@@ -31,7 +31,7 @@ class TestOutputsGrid(GuiTest):
         takeHandler = MagicMock()
         og.take.connect(takeHandler)
 
-        btn = self.findButton(og, "Church / Main")
+        btn = self.findButton(og, "Take / Church")
         self.assertTrue(btn is not None)
         btn.click()
         takeHandler.assert_called_once_with()
