@@ -3,11 +3,10 @@ Created on 16 Apr 2013
 
 @author: jrem
 '''
-import unittest
 from staldates.ui.tests.GuiTest import GuiTest
 from staldates.ui.tests.TestUtils import MockController
 from staldates.ui.VideoSwitcher import VideoSwitcher
-from mock import MagicMock
+from mock import MagicMock, call
 from staldates.VisualsSystem import DSK
 from staldates import VisualsSystem
 from staldates.ui.widgets.AllInputsPanel import AllInputsPanel
@@ -23,6 +22,7 @@ class TestVideoSwitcher(GuiTest):
         self.switcherState = MagicMock()
         self.switcherState.dsks = {0: DSK(1)}
         self.switcherState.inputs = VisualsSystem._default_inputs()
+        self.switcherState.outputs = VisualsSystem._default_outputs()
 
         self.mainWindow = MagicMock()
 
@@ -60,6 +60,42 @@ class TestVideoSwitcher(GuiTest):
         self.assertEqual(extrasBtn.input, self.switcherState.inputs[VideoSource.INPUT_1])  # Button has input set
         self.assertTrue(self.findButton(vs, "All").isEnabled())  # All button is enabled again
 
+    def testSwitching(self):
+        atem = MagicMock()
+        atem.deviceID = "ATEM"
+        self.mockController.addDevice(atem)
 
-if __name__ == "__main__":
-    unittest.main()
+        vs = self.makeVS()
+
+        self.findButton(vs, "Take / Church").click()
+        atem.performCut.assert_called_once()
+
+        self.findButton(vs, "DVD").click()
+        atem.setPreview.assert_called_once_with(VideoSource.INPUT_4)
+
+        self.findButton(vs, "All").click()
+        atem.setProgram.assert_called_once_with(VideoSource.INPUT_4)
+        atem.setAuxSource.assert_has_calls([
+            call(1, VideoSource.INPUT_4),
+            call(2, VideoSource.INPUT_4),
+            call(3, VideoSource.INPUT_4),
+            call(4, VideoSource.INPUT_4),
+            call(5, VideoSource.INPUT_4),
+            call(6, VideoSource.INPUT_4),
+        ])
+
+        atem.setAuxSource.reset_mock()
+        self.findButton(vs, "Visuals PC").click()
+        self.findButton(vs.og, "Record").click()
+        atem.setAuxSource.assert_called_once_with(1, VideoSource.INPUT_5)
+
+        atem.setAuxSource.reset_mock()
+        self.findButton(vs.og, "Main to\nall auxes").click()
+        atem.setAuxSource.assert_has_calls([
+            call(1, VideoSource.ME_1_PROGRAM),
+            call(2, VideoSource.ME_1_PROGRAM),
+            call(3, VideoSource.ME_1_PROGRAM),
+            call(4, VideoSource.ME_1_PROGRAM),
+            call(5, VideoSource.ME_1_PROGRAM),
+            call(6, VideoSource.ME_1_PROGRAM),
+        ])
