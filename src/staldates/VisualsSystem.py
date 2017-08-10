@@ -174,15 +174,14 @@ class SwitcherState(QObject):
 
     def updateInputs(self, inputs):
         for source, props in inputs.iteritems():
-            if source in self.inputs:
+            if source in self.inputs and 'name_long' in props:
                 self.inputs[source].set_label(props['name_long'])
-            else:
+            elif 'name_long' in props:
                 self.inputs[source] = Input(source, props['name_long'], None)
-            self.inputs[source].canBeUsed = props['me_availability']['ME1']
         self.inputsChanged.emit()
 
         for output in self.outputs.values():
-            if output.label_source in inputs:
+            if output.label_source in inputs and 'name_long' in inputs[output.label_source]:
                 output.set_label(inputs[output.label_source]['name_long'])
 
     def updateTally(self, tallyMap):
