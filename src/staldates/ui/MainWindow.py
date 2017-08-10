@@ -56,15 +56,16 @@ class MainWindow(QMainWindow):
         mainLayout.addWidget(syspower, 1, column)
         column += 1
 
-        self.bc = BlindsControl(controller["Blinds"], self)
+        if controller.hasDevice("Blinds"):
+            self.bc = BlindsControl(controller["Blinds"], self)
 
-        blinds = ExpandingButton()
-        blinds.setText("Blinds")
-        blinds.clicked.connect(lambda: self.showScreen(self.bc))
-        blinds.setIcon(QIcon(":icons/blinds"))
-        blinds.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        mainLayout.addWidget(blinds, 1, column)
-        column += 1
+            blinds = ExpandingButton()
+            blinds.setText("Blinds")
+            blinds.clicked.connect(lambda: self.showScreen(self.bc))
+            blinds.setIcon(QIcon(":icons/blinds"))
+            blinds.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+            mainLayout.addWidget(blinds, 1, column)
+            column += 1
 
         if controller.hasDevice("Lights"):
             self.lightsMenu = LightingControl(controller["Lights"], self)
