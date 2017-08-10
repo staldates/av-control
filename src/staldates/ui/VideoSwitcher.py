@@ -145,17 +145,4 @@ class VideoSwitcher(QWidget):
     def displayAdvPanel(self):
         panel = self.sender().property("adv_panel")
         if panel:
-            layout = self.layout()
-            existing = layout.itemAtPosition(1, 0)
-            if existing:
-                widget = existing.widget()
-                widget.hide()
-                layout.removeWidget(widget)
-                if panel:
-                    # display panel
-                    layout.addWidget(panel, 1, 0, 1, 5)
-                    panel.show()
-                else:
-                    # hide panel
-                    layout.addWidget(self.blankWidget, 1, 0, 1, 5)
-                    self.blankWidget.show()
+            self.mainWindow.showScreen(panel)
