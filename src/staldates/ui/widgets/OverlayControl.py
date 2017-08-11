@@ -78,4 +78,4 @@ class OverlayControl(QWidget):
     def resetParams(self):
             self.atem.setDSKFillSource(self.dsk.idx, VideoSource.INPUT_5)
             self.atem.setDSKKeySource(self.dsk.idx, VideoSource.INPUT_5)
-            self.atem.setDSKParams(self.dsk.idx, preMultiplied=False, gain=500, clip=250)
+            self.atem.setDSKParams(self.dsk.idx, preMultiplied=False, gain=300, clip=250)

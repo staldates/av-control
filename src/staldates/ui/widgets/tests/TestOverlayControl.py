@@ -19,7 +19,7 @@ class TestOverlayControl(GuiTest):
 
         self.atem.setDSKFillSource.assert_called_once_with(0, VideoSource.INPUT_5)
         self.atem.setDSKKeySource.assert_called_once_with(0, VideoSource.INPUT_5)
-        self.atem.setDSKParams.assert_called_once_with(0, preMultiplied=False, gain=500, clip=250)
+        self.atem.setDSKParams.assert_called_once_with(0, preMultiplied=False, gain=300, clip=250)
 
     def testSetRate(self):
         self.atem.reset_mock()
