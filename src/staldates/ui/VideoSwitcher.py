@@ -78,6 +78,7 @@ class VideoSwitcher(QWidget):
         self.og = OutputsGrid(self.switcherState)
 
         self.og.take.connect(self.take)
+        self.og.cut.connect(self.cut)
         self.og.selected.connect(self.sendToAux)
         self.og.mainToAll.connect(self.sendMainToAllAuxes)
         self.og.all.connect(self.sendToAll)
@@ -105,8 +106,12 @@ class VideoSwitcher(QWidget):
             self.og.setAuxesEnabled(False)
 
     @with_atem
-    def take(self):
+    def cut(self):
         self.atem.performCut()
+
+    @with_atem
+    def take(self):
+        self.atem.performAutoTake()
 
     @with_atem
     def sendToAux(self, auxIndex):

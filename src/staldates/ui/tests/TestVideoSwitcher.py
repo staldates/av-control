@@ -67,7 +67,7 @@ class TestVideoSwitcher(GuiTest):
 
         vs = self.makeVS()
 
-        self.findButton(vs, "Take / Church").click()
+        self.findButton(vs, "Cut").click()
         atem.performCut.assert_called_once()
 
         self.findButton(vs, "DVD").click()

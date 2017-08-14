@@ -5,6 +5,7 @@ from PySide.QtCore import Signal, QSignalMapper
 
 class OutputsGrid(QFrame):
 
+    cut = Signal()
     take = Signal()
     mainToAll = Signal()
     all = Signal()
@@ -17,10 +18,15 @@ class OutputsGrid(QFrame):
 
         layout = QGridLayout()
 
-        btnMain = ExpandingButton()
-        btnMain.setText("Take / Church")
-        btnMain.clicked.connect(self.take.emit)
-        layout.addWidget(btnMain, 0, 0, 1, 2)
+        btnTake = ExpandingButton()
+        btnTake.setText("Cut")
+        btnTake.clicked.connect(self.cut.emit)
+        layout.addWidget(btnTake, 0, 0)
+
+        btnFade = ExpandingButton()
+        btnFade.setText("Fade")
+        btnFade.clicked.connect(self.take.emit)
+        layout.addWidget(btnFade, 0, 1)
 
         self.aux_buttons = []
 
