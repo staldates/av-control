@@ -1,4 +1,4 @@
-from avx.devices.net.atem.constants import VideoSource
+from avx.devices.net.atem.constants import VideoSource, TransitionStyle
 from PySide.QtGui import QWidget, QGridLayout, QHBoxLayout, QButtonGroup, QLabel
 from staldates.ui.widgets.Buttons import InputButton, FlashingInputButton
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
@@ -111,6 +111,7 @@ class VideoSwitcher(QWidget):
 
     @with_atem
     def take(self):
+        self.atem.setNextTransition(TransitionStyle.MIX, bkgd=True, key1=False, key2=False, key3=False, key4=False)
         self.atem.performAutoTake()
 
     @with_atem

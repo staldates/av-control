@@ -3,14 +3,14 @@ Created on 16 Apr 2013
 
 @author: jrem
 '''
-from staldates.ui.tests.GuiTest import GuiTest
-from staldates.ui.tests.TestUtils import MockController
-from staldates.ui.VideoSwitcher import VideoSwitcher
+from avx.devices.net.atem.constants import VideoSource, TransitionStyle
 from mock import MagicMock, call
 from staldates.VisualsSystem import DSK
 from staldates import VisualsSystem
+from staldates.ui.tests.GuiTest import GuiTest
+from staldates.ui.tests.TestUtils import MockController
+from staldates.ui.VideoSwitcher import VideoSwitcher
 from staldates.ui.widgets.AllInputsPanel import AllInputsPanel
-from avx.devices.net.atem.constants import VideoSource
 
 
 class TestVideoSwitcher(GuiTest):
@@ -72,6 +72,10 @@ class TestVideoSwitcher(GuiTest):
 
         self.findButton(vs, "DVD").click()
         atem.setPreview.assert_called_once_with(VideoSource.INPUT_4)
+
+        self.findButton(vs, "Fade").click()
+        atem.setNextTransition.assert_called_once_with(TransitionStyle.MIX, bkgd=True, key1=False, key2=False, key3=False, key4=False)
+        atem.performAutoTake.assert_called_once()
 
         self.findButton(vs, "All").click()
         atem.setProgram.assert_called_once_with(VideoSource.INPUT_4)
