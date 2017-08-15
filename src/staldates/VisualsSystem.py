@@ -117,6 +117,23 @@ class DSK(QObject):
         return "<DSK #{} (on air: {}) >".format(self.idx, self.onAir)
 
 
+class Transition(QObject):
+    changedProps = Signal()
+
+    def __init__(self):
+        super(Transition, self).__init__()
+        self.rate = 1
+
+    def set_rate(self, rate):
+        if self.rate != rate:
+            self.rate = rate
+            self.changedProps.emit()
+
+
+class MixTransition(Transition):
+    pass
+
+
 class FadeToBlack(QObject):
 
     activeChanged = Signal(bool)
@@ -150,6 +167,7 @@ class SwitcherState(QObject):
         self.outputs = _default_outputs()
         self.dsks = {0: DSK(1), 1: DSK(2)}
         self.ftb = FadeToBlack()
+        self.mixTransition = MixTransition()
         self.connected = False
 
         self._initFromAtem()
@@ -164,6 +182,7 @@ class SwitcherState(QObject):
                 self.updateDSKs(self.atem.getDSKState())
                 self.updateFTBState(self.atem.getFadeToBlackState(me=1))
                 self.updateFTBRate(self.atem.getFadeToBlackProperties(me=1)['rate'])
+                self.updateMixTransitionProps(self.atem.getMixTransitionProps(me=1))
             except NotInitializedException:
                 pass
 
@@ -212,6 +231,10 @@ class SwitcherState(QObject):
     def updateFTBRate(self, rate):
         self.ftb.set_rate(rate)
 
+    def updateMixTransitionProps(self, props):
+        if 'rate' in props:
+            self.mixTransition.set_rate(props['rate'])
+
     def handleMessage(self, msgType, data):
         if msgType == ATEMMessageTypes.TALLY:
             self.updateTally(data)
@@ -227,6 +250,9 @@ class SwitcherState(QObject):
         elif msgType == ATEMMessageTypes.FTB_RATE_CHANGED:
             if 0 in data:
                 self.updateFTBRate(data[0])
+        elif msgType == ATEMMessageTypes.TRANSITION_MIX_PROPERTIES_CHANGED:
+            if 0 in data:
+                self.updateMixTransitionProps(data[0])
         elif msgType == ATEMMessageTypes.ATEM_CONNECTED:
             self._initFromAtem()
         elif msgType == ATEMMessageTypes.ATEM_DISCONNECTED:

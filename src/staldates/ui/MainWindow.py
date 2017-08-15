@@ -99,7 +99,7 @@ class MainWindow(QMainWindow):
                     recorder.setIcon(QIcon(":icons/drive-optical"))
             self.hyperdeckState.transportChange.connect(update_recorder_icon)
 
-        self.advMenu = AdvancedMenu(self.controller, self)
+        self.advMenu = AdvancedMenu(self.controller, self.switcherState.mixTransition, atem, self)
 
         adv = ExpandingButton()
         adv.setText("Advanced")
