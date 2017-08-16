@@ -68,7 +68,7 @@ class SystemPowerWidget(ScreenWithBackButton):
             BroadcastEvent(MessageTypes.SHOW_POWER_OFF, "Client", None),
             LogEvent(logging.INFO, "Turning system power off"),
             CompositeEvent(
-                map(
+                *map(
                     lambda deviceID: DeviceEvent(deviceID, "deinitialise"),
                     [d for d in _DEVICES_TO_DEINITIALISE if self.controller.hasDevice(d)]
                 )
