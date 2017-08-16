@@ -6,6 +6,7 @@ from staldates.ui.widgets.Screens import ScreenWithBackButton
 from staldates.ui._version import __version__ as _ui_version
 from staldates.ui.widgets.TouchSpinner import FrameRateTouchSpinner
 from staldates.VisualsSystem import with_atem
+from PySide.QtCore import Qt
 
 
 class AdvancedMenu(ScreenWithBackButton):
@@ -28,7 +29,9 @@ class AdvancedMenu(ScreenWithBackButton):
         layout.addWidget(lblVersion)
 
         mixCtl = QHBoxLayout()
-        mixCtl.addWidget(QLabel("Mix rate:"))
+        lblMixRate = QLabel("Mix rate:")
+        lblMixRate.setAlignment(Qt.AlignHCenter | Qt.AlignRight)
+        mixCtl.addWidget(lblMixRate, 1)
 
         mixRate = FrameRateTouchSpinner()
         mixRate.setValue(self.transition.rate)
@@ -36,7 +39,7 @@ class AdvancedMenu(ScreenWithBackButton):
         mixRate.setMinimum(1)
         mixRate.valueChanged.connect(self.setMixRate)
 
-        mixCtl.addWidget(mixRate)
+        mixCtl.addWidget(mixRate, 1)
 
         layout.addLayout(mixCtl)
 

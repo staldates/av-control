@@ -11,6 +11,10 @@ OutputsGrid {
   background-color: #00527E;
 }
 
+OutputsGrid > QFrame {
+  background-color: #E4E4FF;
+}
+
 InputButton, OutputButton, OptionButton, ExpandingButton, QComboBox, QListView {
   background-color: #1693A5;
   color: white;

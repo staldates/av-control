@@ -1,4 +1,4 @@
-from PySide.QtGui import QFrame, QGridLayout
+from PySide.QtGui import QFrame, QGridLayout, QHBoxLayout
 from staldates.ui.widgets.Buttons import OutputButton, ExpandingButton
 from PySide.QtCore import Signal, QSignalMapper
 
@@ -18,15 +18,21 @@ class OutputsGrid(QFrame):
 
         layout = QGridLayout()
 
+        pgmButtonFrame = QFrame()
+        pgmLayout = QHBoxLayout()
+
         btnTake = ExpandingButton()
         btnTake.setText("Cut")
         btnTake.clicked.connect(self.cut.emit)
-        layout.addWidget(btnTake, 0, 0)
+        pgmLayout.addWidget(btnTake)
 
         btnFade = ExpandingButton()
         btnFade.setText("Fade")
         btnFade.clicked.connect(self.take.emit)
-        layout.addWidget(btnFade, 0, 1)
+        pgmLayout.addWidget(btnFade)
+
+        pgmButtonFrame.setLayout(pgmLayout)
+        layout.addWidget(pgmButtonFrame, 0, 0, 1, 2)
 
         self.aux_buttons = []
 
