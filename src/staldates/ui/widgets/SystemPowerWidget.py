@@ -1,5 +1,5 @@
 from avx.Sequencer import ControllerEvent, DeviceEvent, LogEvent, SleepEvent,\
-    BroadcastEvent
+    BroadcastEvent, CompositeEvent
 from PySide.QtCore import Qt
 from PySide.QtGui import QHBoxLayout
 from staldates import MessageTypes
@@ -8,6 +8,17 @@ from staldates.ui.widgets.Dialogs import handlePyroErrors
 from staldates.ui.widgets.Screens import ScreenWithBackButton
 
 import logging
+
+
+_DEVICES_TO_DEINITIALISE = [
+    # On power-off, deinitialise only these devices - e.g. these are devices on
+    # switched power rather than permanent power.
+    'ATEM',
+    'Recorder',
+    'Camera 1',
+    'Camera 2',
+    'Camera 3'
+]
 
 
 class SystemPowerWidget(ScreenWithBackButton):
@@ -56,7 +67,12 @@ class SystemPowerWidget(ScreenWithBackButton):
         self.controller.sequence(
             BroadcastEvent(MessageTypes.SHOW_POWER_OFF, "Client", None),
             LogEvent(logging.INFO, "Turning system power off"),
-            ControllerEvent("deinitialise"),
+            CompositeEvent(
+                map(
+                    lambda deviceID: DeviceEvent(deviceID, "deinitialise"),
+                    [d for d in _DEVICES_TO_DEINITIALISE if self.controller.hasDevice(d)]
+                )
+            ),
             DeviceEvent("Power", "off", 4),
             SleepEvent(3),
             DeviceEvent("Power", "off", 3),
