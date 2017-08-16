@@ -143,10 +143,6 @@ class OptionButton(ExpandingButton):
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
 
 
-class CameraSelectionButton(InputButton, IDedButton):
-    pass
-
-
 class SvgButton(ExpandingButton):
     def __init__(self, svgImage, width, height, parent=None):
         super(SvgButton, self).__init__(parent)
