@@ -102,6 +102,7 @@ class VideoSwitcher(QWidget):
         self.extrasBtn.setInput(inp)
         self.preview()
 
+    @with_atem
     def preview(self):
         checkedButton = self.inputs.checkedButton()
         if checkedButton and checkedButton.input:
