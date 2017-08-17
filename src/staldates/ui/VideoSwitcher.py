@@ -1,5 +1,6 @@
 from avx.devices.net.atem.constants import VideoSource, TransitionStyle
-from PySide.QtGui import QWidget, QGridLayout, QHBoxLayout, QButtonGroup, QLabel
+from PySide.QtGui import QWidget, QGridLayout, QHBoxLayout, QButtonGroup, QLabel,\
+    QMenu
 from staldates.ui.widgets.Buttons import InputButton, FlashingInputButton
 from staldates.ui.widgets.OutputsGrid import OutputsGrid
 from staldates.ui.CameraControls import CameraControl, AdvancedCameraControl
@@ -56,6 +57,10 @@ class VideoSwitcher(QWidget):
         self.extrasBtn.clicked.connect(self.preview)
         self.extrasBtn.clicked.connect(self.displayPanel)
 
+        # An empty menu means the button will be given a "down arrow" icon
+        # without actually showing a menu when pressed.
+        self.extrasBtn.setMenu(QMenu())
+
         self.allInputs = AllInputsPanel(self.switcherState)
         self.extrasBtn.setProperty("panel", self.allInputs)
 
@@ -98,10 +103,11 @@ class VideoSwitcher(QWidget):
         self.preview()
 
     def preview(self):
-        if self.inputs.checkedButton().input:
+        checkedButton = self.inputs.checkedButton()
+        if checkedButton and checkedButton.input:
             self.og.setAuxesEnabled(True)
             if self.atem:
-                self.atem.setPreview(self.inputs.checkedButton().input.source)
+                self.atem.setPreview(checkedButton.input.source)
         else:
             self.og.setAuxesEnabled(False)
 
