@@ -19,6 +19,10 @@ class TestVideoSwitcher(GuiTest):
         GuiTest.setUp(self)
         self.mockController = MockController()
 
+        self.atem = MagicMock()
+        self.atem.deviceID = 'ATEM'
+        self.mockController.addDevice(self.atem)
+
         self.switcherState = MagicMock()
         self.switcherState.dsks = {0: DSK(1)}
         self.switcherState.inputs = VisualsSystem._default_inputs()
@@ -61,25 +65,21 @@ class TestVideoSwitcher(GuiTest):
         self.assertTrue(self.findButton(vs, "All").isEnabled())  # All button is enabled again
 
     def testSwitching(self):
-        atem = MagicMock()
-        atem.deviceID = "ATEM"
-        self.mockController.addDevice(atem)
-
         vs = self.makeVS()
 
         self.findButton(vs, "Cut").click()
-        atem.performCut.assert_called_once()
+        self.atem.performCut.assert_called_once()
 
         self.findButton(vs, "DVD").click()
-        atem.setPreview.assert_called_once_with(VideoSource.INPUT_4)
+        self.atem.setPreview.assert_called_once_with(VideoSource.INPUT_4)
 
         self.findButton(vs, "Fade").click()
-        atem.setNextTransition.assert_called_once_with(TransitionStyle.MIX, bkgd=True, key1=False, key2=False, key3=False, key4=False)
-        atem.performAutoTake.assert_called_once()
+        self.atem.setNextTransition.assert_called_once_with(TransitionStyle.MIX, bkgd=True, key1=False, key2=False, key3=False, key4=False)
+        self.atem.performAutoTake.assert_called_once()
 
         self.findButton(vs, "All").click()
-        atem.setProgram.assert_called_once_with(VideoSource.INPUT_4)
-        atem.setAuxSource.assert_has_calls([
+        self.atem.setProgram.assert_called_once_with(VideoSource.INPUT_4)
+        self.atem.setAuxSource.assert_has_calls([
             call(1, VideoSource.INPUT_4),
             call(2, VideoSource.INPUT_4),
             call(3, VideoSource.INPUT_4),
@@ -88,14 +88,14 @@ class TestVideoSwitcher(GuiTest):
             call(6, VideoSource.INPUT_4),
         ])
 
-        atem.setAuxSource.reset_mock()
+        self.atem.setAuxSource.reset_mock()
         self.findButton(vs, "Visuals PC").click()
         self.findButton(vs.og, "Record").click()
-        atem.setAuxSource.assert_called_once_with(1, VideoSource.INPUT_5)
+        self.atem.setAuxSource.assert_called_once_with(1, VideoSource.INPUT_5)
 
-        atem.setAuxSource.reset_mock()
+        self.atem.setAuxSource.reset_mock()
         self.findButton(vs.og, "Main to\nall auxes").click()
-        atem.setAuxSource.assert_has_calls([
+        self.atem.setAuxSource.assert_has_calls([
             call(1, VideoSource.ME_1_PROGRAM),
             call(2, VideoSource.ME_1_PROGRAM),
             call(3, VideoSource.ME_1_PROGRAM),
