@@ -4,7 +4,7 @@ from threading import Thread
 import math
 import struct
 import time
-from mock import MagicMock
+from avx.devices.serial.VISCACamera import VISCACamera
 
 
 EVENT_BUTTON = 0x01  # button pressed/released
@@ -62,6 +62,7 @@ class Direction(Enum):
 
     @staticmethod
     def from_axes(x, y, deadzone=0):
+        y = -1 * y
         if x > deadzone:
             if y > deadzone:
                 return Direction.UP_RIGHT
@@ -93,28 +94,28 @@ class Zoom(Enum):
     @staticmethod
     def from_axis(axis, deadzone=0):
         if axis > deadzone:
-            return Zoom.OUT
-        elif axis < -1 * deadzone:
             return Zoom.IN
+        elif axis < -1 * deadzone:
+            return Zoom.OUT
         return Zoom.STOP
 
 
 def pan_speed_from_axis(axis):
     # Must return between 1 and 24 inclusive (0 when stopped)
     raw = abs(axis)
-    return 1 + math.ceil(23 * raw / 32767)
+    return int(1 + math.ceil(23 * raw / 32767))
 
 
 def tilt_speed_from_axis(axis):
     # Must return between 1 and 20 inclusive (0 when stopped)
     raw = abs(axis)
-    return 1 + math.ceil(19 * raw / 32767)
+    return int(1 + math.ceil(19 * raw / 32767))
 
 
 def zoom_speed_from_axis(axis):
     # Must return between 2 and 7 inclusive
     raw = abs(axis)
-    return 2 + math.ceil(5 * raw / 32767)
+    return int(2 + math.ceil(5 * raw / 32767))
 
 
 class CameraJoystickAdapter(Thread):
@@ -152,7 +153,7 @@ class CameraJoystickAdapter(Thread):
 
         if (direction, pan_speed, tilt_speed) != self._last_sent_pan_tilt:
             self._last_sent_pan_tilt = (direction, pan_speed, tilt_speed)
-            print self._last_sent_pan_tilt
+            # print self._last_sent_pan_tilt
             getattr(self._camera, direction.value)(pan_speed, tilt_speed)
 
         zoom_dir = Zoom.from_axis(self._axes[3])
@@ -160,7 +161,7 @@ class CameraJoystickAdapter(Thread):
 
         if (zoom_dir, zoom_speed) != self._last_sent_zoom:
             self._last_sent_zoom = (zoom_dir, zoom_speed)
-            print self._last_sent_zoom
+            # print self._last_sent_zoom
             if zoom_dir == Zoom.STOP:
                 self._camera.zoomStop()
             else:
@@ -168,9 +169,13 @@ class CameraJoystickAdapter(Thread):
 
 
 if __name__ == "__main__":
-    dev_str = "/dev/input/js0"
+    dev_str = "/dev/input/js1"
     js = Joystick(dev_str)
     cja = CameraJoystickAdapter(js)
-    cja.set_camera(MagicMock())
+
+    cam = VISCACamera("Camera 1", "/dev/ttyUSB0", 1)
+    cam.initialise()
+
+    cja.set_camera(cam)
     js.start()
     cja.start()
