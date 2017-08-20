@@ -33,6 +33,10 @@ class VideoSwitcher(QWidget):
                 return func()
             return (None, None, None, None)
 
+        def setCamera(cam):
+            if self.joystickAdapter:
+                self.joystickAdapter.set_camera(cam)
+
         def makeCamera(videoSource, cameraID):
             cam = self.controller[cameraID]
 
@@ -40,11 +44,12 @@ class VideoSwitcher(QWidget):
                 videoSource,
                 CameraControl(cam),
                 AdvancedCameraControl(cameraID, cam, self.mainWindow),
-                lambda: self.joystickAdapter.set_camera(cam)
+                lambda: setCamera(cam)
             )
 
         def deselectCamera():
-            self.joystickAdapter.set_camera(None)
+            if self.joystickAdapter:
+                self.joystickAdapter.set_camera(None)
 
         self.input_buttons_config = [
             ifDevice("Camera 1", lambda: makeCamera(VideoSource.INPUT_1, "Camera 1")),
