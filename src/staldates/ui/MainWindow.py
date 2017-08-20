@@ -20,7 +20,7 @@ from avx.devices.net.hyperdeck import TransportState
 
 class MainWindow(QMainWindow):
 
-    def __init__(self, controller):
+    def __init__(self, controller, joystickAdapter=None):
         super(MainWindow, self).__init__()
         self.controller = controller
 
@@ -31,7 +31,7 @@ class MainWindow(QMainWindow):
         atem = controller['ATEM']
         self.switcherState = SwitcherState(atem)
 
-        self.mainScreen = VideoSwitcher(controller, self, self.switcherState)
+        self.mainScreen = VideoSwitcher(controller, self, self.switcherState, joystickAdapter)
 
         # This is possibly a bad / too complicated idea...
         # self.mainScreen.setEnabled(self.switcherState.connected)

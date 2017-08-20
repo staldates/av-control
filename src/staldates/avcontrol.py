@@ -2,6 +2,7 @@ import argparse
 import atexit
 import fcntl  # @UnresolvedImport
 import logging
+import os
 import Pyro4
 import sys
 
@@ -13,6 +14,7 @@ from staldates.ui import resources  # @UnusedImport  # Initialises the Qt resour
 from staldates.ui.MainWindow import MainWindow
 from staldates.ui.widgets import Dialogs
 from staldates.ui.widgets.Dialogs import handlePyroErrors
+from staldates.joystick import Joystick, CameraJoystickAdapter
 
 
 Pyro4.config.COMMTIMEOUT = 3  # seconds
@@ -96,7 +98,13 @@ def main():
     try:
         controller = Controller.fromPyro(args.c)
 
-        myapp = MainWindow(controller)
+        if os.path.exists("/dev/input/js0"):
+            js = Joystick("/dev/input/js0")
+        else:
+            js = None
+
+        jsa = CameraJoystickAdapter(js)
+        myapp = MainWindow(controller, jsa)
 
         client = AvControlClient(myapp)
         client.setDaemon(True)

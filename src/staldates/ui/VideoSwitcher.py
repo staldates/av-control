@@ -13,12 +13,13 @@ from staldates.ui.widgets.FadeToBlackControl import FadeToBlackControl
 
 class VideoSwitcher(QWidget):
 
-    def __init__(self, controller, mainWindow, switcherState):
+    def __init__(self, controller, mainWindow, switcherState, joystickAdapter=None):
         super(VideoSwitcher, self).__init__()
         self.mainWindow = mainWindow
         self.atem = controller['ATEM']
         self.controller = controller
         self.switcherState = switcherState
+        self.joystickAdapter = joystickAdapter
         self.setupUi()
 
     def setupUi(self):
@@ -30,24 +31,39 @@ class VideoSwitcher(QWidget):
         def ifDevice(deviceID, func):
             if self.controller.hasDevice(deviceID):
                 return func()
-            return (None, None, None)
+            return (None, None, None, None)
+
+        def makeCamera(videoSource, cameraID):
+            cam = self.controller[cameraID]
+
+            return (
+                videoSource,
+                CameraControl(cam),
+                AdvancedCameraControl(cameraID, cam, self.mainWindow),
+                lambda: self.joystickAdapter.set_camera(cam)
+            )
+
+        def deselectCamera():
+            self.joystickAdapter.set_camera(None)
 
         self.input_buttons_config = [
-            ifDevice("Camera 1", lambda: (VideoSource.INPUT_1, CameraControl(self.controller["Camera 1"]), AdvancedCameraControl("Camera 1", self.controller["Camera 1"], self.mainWindow))),
-            ifDevice("Camera 2", lambda: (VideoSource.INPUT_2, CameraControl(self.controller["Camera 2"]), AdvancedCameraControl("Camera 2", self.controller["Camera 2"], self.mainWindow))),
-            ifDevice("Camera 3", lambda: (VideoSource.INPUT_3, CameraControl(self.controller["Camera 3"]), AdvancedCameraControl("Camera 3", self.controller["Camera 3"], self.mainWindow))),
-            (VideoSource.INPUT_4, QLabel(StringConstants.noDevice), None),
-            (VideoSource.INPUT_5, OverlayControl(self.switcherState.dsks[0], self.atem), None),
-            (VideoSource.INPUT_6, QLabel(StringConstants.noDevice), None)
+            ifDevice("Camera 1", lambda: makeCamera(VideoSource.INPUT_1, "Camera 1")),
+            ifDevice("Camera 2", lambda: makeCamera(VideoSource.INPUT_2, "Camera 2")),
+            ifDevice("Camera 3", lambda: makeCamera(VideoSource.INPUT_3, "Camera 3")),
+            (VideoSource.INPUT_4, QLabel(StringConstants.noDevice), None, deselectCamera),
+            (VideoSource.INPUT_5, OverlayControl(self.switcherState.dsks[0], self.atem), None, deselectCamera),
+            (VideoSource.INPUT_6, QLabel(StringConstants.noDevice), None, deselectCamera)
         ]
 
-        for source, panel, adv_panel in self.input_buttons_config:
+        for source, panel, adv_panel, on_select_func in self.input_buttons_config:
             if source:
                 btn = InputButton(self.switcherState.inputs[source])
                 btn.setProperty("panel", panel)
                 btn.setProperty("adv_panel", adv_panel)
                 btn.clicked.connect(self.preview)
                 btn.clicked.connect(self.displayPanel)
+                if on_select_func:
+                    btn.clicked.connect(on_select_func)
                 btn.longpress.connect(self.displayAdvPanel)
                 self.inputs.addButton(btn)
                 inputs_grid.addWidget(btn)
@@ -56,6 +72,7 @@ class VideoSwitcher(QWidget):
         self.inputs.addButton(self.extrasBtn)
         self.extrasBtn.clicked.connect(self.preview)
         self.extrasBtn.clicked.connect(self.displayPanel)
+        self.extrasBtn.clicked.connect(deselectCamera)
 
         # An empty menu means the button will be given a "down arrow" icon
         # without actually showing a menu when pressed.
@@ -73,6 +90,7 @@ class VideoSwitcher(QWidget):
         self.inputs.addButton(self.blackBtn)
         self.blackBtn.clicked.connect(self.preview)
         self.blackBtn.clicked.connect(self.displayPanel)
+        self.blackBtn.clicked.connect(deselectCamera)
         self.ftb = FadeToBlackControl(self.switcherState.ftb, self.atem)
         self.blackBtn.setProperty("panel", self.ftb)
         self.blackBtn.flashing = self.switcherState.ftb.active
