@@ -64,7 +64,6 @@ class Direction(Enum):
 
     @staticmethod
     def from_axes(x, y, deadzone=0):
-        y = -1 * y
         if x > deadzone:
             if y > deadzone:
                 return Direction.UP_RIGHT
