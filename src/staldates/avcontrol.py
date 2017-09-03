@@ -100,10 +100,12 @@ def main():
 
         if os.path.exists("/dev/input/js0"):
             js = Joystick("/dev/input/js0")
+            js.start()
         else:
             js = None
 
         jsa = CameraJoystickAdapter(js)
+        jsa.start()
         myapp = MainWindow(controller, jsa)
 
         client = AvControlClient(myapp)
