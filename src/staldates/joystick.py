@@ -1,10 +1,11 @@
+from avx.devices.serial.VISCACamera import VISCACamera
 from enum import Enum
+from Pyro4.errors import PyroError
 from threading import Thread
 
 import math
 import struct
 import time
-from avx.devices.serial.VISCACamera import VISCACamera
 
 
 EVENT_BUTTON = 0x01  # button pressed/released
@@ -154,21 +155,24 @@ class CameraJoystickAdapter(Thread):
         pan_speed = self.map_pan(self._axes[0])
         tilt_speed = self.map_tilt(self._axes[1])
 
-        if (direction, pan_speed, tilt_speed) != self._last_sent_pan_tilt:
-            self._last_sent_pan_tilt = (direction, pan_speed, tilt_speed)
-            # print self._last_sent_pan_tilt
-            getattr(self._camera, direction.value)(pan_speed, tilt_speed)
+        try:
+            if (direction, pan_speed, tilt_speed) != self._last_sent_pan_tilt:
+                getattr(self._camera, direction.value)(pan_speed, tilt_speed)
+                self._last_sent_pan_tilt = (direction, pan_speed, tilt_speed)
+                # print self._last_sent_pan_tilt
 
-        zoom_dir = Zoom.from_axis(self._axes[3])
-        zoom_speed = self.map_zoom(self._axes[3])
+            zoom_dir = Zoom.from_axis(self._axes[3])
+            zoom_speed = self.map_zoom(self._axes[3])
 
-        if (zoom_dir, zoom_speed) != self._last_sent_zoom:
-            self._last_sent_zoom = (zoom_dir, zoom_speed)
-            # print self._last_sent_zoom
-            if zoom_dir == Zoom.STOP:
-                self._camera.zoomStop()
-            else:
-                getattr(self._camera, zoom_dir.value)(zoom_speed)
+            if (zoom_dir, zoom_speed) != self._last_sent_zoom:
+                if zoom_dir == Zoom.STOP:
+                    self._camera.zoomStop()
+                else:
+                    getattr(self._camera, zoom_dir.value)(zoom_speed)
+                self._last_sent_zoom = (zoom_dir, zoom_speed)
+                # print self._last_sent_zoom
+        except PyroError:
+            pass
 
 
 if __name__ == "__main__":
