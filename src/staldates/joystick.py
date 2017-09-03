@@ -17,6 +17,7 @@ EVENT_SIZE = struct.calcsize(EVENT_FORMAT)
 class Joystick(Thread):
     def __init__(self, device):
         super(Joystick, self).__init__()
+        self.daemon = True
 
         self._axis_handlers = []
         self._button_handlers = []
@@ -121,6 +122,7 @@ def zoom_speed_from_axis(axis):
 class CameraJoystickAdapter(Thread):
     def __init__(self, js, map_pan=pan_speed_from_axis, map_tilt=tilt_speed_from_axis, map_zoom=zoom_speed_from_axis):
         super(CameraJoystickAdapter, self).__init__()
+        self.daemon = True
         if js:
             js.add_axis_handler(self._handle_axis)
         self._axes = [0, 0, 0, 0]
