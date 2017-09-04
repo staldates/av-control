@@ -38,17 +38,20 @@ class Joystick(Thread):
         for handler in self._button_handlers:
             handler(button, value)
 
+    def parse_event(self, evt):
+        _, value, evt_type, number = struct.unpack(EVENT_FORMAT, evt)
+
+        if (evt_type & ~EVENT_INIT) == EVENT_AXIS:
+            # print "{} Axis {}: value {}".format(time, number, value)
+            self._on_axis(number, value)
+        elif (evt_type & ~EVENT_INIT) == EVENT_BUTTON:
+            # print "{} Button {}: value {}".format(time, number, value)
+            self._on_button(number, value)
+
     def run(self):
         while True:
             evt = self.device.read(EVENT_SIZE)
-            time, value, evt_type, number = struct.unpack(EVENT_FORMAT, evt)
-
-            if (evt_type & ~EVENT_INIT) == EVENT_AXIS:
-                # print "{} Axis {}: value {}".format(time, number, value)
-                self._on_axis(number, value)
-            elif (evt_type & ~EVENT_INIT) == EVENT_BUTTON:
-                # print "{} Button {}: value {}".format(time, number, value)
-                self._on_button(number, value)
+            self.parse_event(evt)
 
 
 class Direction(Enum):
