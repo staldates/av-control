@@ -84,6 +84,8 @@ def main():
                         help="Specify the controller ID to connect to",
                         metavar="CONTROLLERID",
                         default="")
+    parser.add_argument("-j", "--joystick",
+                        help="Path to joystick device to use for camera control")
     args = parser.parse_args()
 
     try:
@@ -98,11 +100,20 @@ def main():
     try:
         controller = Controller.fromPyro(args.c)
 
-        if os.path.exists("/dev/input/js0"):
-            js = Joystick("/dev/input/js0")
-            js.start()
-        else:
-            js = None
+        js = None
+        joystickDevice = args.joystick
+        print args
+        try:
+            if args.joystick:
+                if os.path.exists(joystickDevice):
+                    logging.info("Configuring joystick {}".format(joystickDevice))
+                    js = Joystick(joystickDevice)
+                    js.start()
+                else:
+                    logging.error("Specified joystick device {} does not exist!".format(joystickDevice))
+        except IOError:
+            logging.exception("Unable to configure joystick")
+            pass
 
         jsa = CameraJoystickAdapter(js)
         jsa.start()
