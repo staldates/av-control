@@ -1,4 +1,4 @@
-from staldates.joystick import Joystick, Direction, Zoom
+from staldates.joystick import Joystick, Direction, Zoom, CameraJoystickAdapter
 
 import unittest
 import struct
@@ -71,3 +71,49 @@ class TestJoystick(unittest.TestCase):
             (1, Zoom.IN)
         ]:
             do_test(z, expected)
+
+
+class TestCameraJoystickAdapter(unittest.TestCase):
+    def testHandlesAxes(self):
+        camera = MagicMock()
+
+        cja = CameraJoystickAdapter(None)
+        cja.set_camera(camera)
+
+        cja._handle_axis(1, -32768)
+        cja._update_camera()
+        camera.moveDown.assert_called_once_with(1, 20)
+
+        cja._handle_axis(1, 32767)
+        cja._update_camera()
+        camera.moveUp.assert_called_once_with(1, 20)
+
+        cja._handle_axis(1, 0)
+        cja._update_camera()
+        camera.stop.assert_called_once()
+
+        camera.reset_mock()
+
+        cja._handle_axis(0, 1)
+        cja._update_camera()
+        camera.moveRight.assert_called_once_with(1, 1)
+
+        cja._handle_axis(0, -1)
+        cja._update_camera()
+        camera.moveLeft.assert_called_once_with(1, 1)
+
+        cja._handle_axis(0, 0)
+        cja._update_camera()
+        camera.stop.assert_called_once()
+
+        cja._handle_axis(3, -32768)
+        cja._update_camera()
+        camera.zoomOut.assert_called_once_with(7)
+
+        cja._handle_axis(3, 32767)
+        cja._update_camera()
+        camera.zoomIn.assert_called_once_with(7)
+
+        cja._handle_axis(3, 0)
+        cja._update_camera()
+        camera.zoomStop.assert_called_once()
