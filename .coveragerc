@@ -1,0 +1,3 @@
+[run]
+omit = src/staldates/ui/resources.py
+

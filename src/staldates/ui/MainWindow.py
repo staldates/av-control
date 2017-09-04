@@ -7,16 +7,20 @@ from staldates.ui.widgets.SystemPowerWidget import SystemPowerWidget
 from staldates.ui.VideoSwitcher import VideoSwitcher
 from staldates.ui.widgets.Dialogs import PowerNotificationDialog
 from staldates.ui.widgets.BlindsControl import BlindsControl
-from staldates.ui.widgets.ProjectorScreensControl import ProjectorScreensControl
 from staldates.ui.widgets.AdvancedMenu import AdvancedMenu
 from staldates.ui.widgets import Dialogs
 from staldates.ui.widgets.LightingControl import LightingControl
 from staldates.ui.widgets.Status import SystemStatus
+from staldates.VisualsSystem import SwitcherState, HyperdeckState
+from staldates import MessageTypes
+from staldates.ui.StringConstants import StringConstants
+from staldates.ui.widgets.RecorderControl import RecorderControl
+from avx.devices.net.hyperdeck import TransportState
 
 
 class MainWindow(QMainWindow):
 
-    def __init__(self, controller):
+    def __init__(self, controller, joystickAdapter=None):
         super(MainWindow, self).__init__()
         self.controller = controller
 
@@ -24,7 +28,15 @@ class MainWindow(QMainWindow):
         self.resize(1024, 600)
         self.setWindowIcon(QIcon(":icons/video-display"))
 
-        self.mainScreen = VideoSwitcher(controller, self)
+        atem = controller['ATEM']
+        self.switcherState = SwitcherState(atem)
+
+        self.mainScreen = VideoSwitcher(controller, self, self.switcherState, joystickAdapter)
+
+        # This is possibly a bad / too complicated idea...
+        # self.mainScreen.setEnabled(self.switcherState.connected)
+        # self.switcherState.connectionChanged.connect(self.mainScreen.setEnabled)
+
         self.stack = QStackedWidget()
         self.stack.addWidget(self.mainScreen)
 
@@ -44,25 +56,16 @@ class MainWindow(QMainWindow):
         mainLayout.addWidget(syspower, 1, column)
         column += 1
 
-        self.bc = BlindsControl(controller["Blinds"], self)
+        if controller.hasDevice("Blinds"):
+            self.bc = BlindsControl(controller["Blinds"], self)
 
-        blinds = ExpandingButton()
-        blinds.setText("Blinds")
-        blinds.clicked.connect(lambda: self.showScreen(self.bc))
-        blinds.setIcon(QIcon(":icons/blinds"))
-        blinds.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        mainLayout.addWidget(blinds, 1, column)
-        column += 1
-
-        self.sc = ProjectorScreensControl(controller["Screens"], self)
-
-        screens = ExpandingButton()
-        screens.setText("Screens")
-        screens.clicked.connect(lambda: self.showScreen(self.sc))
-        screens.setIcon(QIcon(":icons/screens"))
-        screens.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        mainLayout.addWidget(screens, 1, column)
-        column += 1
+            blinds = ExpandingButton()
+            blinds.setText("Blinds")
+            blinds.clicked.connect(lambda: self.showScreen(self.bc))
+            blinds.setIcon(QIcon(":icons/blinds"))
+            blinds.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+            mainLayout.addWidget(blinds, 1, column)
+            column += 1
 
         if controller.hasDevice("Lights"):
             self.lightsMenu = LightingControl(controller["Lights"], self)
@@ -75,7 +78,28 @@ class MainWindow(QMainWindow):
             mainLayout.addWidget(lights, 1, column)
             column += 1
 
-        self.advMenu = AdvancedMenu(self.controller, self)
+        if controller.hasDevice("Recorder"):
+            hyperdeck = controller['Recorder']
+            self.hyperdeckState = HyperdeckState(hyperdeck)
+            self.recorderScreen = RecorderControl(hyperdeck, self.hyperdeckState, self)
+            recorder = ExpandingButton()
+            recorder.setText("Recorder")
+            recorder.setIcon(QIcon(":icons/drive-optical"))
+            recorder.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+            recorder.clicked.connect(lambda: self.showScreen(self.recorderScreen))
+            mainLayout.addWidget(recorder, 1, column)
+            column += 1
+
+            def update_recorder_icon(transport):
+                if transport['status'] == TransportState.RECORD:
+                    recorder.setIcon(QIcon(":icons/media-record"))
+                elif transport['status'] == TransportState.PLAYING:
+                    recorder.setIcon(QIcon(":icons/media-playback-start"))
+                else:
+                    recorder.setIcon(QIcon(":icons/drive-optical"))
+            self.hyperdeckState.transportChange.connect(update_recorder_icon)
+
+        self.advMenu = AdvancedMenu(self.controller, self.switcherState.mixTransition, atem, self)
 
         adv = ExpandingButton()
         adv.setText("Advanced")
@@ -128,5 +152,17 @@ class MainWindow(QMainWindow):
         if self.stack.currentWidget() == self.spc:
             self.stepBack()
 
-    def updateOutputMappings(self, mapping):
-        self.mainScreen.updateOutputMappings(mapping)
+    def updateOutputMappings(self, deviceID, mapping):
+        self.mainScreen.updateOutputMappings({deviceID: mapping})
+
+    def handleMessage(self, msgType, sourceDeviceID, data):
+        if msgType == MessageTypes.SHOW_POWER_ON:
+            self.showPowerDialog(StringConstants.poweringOn)
+        elif msgType == MessageTypes.SHOW_POWER_OFF:
+            self.showPowerDialog(StringConstants.poweringOff)
+        elif msgType == MessageTypes.HIDE_POWER:
+            self.hidePowerDialog()
+        elif sourceDeviceID == "ATEM":
+            self.switcherState.handleMessage(msgType, data)
+        elif sourceDeviceID == "Recorder":
+            self.hyperdeckState.handleMessage(msgType, data)

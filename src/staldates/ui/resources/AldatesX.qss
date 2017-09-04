@@ -11,10 +11,15 @@ OutputsGrid {
   background-color: #00527E;
 }
 
+OutputsGrid > QFrame {
+  background-color: #E4E4FF;
+}
+
 InputButton, OutputButton, OptionButton, ExpandingButton, QComboBox, QListView {
   background-color: #1693A5;
   color: white;
   border-radius: 5px;
+  border: none;
   selection-background-color: #003E5F;
 }
 
@@ -29,6 +34,14 @@ InputButton:disabled, OutputButton:disabled, OptionButton:disabled, ExpandingBut
 
 OutputButton>QLabel {
   font-size: 12pt;
+}
+
+QToolButton[isPreview="true"] {
+  border: 3px solid #50FF50;
+}
+
+QToolButton[isLive="true"] {
+  border: 3px solid red;
 }
 
 CameraButton {
@@ -47,6 +60,11 @@ QPushButton:flat {
   margin: 0;
   min-width: 32px;
   min-height: 32px;
+}
+
+FlashingInputButton[flashing="true"] {
+  background-color: red;
+  color: white;
 }
 
 Clock {
@@ -70,5 +88,8 @@ QComboBox {
 
 QComboBox::drop-down {
   border: 0;
+}
 
+FrameRateTouchSpinner > QLabel {
+  font-size: 24pt;
 }

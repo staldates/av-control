@@ -4,7 +4,7 @@ Created on 15 Apr 2013
 @author: jrem
 '''
 from avx.devices.Device import Device
-from avx.devices.VISCACamera import Shutter, Aperture, Gain
+from avx.devices.serial.VISCACamera import Shutter, Aperture, Gain
 from mock import MagicMock
 from PySide.QtCore import Qt
 from PySide.QtTest import QTest
@@ -62,66 +62,72 @@ class Test(GuiTest):
         self.assertTrue(buttons[1].isChecked())
         self.assertFalse(buttons[0].isChecked())
         buttons[0].click()
-        self.assertEqual(0, self.cc.presetGroup.checkedId())
+        self.assertEqual(1, self.cc.presetGroup.checkedId())
         self.assertTrue(buttons[0].isChecked())
         self.assertFalse(buttons[1].isChecked())
 
     def testMoveCamera(self):
+        self.cc.panSpeed = 1
+        self.cc.tiltSpeed = 2
+
         self.cc.btnUp.pressed.emit()
-        self.cam.moveUp.assert_called_once_with()
+        self.cam.moveUp.assert_called_once_with(1, 2)
         self.cc.btnUp.released.emit()
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
         self.cc.btnDown.pressed.emit()
-        self.cam.moveDown.assert_called_once_with()
+        self.cam.moveDown.assert_called_once_with(1, 2)
         self.cc.btnDown.released.emit()
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
         self.cc.btnLeft.pressed.emit()
-        self.cam.moveLeft.assert_called_once_with()
+        self.cam.moveLeft.assert_called_once_with(1, 2)
         self.cc.btnLeft.released.emit()
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
         self.cc.btnRight.pressed.emit()
-        self.cam.moveRight.assert_called_once_with()
+        self.cam.moveRight.assert_called_once_with(1, 2)
         self.cc.btnRight.released.emit()
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
     def testMoveCameraWithKeyboard(self):
+        self.cc.panSpeed = 1
+        self.cc.tiltSpeed = 2
+
         QTest.keyPress(self.cc, Qt.Key_Up)
-        self.cam.moveUp.assert_called_once_with()
+        self.cam.moveUp.assert_called_once_with(1, 2)
         QTest.keyRelease(self.cc, Qt.Key_Up)
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
         QTest.keyPress(self.cc, Qt.Key_Down)
-        self.cam.moveDown.assert_called_once_with()
+        self.cam.moveDown.assert_called_once_with(1, 2)
         QTest.keyRelease(self.cc, Qt.Key_Down)
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
         QTest.keyPress(self.cc, Qt.Key_Left)
-        self.cam.moveLeft.assert_called_once_with()
+        self.cam.moveLeft.assert_called_once_with(1, 2)
         QTest.keyRelease(self.cc, Qt.Key_Left)
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
         QTest.keyPress(self.cc, Qt.Key_Right)
-        self.cam.moveRight.assert_called_once_with()
+        self.cam.moveRight.assert_called_once_with(1, 2)
         QTest.keyRelease(self.cc, Qt.Key_Right)
         self.cam.stop.assert_called_once_with()
         self.cam.stop.reset_mock()
 
     def testPresets(self):
         self.findButton(self.cc, "2").click()
-        self.cam.recallPreset.assert_called_once_with(1)
+        self.cam.recallPreset.assert_called_once_with(2)
         self.findButton(self.cc, "Set").click()  # finds the first one
-        self.cam.storePreset.assert_called_once_with(0)
-        self.assertEquals(0, self.cc.presetGroup.checkedId())
+        self.cam.storePreset.assert_called_once_with(1)
+        self.assertEquals(1, self.cc.presetGroup.checkedId())
 
 # Tests for advanced camera controls
 

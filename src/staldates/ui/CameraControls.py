@@ -1,4 +1,4 @@
-from avx.devices.VISCACamera import Aperture, Shutter, Gain
+from avx.devices.serial.VISCACamera import Aperture, Shutter, Gain
 from enum import Enum
 from PySide.QtGui import QButtonGroup, QGridLayout, QLabel, QWidget, QIcon, QHBoxLayout, QComboBox,\
     QSizePolicy
@@ -79,6 +79,9 @@ class CameraControl(QWidget):
         super(CameraControl, self).__init__()
         self.camera = camera
         self.initUI()
+        self.panSpeed = 12
+        self.tiltSpeed = 12
+        self.zoomSpeed = 6
 
     def initUI(self):
         layout = QGridLayout()
@@ -86,37 +89,37 @@ class CameraControl(QWidget):
 
         self.btnUp = CameraButton()
         layout.addWidget(self.btnUp, 0, 1, 2, 1)
-        _safelyConnect(self.btnUp.pressed, self.camera.moveUp)
+        _safelyConnect(self.btnUp.pressed, lambda: self.camera.moveUp(self.panSpeed, self.tiltSpeed))
         _safelyConnect(self.btnUp.released, self.camera.stop)
         _safelyConnect(self.btnUp.clicked, self.deselectPreset)
         self.btnUp.setIcon(QIcon(":icons/go-up"))
 
         self.btnLeft = CameraButton()
         layout.addWidget(self.btnLeft, 1, 0, 2, 1)
-        _safelyConnect(self.btnLeft.pressed, self.camera.moveLeft)
+        _safelyConnect(self.btnLeft.pressed, lambda: self.camera.moveLeft(self.panSpeed, self.tiltSpeed))
         _safelyConnect(self.btnLeft.released, self.camera.stop)
         _safelyConnect(self.btnLeft.clicked, self.deselectPreset)
         self.btnLeft.setIcon(QIcon(":icons/go-previous"))
 
         self.btnDown = CameraButton()
         layout.addWidget(self.btnDown, 2, 1, 2, 1)
-        _safelyConnect(self.btnDown.pressed, self.camera.moveDown)
+        _safelyConnect(self.btnDown.pressed, lambda: self.camera.moveDown(self.panSpeed, self.tiltSpeed))
         _safelyConnect(self.btnDown.released, self.camera.stop)
         _safelyConnect(self.btnDown.clicked, self.deselectPreset)
         self.btnDown.setIcon(QIcon(":icons/go-down"))
 
         self.btnRight = CameraButton()
         layout.addWidget(self.btnRight, 1, 2, 2, 1)
-        _safelyConnect(self.btnRight.pressed, self.camera.moveRight)
+        _safelyConnect(self.btnRight.pressed, lambda: self.camera.moveRight(self.panSpeed, self.tiltSpeed))
         _safelyConnect(self.btnRight.released, self.camera.stop)
         _safelyConnect(self.btnRight.clicked, self.deselectPreset)
         self.btnRight.setIcon(QIcon(":icons/go-next"))
 
         zoomInOut = PlusMinusButtons("Zoom")
-        _safelyConnect(zoomInOut.upButton.pressed, self.camera.zoomIn)
+        _safelyConnect(zoomInOut.upButton.pressed, lambda: self.camera.zoomIn(self.zoomSpeed))
         _safelyConnect(zoomInOut.upButton.released, self.camera.zoomStop)
         _safelyConnect(zoomInOut.upButton.clicked, self.deselectPreset)
-        _safelyConnect(zoomInOut.downButton.pressed, self.camera.zoomOut)
+        _safelyConnect(zoomInOut.downButton.pressed, lambda: self.camera.zoomOut(self.zoomSpeed))
         _safelyConnect(zoomInOut.downButton.released, self.camera.zoomStop)
         _safelyConnect(zoomInOut.downButton.clicked, self.deselectPreset)
 
@@ -147,10 +150,10 @@ class CameraControl(QWidget):
 
         self.presetGroup = QButtonGroup()
 
-        for i in range(0, 6):
+        for i in range(1, 7):
             btnPresetRecall = CameraButton()
             presets.addWidget(btnPresetRecall, 0, i, 1, 1)
-            btnPresetRecall.setText(str(i + 1))
+            btnPresetRecall.setText(str(i))
             _safelyConnect(btnPresetRecall.clicked, lambda i=i: self.recallPreset(i))
             btnPresetRecall.setCheckable(True)
             self.presetGroup.addButton(btnPresetRecall, i)
@@ -186,7 +189,7 @@ class CameraControl(QWidget):
     def storePreset(self, index):
         print "Storing preset " + str(index)
         result = self.camera.storePreset(index)
-        self.presetGroup.buttons()[index].setChecked(True)
+        self.presetGroup.buttons()[index - 1].setChecked(True)
         return result
 
     @handlePyroErrors

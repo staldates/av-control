@@ -3,7 +3,7 @@
 	<name>av-control</name>
 	<comment></comment>
 	<projects>
-		<project>avx-git</project>
+		<project>avx</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
