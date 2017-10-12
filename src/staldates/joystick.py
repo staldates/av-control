@@ -133,11 +133,19 @@ class CameraJoystickAdapter(Thread):
         self.map_tilt = map_tilt
         self.map_zoom = map_zoom
         self.set_camera(None)
+        self.set_on_move(None)
 
     def set_camera(self, camera):
         self._camera = camera
         self._last_sent_pan_tilt = None
-        self._last_sent_zoom = None
+        self._last_sent_zoom = (Zoom.STOP, 2)
+
+    def set_on_move(self, on_move):
+        self._on_move_inner = on_move
+
+    def _on_move(self):
+        if self._on_move_inner:
+            self._on_move_inner()
 
     def _handle_axis(self, axis, value):
         if axis > 3:
@@ -173,6 +181,9 @@ class CameraJoystickAdapter(Thread):
                     getattr(self._camera, zoom_dir.value)(zoom_speed)
                 self._last_sent_zoom = (zoom_dir, zoom_speed)
                 # print self._last_sent_zoom
+
+            if direction != Direction.STOP or zoom_dir != Zoom.STOP:
+                self._on_move()
         except PyroError:
             pass
 
