@@ -117,3 +117,18 @@ class TestCameraJoystickAdapter(unittest.TestCase):
         cja._handle_axis(3, 0)
         cja._update_camera()
         camera.zoomStop.assert_called_once()
+
+    def testCallsOnMove(self):
+        camera = MagicMock()
+        cja = CameraJoystickAdapter(None)
+        cja.set_camera(camera)
+
+        on_move = MagicMock()
+        cja.set_on_move(on_move)
+
+        cja._handle_axis(0, -16535)
+        cja._update_camera()
+        cja._handle_axis(0, 0)
+        cja._update_camera()
+
+        on_move.assert_called_once()

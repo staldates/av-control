@@ -198,11 +198,12 @@ class CameraControl(QWidget):
         return self.camera.recallPreset(index)
 
     def deselectPreset(self):
-        # Yuck.
-        self.presetGroup.setExclusive(False)
-        while (self.presetGroup.checkedId() >= 0):
-            self.presetGroup.checkedButton().setChecked(False)
-        self.presetGroup.setExclusive(True)
+        if self.presetGroup.checkedId() >= 0:
+            # Yuck.
+            self.presetGroup.setExclusive(False)
+            while (self.presetGroup.checkedId() >= 0):
+                self.presetGroup.checkedButton().setChecked(False)
+            self.presetGroup.setExclusive(True)
 
 
 class ExposureControl(QWidget):
