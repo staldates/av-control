@@ -11,8 +11,14 @@ OutputsGrid {
   background-color: #00527E;
 }
 
-OutputsGrid > QFrame {
-  background-color: #E4E4FF;
+MainMixControl {
+  border: 2px outset #E4E4FF;
+  border-radius: 5px;
+}
+
+MainMixControl > QLabel {
+  text-align: center;
+  font-size: 12pt;
 }
 
 InputButton, OutputButton, OptionButton, ExpandingButton, QComboBox, QListView {
@@ -21,6 +27,11 @@ InputButton, OutputButton, OptionButton, ExpandingButton, QComboBox, QListView {
   border-radius: 5px;
   border: none;
   selection-background-color: #003E5F;
+}
+
+ExpandingButton.mainMix {
+  background-color: #E4E4FF;
+  color: black;
 }
 
 ExpandingButton:pressed, ExpandingButton:checked {
@@ -32,8 +43,21 @@ InputButton:disabled, OutputButton:disabled, OptionButton:disabled, ExpandingBut
   background-color: #9FA5A5;
 }
 
-OutputButton>QLabel {
+OutputButton {
+  color: #1693A5;
+}
+
+OutputButton:pressed {
+  color: #E4E4FF;
+}
+
+OutputButton>#stateDisplay {
   font-size: 12pt;
+}
+
+OutputButton>#stateDisplay[highlight="true"] {
+  background-color: #E4E4FF;
+  color: black;
 }
 
 QToolButton[isPreview="true"] {

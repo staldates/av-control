@@ -113,13 +113,20 @@ class OutputButton(ExpandingButton):
 
     def __init__(self, myOutput, parent=None):
         super(OutputButton, self).__init__(parent)
-        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)  # Sneakily hide our actual text
         self.grabGesture(Qt.TapAndHoldGesture)
 
+        self.textDisplay = QLabel()
         self.stateDisplay = QLabel()
         layout = QVBoxLayout()
+        layout.addWidget(self.textDisplay)
         layout.addWidget(self.stateDisplay)
-        layout.setAlignment(Qt.AlignBottom | Qt.AlignHCenter)
+
+        self.textDisplay.setObjectName("textDisplay")
+
+        self.stateDisplay.setObjectName("stateDisplay")
+        self.stateDisplay.setAlignment(Qt.AlignHCenter)
+
         self.setLayout(layout)
 
         self.output = myOutput
@@ -133,6 +140,10 @@ class OutputButton(ExpandingButton):
             self.stateDisplay.setText(self.output.source.label)
         else:
             self.stateDisplay.setText("-")
+
+    def setText(self, text):
+        self.textDisplay.setText(text)
+        super(OutputButton, self).setText(text)
 
 
 class OptionButton(ExpandingButton):

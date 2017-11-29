@@ -94,7 +94,7 @@ class TestVideoSwitcher(GuiTest):
         self.atem.setAuxSource.assert_called_once_with(1, VideoSource.INPUT_5)
 
         self.atem.setAuxSource.reset_mock()
-        self.findButton(vs.og, "Main to\nall auxes").click()
+        self.findButton(vs.og, "Mix to all").click()
         self.atem.setAuxSource.assert_has_calls([
             call(1, VideoSource.ME_1_PROGRAM),
             call(2, VideoSource.ME_1_PROGRAM),

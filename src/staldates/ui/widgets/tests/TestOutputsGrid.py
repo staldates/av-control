@@ -54,7 +54,7 @@ class TestOutputsGrid(GuiTest):
         mainToAllHandler = MagicMock()
         og.mainToAll.connect(mainToAllHandler)
 
-        btn = self.findButton(og, "Main to\nall auxes")
+        btn = self.findButton(og, "Mix to all")
         self.assertTrue(btn is not None)
         btn.click()
         mainToAllHandler.assert_called_once_with()
