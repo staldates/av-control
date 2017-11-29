@@ -110,12 +110,9 @@ class IDedButton(ExpandingButton):
 
 class OutputButton(ExpandingButton):
 
-    longpress = Signal()
-
     def __init__(self, myOutput, parent=None):
         super(OutputButton, self).__init__(parent)
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)  # Sneakily hide our actual text
-        self.grabGesture(Qt.TapAndHoldGesture)
 
         self.textDisplay = QLabel()
         self.stateDisplay = QLabel()
