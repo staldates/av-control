@@ -37,11 +37,13 @@ class OutputsGrid(QFrame):
     mainToAll = Signal()
     all = Signal()
     selected = Signal(int)
+    sendMain = Signal(int)
 
     def __init__(self, switcherState, parent=None):
         super(OutputsGrid, self).__init__(parent)
 
         self.signalMapper = QSignalMapper(self)
+        self.longPressSignalMapper = QSignalMapper(self)
 
         layout = QGridLayout()
 
@@ -58,9 +60,13 @@ class OutputsGrid(QFrame):
             layout.addWidget(ob, 1 + (idx / 2), idx % 2)
             ob.clicked.connect(self.signalMapper.map)
             self.signalMapper.setMapping(ob, idx)
+
+            ob.longpress.connect(self.longPressSignalMapper.map)
+            self.longPressSignalMapper.setMapping(ob, idx)
             self.aux_buttons.append(ob)
 
         self.signalMapper.mapped.connect(self.registerClick)
+        self.longPressSignalMapper.mapped.connect(self.longPress)
 
         btnAll = ExpandingButton()
         btnAll.setProperty("class", "mainMix")
@@ -86,6 +92,9 @@ class OutputsGrid(QFrame):
 
     def registerClick(self, idx):
         self.selected.emit(idx)
+
+    def longPress(self, idx):
+        self.sendMain.emit(idx)
 
     def setAuxesEnabled(self, enabled):
         for button in self.aux_buttons:
