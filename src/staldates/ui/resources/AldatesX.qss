@@ -53,6 +53,7 @@ OutputButton:pressed {
 
 OutputButton>#stateDisplay {
   font-size: 12pt;
+  border-radius: 5px;
 }
 
 OutputButton>#stateDisplay[highlight="true"] {

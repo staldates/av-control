@@ -1,3 +1,4 @@
+from avx.devices.net.atem.constants import VideoSource
 from PySide.QtGui import QLabel, QToolButton, QSizePolicy, QVBoxLayout, QImage,\
     QPainter, QPixmap, QIcon
 from PySide.QtCore import Qt, QSize, Signal, QEvent, QTimer
@@ -138,8 +139,12 @@ class OutputButton(ExpandingButton):
 
         if self.output.source and hasattr(self.output.source, "label"):
             self.stateDisplay.setText(self.output.source.label)
+            self.stateDisplay.setProperty("highlight", (self.output.source.source != VideoSource.ME_1_PROGRAM))
         else:
             self.stateDisplay.setText("-")
+            self.stateDisplay.setProperty("highlight", False)
+        self.stateDisplay.style().unpolish(self.stateDisplay)
+        self.stateDisplay.style().polish(self.stateDisplay)
 
     def setText(self, text):
         self.textDisplay.setText(text)
