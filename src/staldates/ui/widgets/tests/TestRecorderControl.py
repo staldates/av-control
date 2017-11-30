@@ -21,8 +21,6 @@ class TestRecorderControl(GuiTest):
         self.assertFalse(self.rc.btnPlay.isChecked())
         self.assertFalse(self.rc.btnRecord.isChecked())
 
-        self.rc.btnRecord.click()
-        self.hyperdeck.record.assert_called_once()
         self.rc.btnStop.click()
         self.hyperdeck.stop.assert_called_once()
         self.rc.btnPlay.click()
@@ -31,6 +29,11 @@ class TestRecorderControl(GuiTest):
         self.hyperdeck.prev.assert_called_once()
         self.findButton(self.rc, "Forward").click()
         self.hyperdeck.next.assert_called_once()
+
+        self.findButton(self.rc, "Record mode").click()
+
+        self.rc.btnRecord.click()
+        self.hyperdeck.record.assert_called_once()
 
     def testUpdateTransportState(self):
         self.rc.updateState({'status': TransportState.STOPPED})
