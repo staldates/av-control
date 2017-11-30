@@ -52,9 +52,11 @@ class TestVideoSwitcher(GuiTest):
         all_inputs = extrasBtn.property("panel")
         self.assertTrue(isinstance(all_inputs, AllInputsPanel))
 
+        vs.og.setAuxesEnabled(True)  # as if we'd selected something before
+        self.assertTrue(self.findButton(vs, "All").isEnabled())  # Before we click Extras, All button is enabled
+
         self.assertTrue(extrasBtn.input is None)  # At first, it has no input
         self.assertTrue(self.findButton(vs, "Camera 1") is None)  # No button for Camera 1 in window
-        self.assertTrue(self.findButton(vs, "All").isEnabled())  # Before we click Extras, All button is enabled
 
         extrasBtn.click()
 

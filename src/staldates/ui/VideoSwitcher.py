@@ -115,6 +115,8 @@ class VideoSwitcher(QWidget):
         self.og.all.connect(self.sendToAll)
         self.og.sendMain.connect(self.sendMainToAux)
 
+        self.og.setAuxesEnabled(False)  # since we start off without an input selected
+
         layout.addWidget(self.og, 1, 5, 1, 2)
 
         self.blankWidget = QWidget()
