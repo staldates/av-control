@@ -85,10 +85,10 @@ class Output(QObject):
 
 def _default_outputs():
     return {
-        0: Output("Record", VideoSource.AUX_1),
-        1: Output("Stage", VideoSource.AUX_2),
-        2: Output("Gallery", VideoSource.AUX_3),
-        3: Output("Aux 4", VideoSource.AUX_4),
+        0: Output("Church", VideoSource.AUX_1),
+        1: Output("Record", VideoSource.AUX_2),
+        2: Output("Stage", VideoSource.AUX_3),
+        3: Output("Gallery", VideoSource.AUX_4),
         4: Output("Aux 5", VideoSource.AUX_5),
         5: Output("Aux 6", VideoSource.AUX_6),
     }

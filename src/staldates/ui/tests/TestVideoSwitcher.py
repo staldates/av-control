@@ -91,11 +91,11 @@ class TestVideoSwitcher(GuiTest):
         self.atem.setAuxSource.reset_mock()
         self.findButton(vs, "Visuals PC").click()
         self.findButton(vs.og, "Record").click()
-        self.atem.setAuxSource.assert_called_once_with(1, VideoSource.INPUT_5)
+        self.atem.setAuxSource.assert_called_once_with(2, VideoSource.INPUT_5)
         self.atem.setAuxSource.reset_mock()
 
         self.findButton(vs.og, "Record").longpress.emit()
-        self.atem.setAuxSource.assert_called_once_with(1, VideoSource.ME_1_PROGRAM)
+        self.atem.setAuxSource.assert_called_once_with(2, VideoSource.ME_1_PROGRAM)
         self.atem.setAuxSource.reset_mock()
 
         self.findButton(vs.og, "Mix to all").click()
