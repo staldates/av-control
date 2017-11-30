@@ -47,6 +47,10 @@ OutputButton {
   color: #1693A5;
 }
 
+OutputButton:disabled {
+  color: #9FA5A5;
+}
+
 OutputButton:pressed {
   color: #E4E4FF;
 }
