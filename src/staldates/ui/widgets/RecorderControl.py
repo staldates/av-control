@@ -1,8 +1,9 @@
+from avx.devices.net.atem.constants import VideoSource
+from avx.devices.net.hyperdeck import TransportState, TransportMode
+from staldates.ui.widgets.Buttons import ExpandingButton
 from staldates.ui.widgets.Screens import ScreenWithBackButton
 from PySide.QtGui import QGridLayout, QIcon, QButtonGroup
-from staldates.ui.widgets.Buttons import ExpandingButton
 from PySide.QtCore import Qt
-from avx.devices.net.hyperdeck import TransportState, TransportMode
 
 
 def _make_button(caption, icon, onclick):
@@ -15,8 +16,9 @@ def _make_button(caption, icon, onclick):
 
 
 class RecorderControl(ScreenWithBackButton):
-    def __init__(self, hyperdeck, state, mainWindow):
+    def __init__(self, hyperdeck, atem, state, mainWindow):
         self.hyperdeck = hyperdeck
+        self.atem = atem
         self.state = state
         super(RecorderControl, self).__init__("Recorder", mainWindow)
         self.state.transportChange.connect(self.updateState)
@@ -37,10 +39,12 @@ class RecorderControl(ScreenWithBackButton):
 
         self.btnSetPreview = ExpandingButton()
         self.btnSetPreview.setText("To preview")
+        self.btnSetPreview.clicked.connect(lambda: self.atem.setPreview(VideoSource.INPUT_7))
         layout.addWidget(self.btnSetPreview, 0, 4)
 
         btnClearPeaks = ExpandingButton()
         btnClearPeaks.setText("Clear VU peaks")
+        btnClearPeaks.clicked.connect(self.atem.resetAudioMixerPeaks)
         layout.addWidget(btnClearPeaks, 0, 5)
 
         self.btnGroupTransportMode = QButtonGroup()

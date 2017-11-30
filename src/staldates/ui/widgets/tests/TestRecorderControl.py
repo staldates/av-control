@@ -11,10 +11,11 @@ class TestRecorderControl(GuiTest):
         mainWindow = MagicMock()
         state = MagicMock()
         self.hyperdeck = MagicMock()
+        self.atem = MagicMock()
 
         state.transport = {'status': TransportState.STOPPED}
 
-        self.rc = RecorderControl(self.hyperdeck, state, mainWindow)
+        self.rc = RecorderControl(self.hyperdeck, self.atem, state, mainWindow)
 
     def testTransportControls(self):
         self.assertTrue(self.rc.btnStop.isChecked())
