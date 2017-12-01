@@ -1,5 +1,5 @@
 from staldates.ui.tests.GuiTest import GuiTest
-from staldates.ui.widgets.RecorderControl import RecorderControl
+from staldates.ui.widgets.RecorderControl import RecorderControl, RecorderClipSelectionScreen
 from mock import MagicMock
 from avx.devices.net.hyperdeck import TransportState, TransportMode
 from avx.devices.net.atem.constants import VideoSource
@@ -9,14 +9,14 @@ class TestRecorderControl(GuiTest):
 
     def setUp(self):
         GuiTest.setUp(self)
-        mainWindow = MagicMock()
+        self.mainWindow = MagicMock()
         state = MagicMock()
         self.hyperdeck = MagicMock()
         self.atem = MagicMock()
 
         state.transport = {'status': TransportState.STOPPED}
 
-        self.rc = RecorderControl(self.hyperdeck, self.atem, state, mainWindow)
+        self.rc = RecorderControl(self.hyperdeck, self.atem, state, self.mainWindow)
 
     def testTransportControls(self):
         self.assertTrue(self.rc.btnStop.isChecked())
@@ -106,3 +106,50 @@ class TestRecorderControl(GuiTest):
         self.assertFalse(self.findButton(self.rc, 'Forward').isEnabled())
         self.assertTrue(self.findButton(self.rc, 'Stop').isEnabled())
         self.assertTrue(self.findButton(self.rc, 'Record').isEnabled())
+
+    def testDisplayClipSelection(self):
+        self.findButton(self.rc, 'Select clip').click()
+        self.mainWindow.showScreen.assert_called_once_with(self.rc.clipSelectionScreen)
+        self.hyperdeck.broadcastClipsList.assert_called_once()
+
+
+class TestClipSelection(GuiTest):
+
+    def setUp(self):
+        GuiTest.setUp(self)
+        self.mainWindow = MagicMock()
+        state = MagicMock()
+        self.hyperdeck = MagicMock()
+
+        state.clip_listing = {}
+
+        self.cs = RecorderClipSelectionScreen(self.hyperdeck, state, self.mainWindow)
+
+    def testListClips(self):
+        self.assertEqual(0, self.cs.clipTable.rowCount())
+
+        self.cs.populateClipsList({
+            0: {'name': 'Test clip 1'},
+            1: {'name': 'Test clip 2'},
+        })
+
+        self.assertEqual(2, self.cs.clipTable.rowCount())
+
+        self.cs._updateClipSelectionFromState({'clip id': 1})
+        self.assertEqual('Test clip 2', self.cs.clipTable.selectedItems()[1].text())
+
+    def testSelectClip(self):
+        self.cs.populateClipsList({
+            0: {'name': 'Test clip 1'},
+            1: {'name': 'Test clip 2'},
+        })
+
+        btnCue = self.findButton(self.cs, 'Cue clip')
+        self.assertFalse(btnCue.isEnabled())
+
+        self.cs.clipTable.selectRow(1)
+
+        self.assertTrue(btnCue.isEnabled())
+        btnCue.click()
+        self.mainWindow.stepBack.assert_called_once()
+        self.hyperdeck.gotoClip.assert_called_once_with(1)

@@ -91,12 +91,13 @@ class MainWindow(QMainWindow):
             column += 1
 
             def update_recorder_icon(transport):
-                if transport['status'] == TransportState.RECORD:
-                    recorder.setIcon(QIcon(":icons/media-record"))
-                elif transport['status'] == TransportState.PLAYING:
-                    recorder.setIcon(QIcon(":icons/media-playback-start"))
-                else:
-                    recorder.setIcon(QIcon(":icons/drive-optical"))
+                if 'status' in transport:
+                    if transport['status'] == TransportState.RECORD:
+                        recorder.setIcon(QIcon(":icons/media-record"))
+                    elif transport['status'] == TransportState.PLAYING:
+                        recorder.setIcon(QIcon(":icons/media-playback-start"))
+                    else:
+                        recorder.setIcon(QIcon(":icons/drive-optical"))
             self.hyperdeckState.transportChange.connect(update_recorder_icon)
 
         self.advMenu = AdvancedMenu(self.controller, self.switcherState.mixTransition, atem, self)
