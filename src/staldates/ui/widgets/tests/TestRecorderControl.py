@@ -1,7 +1,7 @@
 from staldates.ui.tests.GuiTest import GuiTest
 from staldates.ui.widgets.RecorderControl import RecorderControl
 from mock import MagicMock
-from avx.devices.net.hyperdeck import TransportState
+from avx.devices.net.hyperdeck import TransportState, TransportMode
 from avx.devices.net.atem.constants import VideoSource
 
 
@@ -83,3 +83,26 @@ class TestRecorderControl(GuiTest):
 
         self.findButton(self.rc, 'Clear VU peaks').click()
         self.atem.resetAudioMixerPeaks.assert_called_once()
+
+    def testSetTransportMode(self):
+        self.findButton(self.rc, 'Playback mode').click()
+        self.hyperdeck.setTransportMode.assert_called_once_with(TransportMode.PLAYBACK)
+
+        self.assertTrue(self.findButton(self.rc, 'Back').isEnabled())
+        self.assertTrue(self.findButton(self.rc, 'Play').isEnabled())
+        self.assertTrue(self.findButton(self.rc, 'Loop').isEnabled())
+        self.assertTrue(self.findButton(self.rc, 'Forward').isEnabled())
+        self.assertTrue(self.findButton(self.rc, 'Stop').isEnabled())
+        self.assertFalse(self.findButton(self.rc, 'Record').isEnabled())
+
+        self.hyperdeck.reset_mock()
+
+        self.findButton(self.rc, 'Record mode').click()
+        self.hyperdeck.setTransportMode.assert_called_once_with(TransportMode.RECORD)
+
+        self.assertFalse(self.findButton(self.rc, 'Back').isEnabled())
+        self.assertFalse(self.findButton(self.rc, 'Play').isEnabled())
+        self.assertFalse(self.findButton(self.rc, 'Loop').isEnabled())
+        self.assertFalse(self.findButton(self.rc, 'Forward').isEnabled())
+        self.assertTrue(self.findButton(self.rc, 'Stop').isEnabled())
+        self.assertTrue(self.findButton(self.rc, 'Record').isEnabled())
