@@ -2,6 +2,7 @@ from staldates.ui.tests.GuiTest import GuiTest
 from staldates.ui.widgets.RecorderControl import RecorderControl
 from mock import MagicMock
 from avx.devices.net.hyperdeck import TransportState
+from avx.devices.net.atem.constants import VideoSource
 
 
 class TestRecorderControl(GuiTest):
@@ -75,3 +76,10 @@ class TestRecorderControl(GuiTest):
         self.assertFalse(slot2.isChecked())
 
         self.hyperdeck.selectSlot.assert_not_called()
+
+    def testAtemFunctions(self):
+        self.findButton(self.rc, 'To preview').click()
+        self.atem.setPreview.assert_called_once_with(VideoSource.INPUT_7)
+
+        self.findButton(self.rc, 'Clear VU peaks').click()
+        self.atem.resetAudioMixerPeaks.assert_called_once()
