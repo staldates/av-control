@@ -113,6 +113,9 @@ class VideoSwitcher(QWidget):
         self.og.selected.connect(self.sendToAux)
         self.og.mainToAll.connect(self.sendMainToAllAuxes)
         self.og.all.connect(self.sendToAll)
+        self.og.sendMain.connect(self.sendMainToAux)
+
+        self.og.setAuxesEnabled(False)  # since we start off without an input selected
 
         layout.addWidget(self.og, 1, 5, 1, 2)
 
@@ -158,6 +161,10 @@ class VideoSwitcher(QWidget):
             self.atem.setProgram(self.inputs.checkedButton().input.source)
             for aux in self.switcherState.outputs.keys():
                 self.sendToAux(aux)
+
+    @with_atem
+    def sendMainToAux(self, auxIndex):
+        self.atem.setAuxSource(auxIndex + 1, VideoSource.ME_1_PROGRAM)
 
     @with_atem
     def sendMainToAllAuxes(self):

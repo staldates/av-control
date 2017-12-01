@@ -1,3 +1,4 @@
+from avx.devices.net.atem.constants import VideoSource
 from PySide.QtGui import QLabel, QToolButton, QSizePolicy, QVBoxLayout, QImage,\
     QPainter, QPixmap, QIcon
 from PySide.QtCore import Qt, QSize, Signal, QEvent, QTimer
@@ -109,17 +110,21 @@ class IDedButton(ExpandingButton):
 
 class OutputButton(ExpandingButton):
 
-    longpress = Signal()
-
     def __init__(self, myOutput, parent=None):
         super(OutputButton, self).__init__(parent)
-        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
-        self.grabGesture(Qt.TapAndHoldGesture)
+        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)  # Sneakily hide our actual text
 
+        self.textDisplay = QLabel()
         self.stateDisplay = QLabel()
         layout = QVBoxLayout()
+        layout.addWidget(self.textDisplay)
         layout.addWidget(self.stateDisplay)
-        layout.setAlignment(Qt.AlignBottom | Qt.AlignHCenter)
+
+        self.textDisplay.setObjectName("textDisplay")
+
+        self.stateDisplay.setObjectName("stateDisplay")
+        self.stateDisplay.setAlignment(Qt.AlignHCenter)
+
         self.setLayout(layout)
 
         self.output = myOutput
@@ -131,8 +136,16 @@ class OutputButton(ExpandingButton):
 
         if self.output.source and hasattr(self.output.source, "label"):
             self.stateDisplay.setText(self.output.source.label)
+            self.stateDisplay.setProperty("highlight", (self.output.source.source != VideoSource.ME_1_PROGRAM))
         else:
             self.stateDisplay.setText("-")
+            self.stateDisplay.setProperty("highlight", False)
+        self.stateDisplay.style().unpolish(self.stateDisplay)
+        self.stateDisplay.style().polish(self.stateDisplay)
+
+    def setText(self, text):
+        self.textDisplay.setText(text)
+        super(OutputButton, self).setText(text)
 
 
 class OptionButton(ExpandingButton):
