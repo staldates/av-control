@@ -51,3 +51,27 @@ class TestRecorderControl(GuiTest):
         self.assertFalse(self.rc.btnStop.isChecked())
         self.assertFalse(self.rc.btnPlay.isChecked())
         self.assertTrue(self.rc.btnRecord.isChecked())
+
+    def testSDSlotSelection(self):
+        self.findButton(self.rc, "SD card 1").click()
+        self.hyperdeck.selectSlot.assert_called_once_with(1)
+        self.hyperdeck.reset_mock()
+        self.findButton(self.rc, "SD card 2").click()
+        self.hyperdeck.selectSlot.assert_called_once_with(2)
+
+    def testUpdateSlotSelection(self):
+        slot1 = self.findButton(self.rc, "SD card 1")
+        slot2 = self.findButton(self.rc, "SD card 2")
+
+        self.assertTrue(slot1.isChecked())
+        self.assertFalse(slot2.isChecked())
+
+        self.rc.updateState({'slot id': 2})
+        self.assertFalse(slot1.isChecked())
+        self.assertTrue(slot2.isChecked())
+
+        self.rc.updateState({'slot id': 1})
+        self.assertTrue(slot1.isChecked())
+        self.assertFalse(slot2.isChecked())
+
+        self.hyperdeck.selectSlot.assert_not_called()

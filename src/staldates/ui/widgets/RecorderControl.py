@@ -3,7 +3,7 @@ from avx.devices.net.hyperdeck import TransportState, TransportMode
 from staldates.ui.widgets.Buttons import ExpandingButton
 from staldates.ui.widgets.Screens import ScreenWithBackButton
 from PySide.QtGui import QGridLayout, QIcon, QButtonGroup
-from PySide.QtCore import Qt
+from PySide.QtCore import Qt, QSignalMapper
 
 
 def _make_button(caption, icon, onclick):
@@ -30,12 +30,18 @@ class RecorderControl(ScreenWithBackButton):
 
         self.btnGroupSDCard = QButtonGroup()
 
+        self.sdSlotMapper = QSignalMapper()
+
         for i in range(2):
             btn = ExpandingButton()
             btn.setCheckable(True)
             btn.setText("SD card {}".format(i + 1))
+            btn.clicked.connect(self.sdSlotMapper.map)
+            self.sdSlotMapper.setMapping(btn, i + 1)
             self.btnGroupSDCard.addButton(btn, i)
             layout.addWidget(btn, 0, i)
+
+        self.sdSlotMapper.mapped.connect(self.hyperdeck.selectSlot)
 
         self.btnSetPreview = ExpandingButton()
         self.btnSetPreview.setText("To preview")
