@@ -161,7 +161,7 @@ class RecorderControl(ScreenWithBackButton):
         self.btngroup.addButton(self.btnPlay)
         layout.addWidget(self.btnPlay, 2, 1)
 
-        self.btnLoopPlay = _make_button("Loop", ":icons/media-playback-start", lambda: self.hyperdeck.play(loop=True))
+        self.btnLoopPlay = _make_button("Loop", ":icons/media-playback-loop", lambda: self.hyperdeck.play(loop=True))
         layout.addWidget(self.btnLoopPlay, 2, 2)
 
         self.btnSkipForward = _make_button("Forward", ":icons/media-skip-forward", self.hyperdeck.next)
