@@ -125,7 +125,7 @@ def zoom_speed_from_axis(axis):
     return int(2 + math.ceil(5 * raw / 32767))
 
 
-PREFS_INVERT_Y = 'joystick.invert_y'
+PREFS_INVERT_Y = 'joystick_invert_y'
 
 
 class CameraJoystickAdapter(Thread):

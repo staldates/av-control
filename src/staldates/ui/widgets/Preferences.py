@@ -1,7 +1,45 @@
-from PySide.QtGui import QWidget, QFormLayout, QVBoxLayout
+from PySide.QtGui import QWidget, QVBoxLayout, QHBoxLayout,\
+    QButtonGroup, QLabel
+from staldates.preferences import Preferences
 from staldates.ui.widgets.Labels import TitleLabel
 from staldates.ui.widgets.TouchSpinner import FrameRateTouchSpinner
 from staldates.VisualsSystem import with_atem
+from staldates.ui.widgets.Buttons import ExpandingButton
+
+
+class JoystickInvertPreference(QWidget):
+    def __init__(self, parent=None):
+        super(JoystickInvertPreference, self).__init__(parent)
+
+        layout = QHBoxLayout()
+        self._btnGroup = QButtonGroup()
+
+        self.btnNormal = ExpandingButton()
+        self.btnNormal.setText('Down')
+        self.btnNormal.setCheckable(True)
+        self.btnNormal.clicked.connect(self.set_preference)
+        self._btnGroup.addButton(self.btnNormal)
+        layout.addWidget(self.btnNormal)
+
+        self.btnInvert = ExpandingButton()
+        self.btnInvert.setText('Up')
+        self.btnInvert.setCheckable(True)
+        self.btnInvert.clicked.connect(self.set_preference)
+        self._btnGroup.addButton(self.btnInvert)
+        layout.addWidget(self.btnInvert)
+
+        self.setLayout(layout)
+
+        self.update_from_preferences()
+        Preferences.subscribe(self.update_from_preferences)
+
+    def update_from_preferences(self):
+        invert_y = Preferences.get('joystick_invert_y', False)
+        self.btnInvert.setChecked(invert_y)
+        self.btnNormal.setChecked(not invert_y)
+
+    def set_preference(self):
+        Preferences.joystick_invert_y = self.btnInvert.isChecked()
 
 
 class PreferencesWidget(QWidget):
@@ -15,17 +53,18 @@ class PreferencesWidget(QWidget):
 
         layout.addWidget(TitleLabel('Preferences'))
 
-        prefsLayout = QFormLayout()
-
         mixRate = FrameRateTouchSpinner()
         mixRate.setValue(transition.rate)
         mixRate.setMaximum(250)
         mixRate.setMinimum(1)
         mixRate.valueChanged.connect(self.setMixRate)
 
-        prefsLayout.addRow('Mix rate:', mixRate)
+        layout.addWidget(QLabel('Mix rate (seconds:frames):'))
+        layout.addWidget(mixRate)
 
-        layout.addLayout(prefsLayout)
+        layout.addWidget(QLabel('Joystick forward means:'))
+        layout.addWidget(JoystickInvertPreference())
+
         self.setLayout(layout)
 
     @with_atem
