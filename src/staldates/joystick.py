@@ -1,6 +1,7 @@
 from avx.devices.serial.VISCACamera import VISCACamera
 from enum import Enum
 from Pyro4.errors import PyroError
+from staldates.preferences import Preferences
 from threading import Thread
 
 import math
@@ -66,7 +67,9 @@ class Direction(Enum):
     STOP = "stop"
 
     @staticmethod
-    def from_axes(x, y, deadzone=0):
+    def from_axes(x, y, deadzone=0, invert_y=False):
+        if invert_y:
+            y = -y
         if x > deadzone:
             if y > deadzone:
                 return Direction.UP_RIGHT
@@ -122,6 +125,9 @@ def zoom_speed_from_axis(axis):
     return int(2 + math.ceil(5 * raw / 32767))
 
 
+PREFS_INVERT_Y = 'joystick.invert_y'
+
+
 class CameraJoystickAdapter(Thread):
     def __init__(self, js, map_pan=pan_speed_from_axis, map_tilt=tilt_speed_from_axis, map_zoom=zoom_speed_from_axis):
         super(CameraJoystickAdapter, self).__init__()
@@ -134,6 +140,10 @@ class CameraJoystickAdapter(Thread):
         self.map_zoom = map_zoom
         self.set_camera(None)
         self.set_on_move(None)
+        Preferences.subscribe(self.update_preferences)
+
+    def update_preferences(self):
+        self.invert_y = Preferences.get(PREFS_INVERT_Y, False)
 
     def set_camera(self, camera):
         self._camera = camera
@@ -161,7 +171,7 @@ class CameraJoystickAdapter(Thread):
     def _update_camera(self):
         if self._camera is None:
             return
-        direction = Direction.from_axes(self._axes[0], self._axes[1])
+        direction = Direction.from_axes(self._axes[0], self._axes[1], invert_y=self.invert_y)
         pan_speed = self.map_pan(self._axes[0])
         tilt_speed = self.map_tilt(self._axes[1])
 
