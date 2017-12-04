@@ -39,7 +39,7 @@ class JoystickInvertPreference(QWidget):
         self.btnNormal.setChecked(not invert_y)
 
     def set_preference(self):
-        Preferences.joystick_invert_y = self.btnInvert.isChecked()
+        Preferences.set('joystick_invert_y', self.btnInvert.isChecked())
 
 
 class PreferencesWidget(QWidget):

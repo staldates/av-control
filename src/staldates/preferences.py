@@ -33,44 +33,31 @@ class _PrefsInstance(QObject):
             print 'Exception while trying to save preferences file'
             raise
 
-    def __getattr__(self, name):
-        if name[0] == '_':
-            return super(_PrefsInstance, self).__getattr__(name)
-        return self._prefs[name]
+    def get(self, name, default=None):
+        return self._prefs.get(name, default)
 
-    def __setattr__(self, name, value):
-        if name[0] == '_':
-            return super(_PrefsInstance, self).__setattr__(name, value)
+    def set(self, name, value):
         if name not in self._prefs or self._prefs[name] != value:
             self._prefs[name] = value
             self._save()
             self._changed.emit(name, value)
 
 
-class _PreferencesType(type):
-    _instance = _PrefsInstance()
-
-    def __getattr__(self, name):
-        return getattr(self._instance, name)
-
-    def __setattr__(self, name, value):
-        return setattr(self._instance, name, value)
-
-
-class Preferences:
+class Preferences(object):
     """Preferences are accessed statically e.g. `Preferences.my_setting`. Don't instantiate the class."""
-    __metaclass__ = _PreferencesType
+    _instance = _PrefsInstance()
 
     def __init__(self):
         raise Exception("Preferences should not be instantiated")
 
     @classmethod
-    def get(self, name, default=None):
-        try:
-            return getattr(self, name)
-        except (AttributeError, KeyError):
-            return default
+    def get(cls, name, default=None):
+        return cls._instance.get(name, default)
 
     @classmethod
-    def subscribe(self, callback):
-        self._changed.connect(callback)
+    def set(cls, name, value):
+        return cls._instance.set(name, value)
+
+    @classmethod
+    def subscribe(cls, callback):
+        cls._instance._changed.connect(callback)
