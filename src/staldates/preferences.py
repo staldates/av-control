@@ -9,7 +9,7 @@ _PREFS_FILE = os.path.join(_PREFS_DIR, 'preferences.json')
 
 
 class _PrefsInstance(QObject):
-    changed = Signal()
+    _changed = Signal(str, object)
 
     def __init__(self):
         QObject.__init__(self)
@@ -41,9 +41,10 @@ class _PrefsInstance(QObject):
     def __setattr__(self, name, value):
         if name[0] == '_':
             return super(_PrefsInstance, self).__setattr__(name, value)
-        self._prefs[name] = value
-        self._save()
-        self.changed.emit()
+        if name not in self._prefs or self._prefs[name] != value:
+            self._prefs[name] = value
+            self._save()
+            self._changed.emit(name, value)
 
 
 class _PreferencesType(type):
@@ -69,3 +70,7 @@ class Preferences:
             return getattr(self, name)
         except (AttributeError, KeyError):
             return default
+
+    @classmethod
+    def subscribe(self, callback):
+        self._changed.connect(callback)
