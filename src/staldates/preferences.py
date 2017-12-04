@@ -62,3 +62,10 @@ class Preferences:
 
     def __init__(self):
         raise Exception("Preferences should not be instantiated")
+
+    @classmethod
+    def get(self, name, default=None):
+        try:
+            return getattr(self, name)
+        except (AttributeError, KeyError):
+            return default
