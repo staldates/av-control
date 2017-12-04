@@ -73,21 +73,21 @@ class Direction(Enum):
         if x > deadzone:
             if y > deadzone:
                 return Direction.UP_RIGHT
-            elif y < -1 * deadzone:
+            elif y < -deadzone:
                 return Direction.DOWN_RIGHT
             else:
                 return Direction.RIGHT
-        elif x < -1 * deadzone:
+        elif x < -deadzone:
             if y > deadzone:
                 return Direction.UP_LEFT
-            elif y < -1 * deadzone:
+            elif y < -deadzone:
                 return Direction.DOWN_LEFT
             else:
                 return Direction.LEFT
         else:
             if y > deadzone:
                 return Direction.UP
-            elif y < -1 * deadzone:
+            elif y < -deadzone:
                 return Direction.DOWN
             else:
                 return Direction.STOP
@@ -102,7 +102,7 @@ class Zoom(Enum):
     def from_axis(axis, deadzone=0):
         if axis > deadzone:
             return Zoom.IN
-        elif axis < -1 * deadzone:
+        elif axis < -deadzone:
             return Zoom.OUT
         return Zoom.STOP
 
