@@ -107,37 +107,16 @@ class Zoom(Enum):
         return Zoom.STOP
 
 
-def pan_speed_from_axis(axis):
-    # Must return between 1 and 24 inclusive (0 when stopped)
-    raw = abs(axis)
-    return int(1 + math.ceil(23 * raw / 32767))
-
-
-def tilt_speed_from_axis(axis):
-    # Must return between 1 and 20 inclusive (0 when stopped)
-    raw = abs(axis)
-    return int(1 + math.ceil(19 * raw / 32767))
-
-
-def zoom_speed_from_axis(axis):
-    # Must return between 2 and 7 inclusive
-    raw = abs(axis)
-    return int(2 + math.ceil(5 * raw / 32767))
-
-
 PREFS_INVERT_Y = 'joystick.invert_y'
 
 
 class CameraJoystickAdapter(Thread):
-    def __init__(self, js, map_pan=pan_speed_from_axis, map_tilt=tilt_speed_from_axis, map_zoom=zoom_speed_from_axis):
+    def __init__(self, js):
         super(CameraJoystickAdapter, self).__init__()
         self.daemon = True
         if js:
             js.add_axis_handler(self._handle_axis)
         self._axes = [0, 0, 0, 0]
-        self.map_pan = map_pan
-        self.map_tilt = map_tilt
-        self.map_zoom = map_zoom
         self.set_camera(None)
         self.set_on_move(None)
         self.update_preferences()
@@ -168,6 +147,21 @@ class CameraJoystickAdapter(Thread):
         while True:
             self._update_camera()
             time.sleep(0.1)
+
+    def map_pan(self, axis):
+        """Should return a value between 1 and 24 inclusive."""
+        raw = abs(axis)
+        return int(1 + math.ceil(23 * raw / 32767))
+
+    def map_tilt(self, axis):
+        """Should return a value between 1 and 20 inclusive."""
+        raw = abs(axis)
+        return int(1 + math.ceil(19 * raw / 32767))
+
+    def map_zoom(self, axis):
+        """Should return a value between 2 and 7 inclusive."""
+        raw = abs(axis)
+        return int(2 + math.ceil(5 * raw / 32767))
 
     def _update_camera(self):
         if self._camera is None:
