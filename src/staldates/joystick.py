@@ -199,9 +199,27 @@ JOYSTICK_HALF = JOYSTICK_MAX / 2
 class SensitivityPrefsCameraJoystickAdapter(CameraJoystickAdapter):
     def update_preferences(self):
         CameraJoystickAdapter.update_preferences(self)
-        self.pan_sensitivity = Preferences.get('joystick.sensitivity.pan', 12)
-        self.tilt_sensitivity = Preferences.get('joystick.sensitivity.tilt', 10)
-        self.zoom_sensitivity = Preferences.get('joystick.sensitivity.zoom', 4)
+        self._set_speed_params()
+
+    def set_camera(self, camera):
+        super(SensitivityPrefsCameraJoystickAdapter, self).set_camera(camera)
+        self._set_speed_params()
+
+    def _set_speed_params(self):
+        if self._camera:
+            self.max_pan = self.camera.maxPanSpeed
+            self.max_tilt = self.camera.maxTiltSpeed
+            self.min_zoom = self.camera.minZoomSpeed
+            self.max_zoom = self.camera.maxZoomSpeed
+        else:
+            self.max_pan = 0x18
+            self.max_tilt = 0x14
+            self.min_zoom = 2
+            self.max_zoom = 7
+
+        self.pan_sensitivity = Preferences.get('joystick.sensitivity.pan', math.ceil(self.max_pan / 2))
+        self.tilt_sensitivity = Preferences.get('joystick.sensitivity.tilt', math.ceil(self.max_tilt / 2))
+        self.zoom_sensitivity = Preferences.get('joystick.sensitivity.zoom', math.ceil(self.max_zoom / 2))
 
     def _interp(self, raw, max_value, sensitivity):
         if raw <= JOYSTICK_HALF:
@@ -210,13 +228,13 @@ class SensitivityPrefsCameraJoystickAdapter(CameraJoystickAdapter):
             return int(1 + sensitivity + (2 * (raw - JOYSTICK_HALF) * (max_value - sensitivity) / JOYSTICK_MAX))
 
     def map_pan(self, axis):
-        return self._interp(abs(axis), 24, self.pan_sensitivity)
+        return self._interp(abs(axis), self.max_pan, self.pan_sensitivity)
 
     def map_tilt(self, axis):
-        return self._interp(abs(axis), 20, self.tilt_sensitivity)
+        return self._interp(abs(axis), self.max_tilt, self.tilt_sensitivity)
 
     def map_zoom(self, axis):
-        return 1 + self._interp(abs(axis), 6, self.zoom_sensitivity)
+        return self.min_zoom + self._interp(abs(axis), self.max_zoom - self.min_zoom, self.zoom_sensitivity)
 
 
 if __name__ == "__main__":
