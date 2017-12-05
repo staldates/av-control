@@ -217,15 +217,16 @@ class SensitivityPrefsCameraJoystickAdapter(CameraJoystickAdapter):
             self.min_zoom = 2
             self.max_zoom = 7
 
-        self.pan_sensitivity = Preferences.get('joystick.sensitivity.pan', math.ceil(self.max_pan / 2))
-        self.tilt_sensitivity = Preferences.get('joystick.sensitivity.tilt', math.ceil(self.max_tilt / 2))
-        self.zoom_sensitivity = Preferences.get('joystick.sensitivity.zoom', math.ceil(self.max_zoom / 2))
+        self.pan_sensitivity = Preferences.get('joystick.sensitivity.pan', 0.5)
+        self.tilt_sensitivity = Preferences.get('joystick.sensitivity.tilt', 0.5)
+        self.zoom_sensitivity = Preferences.get('joystick.sensitivity.zoom', 0.5)
 
     def _interp(self, raw, max_value, sensitivity):
+        sensitivity_value = math.ceil(max_value * sensitivity)
         if raw <= JOYSTICK_HALF:
-            return int(1 + math.ceil(sensitivity * raw / JOYSTICK_HALF))
+            return max(1, int(math.ceil(sensitivity_value * raw / JOYSTICK_HALF)))
         else:
-            return int(1 + sensitivity + (2 * (raw - JOYSTICK_HALF) * (max_value - sensitivity) / JOYSTICK_MAX))
+            return max(1, int(sensitivity_value + math.ceil((2 * (raw - JOYSTICK_HALF) * (max_value - sensitivity_value) / JOYSTICK_MAX))))
 
     def map_pan(self, axis):
         return self._interp(abs(axis), self.max_pan, self.pan_sensitivity)
@@ -234,7 +235,7 @@ class SensitivityPrefsCameraJoystickAdapter(CameraJoystickAdapter):
         return self._interp(abs(axis), self.max_tilt, self.tilt_sensitivity)
 
     def map_zoom(self, axis):
-        return self.min_zoom + self._interp(abs(axis), self.max_zoom - self.min_zoom, self.zoom_sensitivity)
+        return max(self.min_zoom, self._interp(abs(axis), self.max_zoom, self.zoom_sensitivity))
 
 
 if __name__ == "__main__":
