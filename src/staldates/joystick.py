@@ -140,6 +140,7 @@ class CameraJoystickAdapter(Thread):
         self.map_zoom = map_zoom
         self.set_camera(None)
         self.set_on_move(None)
+        self.update_preferences()
         Preferences.subscribe(self.update_preferences)
 
     def update_preferences(self):
