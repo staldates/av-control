@@ -1,4 +1,3 @@
-from avx.devices.serial.VISCACamera import VISCACamera
 from enum import Enum
 from Pyro4.errors import PyroError
 from staldates.preferences import Preferences
@@ -193,14 +192,35 @@ class CameraJoystickAdapter(Thread):
             pass
 
 
+JOYSTICK_MAX = 32767
+JOYSTICK_HALF = JOYSTICK_MAX / 2
+
+
+class SensitivityPrefsCameraJoystickAdapter(CameraJoystickAdapter):
+    def update_preferences(self):
+        CameraJoystickAdapter.update_preferences(self)
+        self.pan_sensitivity = Preferences.get('joystick.sensitivity.pan', 12)
+        self.tilt_sensitivity = Preferences.get('joystick.sensitivity.tilt', 10)
+        self.zoom_sensitivity = Preferences.get('joystick.sensitivity.zoom', 4)
+
+    def _interp(self, raw, max_value, sensitivity):
+        if raw <= JOYSTICK_HALF:
+            return int(1 + math.ceil(sensitivity * raw / JOYSTICK_HALF))
+        else:
+            return int(1 + sensitivity + (2 * (raw - JOYSTICK_HALF) * (max_value - sensitivity) / JOYSTICK_MAX))
+
+    def map_pan(self, axis):
+        return self._interp(abs(axis), 24, self.pan_sensitivity)
+
+    def map_tilt(self, axis):
+        return self._interp(abs(axis), 20, self.tilt_sensitivity)
+
+    def map_zoom(self, axis):
+        return 1 + self._interp(abs(axis), 6, self.zoom_sensitivity)
+
+
 if __name__ == "__main__":
-    dev_str = "/dev/input/js1"
-    js = Joystick(dev_str)
-    cja = CameraJoystickAdapter(js)
 
-    cam = VISCACamera("Camera 1", "/dev/ttyUSB0", 1)
-    cam.initialise()
-
-    cja.set_camera(cam)
-    js.start()
-    cja.start()
+    j = SensitivityPrefsCameraJoystickAdapter(None)
+    for i in range(0, JOYSTICK_MAX, 100):
+        print "{},{},{},{}".format(i, j.map_pan(i), j.map_tilt(i), j.map_zoom(i))
