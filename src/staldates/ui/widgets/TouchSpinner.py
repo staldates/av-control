@@ -14,21 +14,21 @@ class TouchSpinner(QWidget):
 
         layout = QHBoxLayout()
 
-        btnMinus = ExpandingButton()
-        btnMinus.setIcon(QIcon(":icons/list-remove"))
-        btnMinus.setText("-")
-        btnMinus.clicked.connect(lambda: self.setValue(self._value - 1))
-        layout.addWidget(btnMinus, 1)
+        self.btnMinus = ExpandingButton()
+        self.btnMinus.setIcon(QIcon(":icons/list-remove"))
+        self.btnMinus.setText("-")
+        self.btnMinus.clicked.connect(lambda: self.setValue(self._value - 1))
+        layout.addWidget(self.btnMinus, 1)
 
         self.lblValue = QLabel(self.formattedValue(self._value))
         self.lblValue.setAlignment(Qt.AlignHCenter)
         layout.addWidget(self.lblValue, 1)
 
-        btnPlus = ExpandingButton()
-        btnPlus.setIcon(QIcon(":icons/list-add"))
-        btnPlus.setText("+")
-        btnPlus.clicked.connect(lambda: self.setValue(self._value + 1))
-        layout.addWidget(btnPlus, 1)
+        self.btnPlus = ExpandingButton()
+        self.btnPlus.setIcon(QIcon(":icons/list-add"))
+        self.btnPlus.setText("+")
+        self.btnPlus.clicked.connect(lambda: self.setValue(self._value + 1))
+        layout.addWidget(self.btnPlus, 1)
 
         self.setLayout(layout)
 
@@ -43,6 +43,9 @@ class TouchSpinner(QWidget):
             self._value = newValue
             self.valueChanged.emit(newValue)
             self.lblValue.setText(self.formattedValue(newValue))
+
+            self.btnPlus.setEnabled(self._value < self._max)
+            self.btnMinus.setEnabled(self._value > self._min)
 
     def setMaximum(self, maxi):
         self._max = maxi
