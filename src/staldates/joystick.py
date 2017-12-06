@@ -241,10 +241,3 @@ class SensitivityPrefsCameraJoystickAdapter(CameraJoystickAdapter):
 
     def map_zoom(self, axis):
         return max(self.min_zoom, self._interp(abs(axis), self.max_zoom, self.zoom_sensitivity))
-
-
-if __name__ == "__main__":
-
-    j = SensitivityPrefsCameraJoystickAdapter(None)
-    for i in range(0, JOYSTICK_MAX, 100):
-        print "{},{},{},{}".format(i, j.map_pan(i), j.map_tilt(i), j.map_zoom(i))
