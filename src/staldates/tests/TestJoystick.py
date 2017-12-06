@@ -1,8 +1,8 @@
-from staldates.joystick import Joystick, Direction, Zoom, CameraJoystickAdapter, SensitivityPrefsCameraJoystickAdapter
+from mock import MagicMock, patch, call
+from staldates.joystick import Joystick, Direction, Zoom, CameraJoystickAdapter, SensitivityPrefsCameraJoystickAdapter, _linear_interp
 
 import unittest
 import struct
-from mock import MagicMock, patch, call
 
 
 EVENT_FORMAT = "IhBB"
@@ -172,20 +172,19 @@ class TestSensivityPrefsCJA(unittest.TestCase):
         self.assertEqual(0.8, cja.zoom_sensitivity)
 
     def testInterpolation(self):
-        cja = SensitivityPrefsCameraJoystickAdapter()
         JOY_MAX = 32767
 
         self.assertEqual(
             50,
-            cja._interp((JOY_MAX / 2) - 1, 100, 0.5)
+            _linear_interp((JOY_MAX / 2) - 1, 100, 0.5)
         )
 
         self.assertEqual(
             75,
-            cja._interp(JOY_MAX * 0.74, 100, 0.5)  # Just under - as things get rounded up
+            _linear_interp(JOY_MAX * 0.74, 100, 0.5)  # Just under - as things get rounded up
         )
 
         self.assertEqual(
             75,
-            cja._interp((JOY_MAX / 2) - 1, 100, 0.75)
+            _linear_interp((JOY_MAX / 2) - 1, 100, 0.75)
         )

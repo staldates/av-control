@@ -196,7 +196,19 @@ JOYSTICK_MAX = 32767
 JOYSTICK_HALF = JOYSTICK_MAX / 2
 
 
+def _linear_interp(raw, max_value, sensitivity):
+    sensitivity_value = math.ceil(max_value * sensitivity)
+    if raw <= JOYSTICK_HALF:
+        return max(1, int(math.ceil(sensitivity_value * raw / JOYSTICK_HALF)))
+    else:
+        return max(1, int(sensitivity_value + math.ceil((2 * (raw - JOYSTICK_HALF) * (max_value - sensitivity_value) / JOYSTICK_MAX))))
+
+
 class SensitivityPrefsCameraJoystickAdapter(CameraJoystickAdapter):
+    def __init__(self, js=None, interpolation_function=_linear_interp):
+        CameraJoystickAdapter.__init__(self, js=js)
+        self._interp = interpolation_function
+
     def update_preferences(self):
         CameraJoystickAdapter.update_preferences(self)
         self._set_speed_params()
@@ -220,13 +232,6 @@ class SensitivityPrefsCameraJoystickAdapter(CameraJoystickAdapter):
         self.pan_sensitivity = Preferences.get('joystick.sensitivity.pan', 0.5)
         self.tilt_sensitivity = Preferences.get('joystick.sensitivity.tilt', 0.5)
         self.zoom_sensitivity = Preferences.get('joystick.sensitivity.zoom', 0.5)
-
-    def _interp(self, raw, max_value, sensitivity):
-        sensitivity_value = math.ceil(max_value * sensitivity)
-        if raw <= JOYSTICK_HALF:
-            return max(1, int(math.ceil(sensitivity_value * raw / JOYSTICK_HALF)))
-        else:
-            return max(1, int(sensitivity_value + math.ceil((2 * (raw - JOYSTICK_HALF) * (max_value - sensitivity_value) / JOYSTICK_MAX))))
 
     def map_pan(self, axis):
         return self._interp(abs(axis), self.max_pan, self.pan_sensitivity)
