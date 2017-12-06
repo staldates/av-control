@@ -110,13 +110,13 @@ PREFS_INVERT_Y = 'joystick.invert_y'
 
 
 class CameraJoystickAdapter(Thread):
-    def __init__(self, js):
+    def __init__(self, js=None):
         super(CameraJoystickAdapter, self).__init__()
         self.daemon = True
         if js:
             js.add_axis_handler(self._handle_axis)
         self._axes = [0, 0, 0, 0]
-        self.set_camera(None)
+        self.set_camera(js)
         self.set_on_move(None)
         self.update_preferences()
         Preferences.subscribe(self.update_preferences)
@@ -207,10 +207,10 @@ class SensitivityPrefsCameraJoystickAdapter(CameraJoystickAdapter):
 
     def _set_speed_params(self):
         if self._camera:
-            self.max_pan = self.camera.maxPanSpeed
-            self.max_tilt = self.camera.maxTiltSpeed
-            self.min_zoom = self.camera.minZoomSpeed
-            self.max_zoom = self.camera.maxZoomSpeed
+            self.max_pan = self._camera.maxPanSpeed
+            self.max_tilt = self._camera.maxTiltSpeed
+            self.min_zoom = self._camera.minZoomSpeed
+            self.max_zoom = self._camera.maxZoomSpeed
         else:
             self.max_pan = 0x18
             self.max_tilt = 0x14

@@ -1,8 +1,8 @@
-from staldates.joystick import Joystick, Direction, Zoom, CameraJoystickAdapter
+from staldates.joystick import Joystick, Direction, Zoom, CameraJoystickAdapter, SensitivityPrefsCameraJoystickAdapter
 
 import unittest
 import struct
-from mock import MagicMock
+from mock import MagicMock, patch, call
 
 
 EVENT_FORMAT = "IhBB"
@@ -132,3 +132,60 @@ class TestCameraJoystickAdapter(unittest.TestCase):
         cja._update_camera()
 
         on_move.assert_called_once()
+
+
+class TestSensivityPrefsCJA(unittest.TestCase):
+    def testGetMinMaxFromCamera(self):
+        camera = MagicMock()
+        camera.maxPanSpeed = 42
+        camera.maxTiltSpeed = 23
+        camera.minZoomSpeed = 3
+        camera.maxZoomSpeed = 18
+
+        cja = SensitivityPrefsCameraJoystickAdapter(camera)
+        self.assertEqual(42, cja.max_pan)
+        self.assertEqual(23, cja.max_tilt)
+        self.assertEqual(3, cja.min_zoom)
+        self.assertEqual(18, cja.max_zoom)
+
+    @patch('staldates.preferences.Preferences')
+    def getSensitivityFromPrefs(self, prefs):
+        prefs.side_effect = [
+            False,
+            0.2,
+            0.4,
+            0.8
+        ]
+
+        cja = SensitivityPrefsCameraJoystickAdapter(None)
+
+        prefs.assert_has_calls(
+            call('joystick.invert_y'),
+            call('joystick.sensitivity.pan'),
+            call('joystick.sensitivity.tilt'),
+            call('joystick.sensitivity.zoom')
+        )
+
+        self.assertEqual(False, cja.invert_y)
+        self.assertEqual(0.2, cja.pan_sensitivity)
+        self.assertEqual(0.4, cja.tilt_sensitivity)
+        self.assertEqual(0.8, cja.zoom_sensitivity)
+
+    def testInterpolation(self):
+        cja = SensitivityPrefsCameraJoystickAdapter()
+        JOY_MAX = 32767
+
+        self.assertEqual(
+            50,
+            cja._interp((JOY_MAX / 2) - 1, 100, 0.5)
+        )
+
+        self.assertEqual(
+            75,
+            cja._interp(JOY_MAX * 0.74, 100, 0.5)  # Just under - as things get rounded up
+        )
+
+        self.assertEqual(
+            75,
+            cja._interp((JOY_MAX / 2) - 1, 100, 0.75)
+        )
