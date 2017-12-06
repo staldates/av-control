@@ -1,8 +1,10 @@
+from PySide.QtCore import Qt
 from PySide.QtGui import QWidget, QVBoxLayout, QHBoxLayout,\
     QButtonGroup, QLabel
 from staldates.preferences import Preferences
 from staldates.ui.widgets.Labels import TitleLabel
-from staldates.ui.widgets.TouchSpinner import FrameRateTouchSpinner
+from staldates.ui.widgets.TouchSpinner import FrameRateTouchSpinner,\
+    TouchSpinner
 from staldates.VisualsSystem import with_atem
 from staldates.ui.widgets.Buttons import ExpandingButton
 
@@ -42,6 +44,32 @@ class JoystickInvertPreference(QWidget):
         Preferences.set('joystick.invert_y', self.btnInvert.isChecked())
 
 
+class SensitivityPreference(QWidget):
+    def __init__(self, preference_name, label, parent=None):
+        super(SensitivityPreference, self).__init__(parent)
+        self.preference_name = preference_name
+
+        layout = QHBoxLayout()
+
+        label = QLabel(label)
+        label.setAlignment(Qt.AlignRight)
+        layout.addWidget(label, 1)
+
+        self.spinner = TouchSpinner()
+        self.spinner.setMaximum(10)
+        self.spinner.setMinimum(1)
+
+        self.update_from_preferences()
+        Preferences.subscribe(self.update_from_preferences)
+        self.spinner.valueChanged.connect(lambda v: Preferences.set(preference_name, float(v) / 10))
+        layout.addWidget(self.spinner, 2)
+
+        self.setLayout(layout)
+
+    def update_from_preferences(self):
+        self.spinner.setValue(int(Preferences.get(self.preference_name, 0.5) * 10))
+
+
 class PreferencesWidget(QWidget):
     def __init__(self, controller, transition, parent=None):
         super(PreferencesWidget, self).__init__(parent)
@@ -64,6 +92,11 @@ class PreferencesWidget(QWidget):
 
         layout.addWidget(QLabel('Joystick forward means:'))
         layout.addWidget(JoystickInvertPreference())
+
+        layout.addWidget(QLabel('Joystick sensitivity:'))
+        layout.addWidget(SensitivityPreference('joystick.sensitivity.pan', 'Pan'))
+        layout.addWidget(SensitivityPreference('joystick.sensitivity.tilt', 'Tilt'))
+        layout.addWidget(SensitivityPreference('joystick.sensitivity.zoom', 'Zoom'))
 
         self.setLayout(layout)
 
