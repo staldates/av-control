@@ -197,6 +197,15 @@ JOYSTICK_HALF = JOYSTICK_MAX / 2
 
 
 def _linear_interp(raw, max_value, sensitivity):
+    """Linearly interpolates values based on a given percentage sensitivity value.
+
+    The sensitivity represents the percentage of max_value this function should return at 50% input (which is assumed to be a short e.g.
+    the max value from a joystick axis will be 32767).
+
+    Output value is determined by linear interpolation based on that point and the min/max possible output values.
+
+    Setting sensitivity = 0.5 will result in a fully linear response across the entire joystick axis range.
+    """
     sensitivity_value = math.ceil(max_value * sensitivity)
     if raw <= JOYSTICK_HALF:
         return max(1, int(math.ceil(sensitivity_value * raw / JOYSTICK_HALF)))
