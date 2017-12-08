@@ -1,6 +1,6 @@
-from avx.devices.serial.VISCACamera import VISCACamera
 from enum import Enum
 from Pyro4.errors import PyroError
+from staldates.preferences import Preferences
 from threading import Thread
 
 import math
@@ -66,25 +66,27 @@ class Direction(Enum):
     STOP = "stop"
 
     @staticmethod
-    def from_axes(x, y, deadzone=0):
+    def from_axes(x, y, deadzone=0, invert_y=False):
+        if invert_y:
+            y = -y
         if x > deadzone:
             if y > deadzone:
                 return Direction.UP_RIGHT
-            elif y < -1 * deadzone:
+            elif y < -deadzone:
                 return Direction.DOWN_RIGHT
             else:
                 return Direction.RIGHT
-        elif x < -1 * deadzone:
+        elif x < -deadzone:
             if y > deadzone:
                 return Direction.UP_LEFT
-            elif y < -1 * deadzone:
+            elif y < -deadzone:
                 return Direction.DOWN_LEFT
             else:
                 return Direction.LEFT
         else:
             if y > deadzone:
                 return Direction.UP
-            elif y < -1 * deadzone:
+            elif y < -deadzone:
                 return Direction.DOWN
             else:
                 return Direction.STOP
@@ -99,41 +101,28 @@ class Zoom(Enum):
     def from_axis(axis, deadzone=0):
         if axis > deadzone:
             return Zoom.IN
-        elif axis < -1 * deadzone:
+        elif axis < -deadzone:
             return Zoom.OUT
         return Zoom.STOP
 
 
-def pan_speed_from_axis(axis):
-    # Must return between 1 and 24 inclusive (0 when stopped)
-    raw = abs(axis)
-    return int(1 + math.ceil(23 * raw / 32767))
-
-
-def tilt_speed_from_axis(axis):
-    # Must return between 1 and 20 inclusive (0 when stopped)
-    raw = abs(axis)
-    return int(1 + math.ceil(19 * raw / 32767))
-
-
-def zoom_speed_from_axis(axis):
-    # Must return between 2 and 7 inclusive
-    raw = abs(axis)
-    return int(2 + math.ceil(5 * raw / 32767))
+PREFS_INVERT_Y = 'joystick.invert_y'
 
 
 class CameraJoystickAdapter(Thread):
-    def __init__(self, js, map_pan=pan_speed_from_axis, map_tilt=tilt_speed_from_axis, map_zoom=zoom_speed_from_axis):
+    def __init__(self, js=None):
         super(CameraJoystickAdapter, self).__init__()
         self.daemon = True
         if js:
             js.add_axis_handler(self._handle_axis)
         self._axes = [0, 0, 0, 0]
-        self.map_pan = map_pan
-        self.map_tilt = map_tilt
-        self.map_zoom = map_zoom
-        self.set_camera(None)
+        self.set_camera(js)
         self.set_on_move(None)
+        self.update_preferences()
+        Preferences.subscribe(self.update_preferences)
+
+    def update_preferences(self):
+        self.invert_y = Preferences.get(PREFS_INVERT_Y, False)
 
     def set_camera(self, camera):
         self._camera = camera
@@ -158,10 +147,25 @@ class CameraJoystickAdapter(Thread):
             self._update_camera()
             time.sleep(0.1)
 
+    def map_pan(self, axis):
+        """Should return a value between 1 and 24 inclusive."""
+        raw = abs(axis)
+        return int(1 + math.ceil(23 * raw / 32767))
+
+    def map_tilt(self, axis):
+        """Should return a value between 1 and 20 inclusive."""
+        raw = abs(axis)
+        return int(1 + math.ceil(19 * raw / 32767))
+
+    def map_zoom(self, axis):
+        """Should return a value between 2 and 7 inclusive."""
+        raw = abs(axis)
+        return int(2 + math.ceil(5 * raw / 32767))
+
     def _update_camera(self):
         if self._camera is None:
             return
-        direction = Direction.from_axes(self._axes[0], self._axes[1])
+        direction = Direction.from_axes(self._axes[0], self._axes[1], invert_y=self.invert_y)
         pan_speed = self.map_pan(self._axes[0])
         tilt_speed = self.map_tilt(self._axes[1])
 
@@ -188,14 +192,61 @@ class CameraJoystickAdapter(Thread):
             pass
 
 
-if __name__ == "__main__":
-    dev_str = "/dev/input/js1"
-    js = Joystick(dev_str)
-    cja = CameraJoystickAdapter(js)
+JOYSTICK_MAX = 32767
+JOYSTICK_HALF = JOYSTICK_MAX / 2
 
-    cam = VISCACamera("Camera 1", "/dev/ttyUSB0", 1)
-    cam.initialise()
 
-    cja.set_camera(cam)
-    js.start()
-    cja.start()
+def _linear_interp(raw, max_value, sensitivity):
+    """Linearly interpolates values based on a given percentage sensitivity value.
+
+    The sensitivity represents the percentage of max_value this function should return at 50% input (which is assumed to be a short e.g.
+    the max value from a joystick axis will be 32767).
+
+    Output value is determined by linear interpolation based on that point and the min/max possible output values.
+
+    Setting sensitivity = 0.5 will result in a fully linear response across the entire joystick axis range.
+    """
+    sensitivity_value = math.ceil(max_value * sensitivity)
+    if raw <= JOYSTICK_HALF:
+        return max(1, int(math.ceil(sensitivity_value * raw / JOYSTICK_HALF)))
+    else:
+        return max(1, int(sensitivity_value + math.ceil((2 * (raw - JOYSTICK_HALF) * (max_value - sensitivity_value) / JOYSTICK_MAX))))
+
+
+class SensitivityPrefsCameraJoystickAdapter(CameraJoystickAdapter):
+    def __init__(self, js=None, interpolation_function=_linear_interp):
+        CameraJoystickAdapter.__init__(self, js=js)
+        self._interp = interpolation_function
+
+    def update_preferences(self):
+        CameraJoystickAdapter.update_preferences(self)
+        self._set_speed_params()
+
+    def set_camera(self, camera):
+        super(SensitivityPrefsCameraJoystickAdapter, self).set_camera(camera)
+        self._set_speed_params()
+
+    def _set_speed_params(self):
+        if self._camera:
+            self.max_pan = self._camera.maxPanSpeed
+            self.max_tilt = self._camera.maxTiltSpeed
+            self.min_zoom = self._camera.minZoomSpeed
+            self.max_zoom = self._camera.maxZoomSpeed
+        else:
+            self.max_pan = 0x18
+            self.max_tilt = 0x14
+            self.min_zoom = 2
+            self.max_zoom = 7
+
+        self.pan_sensitivity = Preferences.get('joystick.sensitivity.pan', 0.5)
+        self.tilt_sensitivity = Preferences.get('joystick.sensitivity.tilt', 0.5)
+        self.zoom_sensitivity = Preferences.get('joystick.sensitivity.zoom', 0.5)
+
+    def map_pan(self, axis):
+        return self._interp(abs(axis), self.max_pan, self.pan_sensitivity)
+
+    def map_tilt(self, axis):
+        return self._interp(abs(axis), self.max_tilt, self.tilt_sensitivity)
+
+    def map_zoom(self, axis):
+        return max(self.min_zoom, self._interp(abs(axis), self.max_zoom, self.zoom_sensitivity))

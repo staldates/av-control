@@ -14,7 +14,7 @@ from staldates.ui import resources  # @UnusedImport  # Initialises the Qt resour
 from staldates.ui.MainWindow import MainWindow
 from staldates.ui.widgets import Dialogs
 from staldates.ui.widgets.Dialogs import handlePyroErrors
-from staldates.joystick import Joystick, CameraJoystickAdapter
+from staldates.joystick import Joystick, SensitivityPrefsCameraJoystickAdapter
 
 
 Pyro4.config.COMMTIMEOUT = 3  # seconds
@@ -115,7 +115,7 @@ def main():
             logging.exception("Unable to configure joystick")
             pass
 
-        jsa = CameraJoystickAdapter(js)
+        jsa = SensitivityPrefsCameraJoystickAdapter(js)
         jsa.start()
         myapp = MainWindow(controller, jsa)
 

@@ -2,11 +2,10 @@ from avx._version import __version__ as _avx_version
 from PySide.QtGui import QVBoxLayout, QLabel, QHBoxLayout
 from staldates.ui.widgets.LogViewer import LogViewer
 from staldates.ui.widgets.Buttons import ExpandingButton
+from staldates.ui.widgets.Preferences import PreferencesWidget
 from staldates.ui.widgets.Screens import ScreenWithBackButton
 from staldates.ui._version import __version__ as _ui_version
-from staldates.ui.widgets.TouchSpinner import FrameRateTouchSpinner
 from staldates.VisualsSystem import with_atem
-from PySide.QtCore import Qt
 
 
 class AdvancedMenu(ScreenWithBackButton):
@@ -22,38 +21,30 @@ class AdvancedMenu(ScreenWithBackButton):
         super(AdvancedMenu, self).__init__("Advanced Options", mainWindow)
 
     def makeContent(self):
-        layout = QVBoxLayout()
+        layout = QHBoxLayout()
+
+        prefs = PreferencesWidget(self.controller, self.transition)
+        layout.addWidget(prefs, 1)
+
+        rhs = QVBoxLayout()
 
         lblVersion = QLabel()
         lblVersion.setText("av-control version {0} (avx version {1})".format(_ui_version, _avx_version))
-        layout.addWidget(lblVersion)
-
-        mixCtl = QHBoxLayout()
-        lblMixRate = QLabel("Mix rate:")
-        lblMixRate.setAlignment(Qt.AlignHCenter | Qt.AlignRight)
-        mixCtl.addWidget(lblMixRate, 1)
-
-        mixRate = FrameRateTouchSpinner()
-        mixRate.setValue(self.transition.rate)
-        mixRate.setMaximum(250)
-        mixRate.setMinimum(1)
-        mixRate.valueChanged.connect(self.setMixRate)
-
-        mixCtl.addWidget(mixRate, 1)
-
-        layout.addLayout(mixCtl)
+        rhs.addWidget(lblVersion)
 
         self.lv = LogViewer(self.controller, self.mainWindow)
 
         log = ExpandingButton()
         log.setText("Log")
         log.clicked.connect(self.showLog)
-        layout.addWidget(log)
+        rhs.addWidget(log)
 
         btnQuit = ExpandingButton()
         btnQuit.setText("Exit AV Control")
         btnQuit.clicked.connect(self.mainWindow.close)
-        layout.addWidget(btnQuit)
+        rhs.addWidget(btnQuit)
+
+        layout.addLayout(rhs, 1)
 
         return layout
 

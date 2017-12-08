@@ -122,3 +122,7 @@ QComboBox::drop-down {
 FrameRateTouchSpinner > QLabel {
   font-size: 24pt;
 }
+
+TitleLabel {
+  font-weight: bold;
+}
