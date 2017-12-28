@@ -142,7 +142,8 @@ class TestSensivityPrefsCJA(unittest.TestCase):
         camera.minZoomSpeed = 3
         camera.maxZoomSpeed = 18
 
-        cja = SensitivityPrefsCameraJoystickAdapter(camera)
+        cja = SensitivityPrefsCameraJoystickAdapter(None)
+        cja.set_camera(camera)
         self.assertEqual(42, cja.max_pan)
         self.assertEqual(23, cja.max_tilt)
         self.assertEqual(3, cja.min_zoom)
