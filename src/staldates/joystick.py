@@ -210,7 +210,7 @@ def _linear_interp(raw, max_value, sensitivity):
     if raw <= JOYSTICK_HALF:
         return max(1, int(math.ceil(sensitivity_value * raw / JOYSTICK_HALF)))
     else:
-        return max(1, int(sensitivity_value + math.ceil((2 * (raw - JOYSTICK_HALF) * (max_value - sensitivity_value) / JOYSTICK_MAX))))
+        return max(1, int(sensitivity_value + math.ceil((2 * (raw - JOYSTICK_HALF) * (max_value - 1 - sensitivity_value) / JOYSTICK_MAX))))
 
 
 class SensitivityPrefsCameraJoystickAdapter(CameraJoystickAdapter):

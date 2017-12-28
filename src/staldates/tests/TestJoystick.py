@@ -181,7 +181,7 @@ class TestSensivityPrefsCJA(unittest.TestCase):
         )
 
         self.assertEqual(
-            75,
+            74,
             _linear_interp(JOY_MAX * 0.74, 100, 0.5)  # Just under - as things get rounded up
         )
 
