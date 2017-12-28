@@ -1,6 +1,6 @@
 from PySide.QtCore import Qt
 from PySide.QtGui import QWidget, QVBoxLayout, QHBoxLayout,\
-    QButtonGroup, QLabel
+    QButtonGroup, QLabel, QGridLayout
 from staldates.preferences import Preferences
 from staldates.ui.widgets.Labels import TitleLabel
 from staldates.ui.widgets.TouchSpinner import FrameRateTouchSpinner,\
@@ -77,9 +77,9 @@ class PreferencesWidget(QWidget):
         self.transition = transition
         self.atem = controller['ATEM']
 
-        layout = QVBoxLayout()
+        layout = QGridLayout()
 
-        layout.addWidget(TitleLabel('Preferences'))
+        layout.addWidget(TitleLabel('Preferences'), 0, 0, 1, 0)
 
         mixRate = FrameRateTouchSpinner()
         mixRate.setValue(transition.rate)
@@ -87,16 +87,16 @@ class PreferencesWidget(QWidget):
         mixRate.setMinimum(1)
         mixRate.valueChanged.connect(self.setMixRate)
 
-        layout.addWidget(QLabel('Mix rate (seconds:frames):'))
-        layout.addWidget(mixRate)
+        layout.addWidget(QLabel('Mix rate'), 1, 0)
+        layout.addWidget(mixRate, 1, 1)
 
-        layout.addWidget(QLabel('Joystick forward means:'))
-        layout.addWidget(JoystickInvertPreference())
+        layout.addWidget(QLabel('Joystick forward\nmeans'), 2, 0)
+        layout.addWidget(JoystickInvertPreference(), 2, 1)
 
-        layout.addWidget(QLabel('Joystick sensitivity:'))
-        layout.addWidget(SensitivityPreference('joystick.sensitivity.pan', 'Pan'))
-        layout.addWidget(SensitivityPreference('joystick.sensitivity.tilt', 'Tilt'))
-        layout.addWidget(SensitivityPreference('joystick.sensitivity.zoom', 'Zoom'))
+        layout.addWidget(QLabel('Joystick sensitivity'), 3, 0)
+        layout.addWidget(SensitivityPreference('joystick.sensitivity.pan', 'Pan'), 3, 1)
+        layout.addWidget(SensitivityPreference('joystick.sensitivity.zoom', 'Zoom'), 4, 0)
+        layout.addWidget(SensitivityPreference('joystick.sensitivity.tilt', 'Tilt'), 4, 1)
 
         self.setLayout(layout)
 
