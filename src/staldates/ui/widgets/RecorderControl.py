@@ -196,7 +196,7 @@ class RecorderControl(ScreenWithBackButton):
             self.btnRecord.setChecked(state['status'] == TransportState.RECORD)
             self.btnPlay.setChecked(state['status'] == TransportState.PLAYING)
             self.btnStop.setChecked(state['status'] != TransportState.RECORD and state['status'] != TransportState.PLAYING)
-        currentSlot = state.get('slot id', 1)
+        currentSlot = state.get('active slot', 1)
         self.btnGroupSDCard.button(currentSlot - 1).setChecked(True)
 
     def _setRecordMode(self, isRecordMode):

@@ -67,11 +67,11 @@ class TestRecorderControl(GuiTest):
         self.assertTrue(slot1.isChecked())
         self.assertFalse(slot2.isChecked())
 
-        self.rc.updateState({'slot id': 2})
+        self.rc.updateState({'active slot': 2})
         self.assertFalse(slot1.isChecked())
         self.assertTrue(slot2.isChecked())
 
-        self.rc.updateState({'slot id': 1})
+        self.rc.updateState({'active slot': 1})
         self.assertTrue(slot1.isChecked())
         self.assertFalse(slot2.isChecked())
 
