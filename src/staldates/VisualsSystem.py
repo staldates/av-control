@@ -263,10 +263,12 @@ class SwitcherState(QObject):
 class HyperdeckState(QObject):
 
     transportChange = Signal(dict)
+    clipsListChange = Signal(dict)
 
     def __init__(self, hyperdeck):
         super(HyperdeckState, self).__init__()
         self.deck = hyperdeck
+        self.clip_listing = {}
 
         self.transport = {
             "status": TransportState.STOPPED
@@ -279,3 +281,6 @@ class HyperdeckState(QObject):
         if msgType == HyperDeckMessageTypes.TRANSPORT_STATE_CHANGED:
             self.transport = data
             self.transportChange.emit(data)
+        if msgType == HyperDeckMessageTypes.CLIP_LISTING:
+            self.clip_listing = data
+            self.clipsListChange.emit(data)
