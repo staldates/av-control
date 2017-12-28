@@ -116,7 +116,7 @@ class CameraJoystickAdapter(Thread):
         if js:
             js.add_axis_handler(self._handle_axis)
         self._axes = [0, 0, 0, 0]
-        self.set_camera(js)
+        self.set_camera(None)
         self.set_on_move(None)
         self.update_preferences()
         Preferences.subscribe(self.update_preferences)
