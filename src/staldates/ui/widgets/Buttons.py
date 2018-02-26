@@ -20,18 +20,21 @@ class ExpandingButton(QToolButton):
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.grabGesture(Qt.TapAndHoldGesture)
         self._lastClick = time.time()
+        self._has_longpressed = False
 
     def event(self, evt):
         if evt.type() == QEvent.Gesture:
-            print evt.gestures()
             gesture = evt.gesture(Qt.TapAndHoldGesture)
             if gesture:
                 if gesture.state() == Qt.GestureState.GestureFinished:
                     self.longpress.emit()
+                    self._has_longpressed = True
                     return True
+        elif evt.type() == QEvent.MouseButtonPress:
+            self._has_longpressed = False
         elif evt.type() == QEvent.MouseButtonRelease:
             now = time.time()
-            if now - self._lastClick < self.DEBOUNCE_DELAY:
+            if now - self._lastClick < self.DEBOUNCE_DELAY or self._has_longpressed:
                 evt.ignore()
                 return False
             else:
