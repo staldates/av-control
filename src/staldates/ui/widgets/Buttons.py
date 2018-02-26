@@ -4,10 +4,14 @@ from PySide.QtGui import QLabel, QToolButton, QSizePolicy, QVBoxLayout, QImage,\
 from PySide.QtCore import Qt, QSize, Signal, QEvent, QTimer
 from PySide.QtSvg import QSvgRenderer
 
+import time
+
 
 class ExpandingButton(QToolButton):
 
     longpress = Signal()
+
+    DEBOUNCE_DELAY = 0.25
 
     def __init__(self, parent=None):
         super(ExpandingButton, self).__init__(parent)
@@ -15,14 +19,23 @@ class ExpandingButton(QToolButton):
         self.setIconSize(QSize(48, 48))
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.grabGesture(Qt.TapAndHoldGesture)
+        self._lastClick = time.time()
 
     def event(self, evt):
         if evt.type() == QEvent.Gesture:
+            print evt.gestures()
             gesture = evt.gesture(Qt.TapAndHoldGesture)
             if gesture:
                 if gesture.state() == Qt.GestureState.GestureFinished:
                     self.longpress.emit()
                     return True
+        elif evt.type() == QEvent.MouseButtonRelease:
+            now = time.time()
+            if now - self._lastClick < self.DEBOUNCE_DELAY:
+                evt.ignore()
+                return False
+            else:
+                self._lastClick = now
         return super(ExpandingButton, self).event(evt)
 
 
