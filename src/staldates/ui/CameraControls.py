@@ -1,4 +1,4 @@
-from avx.devices.serial.VISCACamera import Aperture, Shutter, Gain
+from avx.devices.datavideo import Aperture, Shutter, Gain
 from enum import Enum
 from PySide.QtGui import QButtonGroup, QGridLayout, QLabel, QWidget, QIcon, QHBoxLayout, QComboBox,\
     QSizePolicy
