@@ -139,9 +139,10 @@ class CameraControl(QWidget):
         _safelyConnect(focus.autoButton.clicked, autoFocusAndDeselect)
         layout.addWidget(focus, 0, 4, 4, 1)
 
-        brightness = PlusMinusButtons("EV Comp")
-        _safelyConnect(brightness.upButton.clicked, self.camera.backlightCompOn)
-        _safelyConnect(brightness.downButton.clicked, self.camera.backlightCompOff)
+        brightness = PlusMinusAutoButtons("Bright")
+        _safelyConnect(brightness.upButton.clicked, self.camera.brighter)
+        _safelyConnect(brightness.downButton.clicked, self.camera.darker)
+        _safelyConnect(brightness.autoButton.clicked, self.camera.setAutoExposure)
         layout.addWidget(brightness, 0, 5, 4, 1)
 
         presets = QGridLayout()
