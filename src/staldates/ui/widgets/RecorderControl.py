@@ -29,7 +29,7 @@ class RecorderClipSelectionScreen(QWidget):
         layout = QGridLayout()
 
         lblTitle = TitleLabel("Select clip")
-        layout.addWidget(lblTitle, 0, 0, 1, 2)
+        layout.addWidget(lblTitle, 0, 0, 1, 3)
 
         self.clipTable = QTableWidget()
         self.clipTable.setColumnCount(2)
@@ -39,7 +39,7 @@ class RecorderClipSelectionScreen(QWidget):
 
         self.clipTable.itemSelectionChanged.connect(self._onClipSelected)
 
-        layout.addWidget(self.clipTable, 1, 0, 1, 2)
+        layout.addWidget(self.clipTable, 1, 0, 1, 3)
 
         b = ExpandingButton()
         b.setText("Back")
@@ -48,10 +48,23 @@ class RecorderClipSelectionScreen(QWidget):
         b.clicked.connect(mainWindow.stepBack)
         layout.addWidget(b, 2, 0)
 
+        btnRefresh = ExpandingButton()
+        btnRefresh.setText('Refresh')
+        btnRefresh.setIcon(QIcon(':icons/refresh'))
+        btnRefresh.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+
+        def refresh():
+            self.populateClipsList({})
+            hyperdeck.broadcastClipsList()
+
+        btnRefresh.clicked.connect(refresh)
+
+        layout.addWidget(btnRefresh, 2, 1)
+
         self.btnSelect = ExpandingButton()
         self.btnSelect.setText("Cue clip")
         self.btnSelect.clicked.connect(self._cueClip)
-        layout.addWidget(self.btnSelect, 2, 1)
+        layout.addWidget(self.btnSelect, 2, 2)
 
         layout.setRowStretch(0, 0)
         layout.setRowStretch(1, 1)
@@ -60,8 +73,6 @@ class RecorderClipSelectionScreen(QWidget):
         self.setLayout(layout)
 
         self.populateClipsList(state.clip_listing)
-        state.clipsListChange.connect(self.populateClipsList)
-        state.transportChange.connect(self._updateClipSelectionFromState)
 
     def populateClipsList(self, clipsList):
         self.selected_clip = None
@@ -179,6 +190,9 @@ class RecorderControl(ScreenWithBackButton):
         layout.addWidget(self.btnRecord, 2, 5)
 
         self.clipSelectionScreen = RecorderClipSelectionScreen(self.hyperdeck, self.state, self.mainWindow)
+        self.state.clipsListChange.connect(self.clipSelectionScreen.populateClipsList)
+        self.state.transportChange.connect(self.clipSelectionScreen._updateClipSelectionFromState)
+
         self.btnChooseClip = ExpandingButton()
         self.btnChooseClip.setText("Select clip")
         self.btnChooseClip.clicked.connect(self._showClipSelection)
@@ -218,5 +232,5 @@ class RecorderControl(ScreenWithBackButton):
             self.hyperdeck.setTransportMode(TransportMode.PLAYBACK)
 
     def _showClipSelection(self):
-        self.mainWindow.showScreen(self.clipSelectionScreen)
         self.hyperdeck.broadcastClipsList()
+        self.mainWindow.showScreen(self.clipSelectionScreen)
