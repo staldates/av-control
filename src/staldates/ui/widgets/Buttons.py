@@ -23,7 +23,7 @@ class ExpandingButton(QToolButton):
         self._has_longpressed = False
 
     def event(self, evt):
-        if evt.type() == QEvent.Gesture:
+        if evt.type() == QEvent.Gesture and self.isEnabled():
             gesture = evt.gesture(Qt.TapAndHoldGesture)
             if gesture:
                 if gesture.state() == Qt.GestureState.GestureFinished:
