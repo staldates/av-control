@@ -4,7 +4,7 @@ Created on 15 Apr 2013
 @author: jrem
 '''
 from avx.devices.Device import Device
-from avx.devices.serial.VISCACamera import Shutter, Aperture, Gain
+from avx.devices.datavideo import Shutter, Aperture, Gain
 from mock import MagicMock
 from PySide.QtCore import Qt
 from PySide.QtTest import QTest
@@ -169,17 +169,17 @@ class Test(GuiTest):
         self.assertTrue(ecs.shutter.isEnabled())
         self.cam.setShutterPriority.assert_called_once_with()
         ecs.shutter.setCurrentIndex(1)
-        self.cam.setShutter.assert_called_once_with(Shutter.T60)
+        self.cam.setShutter.assert_called_once_with(Shutter.T2)
 
         self.findButton(self.acc, "Av").click()
         self.assertFalse(ecs.shutter.isEnabled())
         self.assertTrue(ecs.aperture.isEnabled())
         self.cam.setAperturePriority.assert_called_once_with()
         ecs.aperture.setCurrentIndex(4)
-        self.cam.setAperture.assert_called_once_with(Aperture.F16)
+        self.cam.setAperture.assert_called_once_with(Aperture.F8)
 
         self.findButton(self.acc, "M").click()
         self.assertTrue(ecs.gain.isEnabled())
         self.cam.setManualExposure.assert_called_once_with()
         ecs.gain.setCurrentIndex(6)
-        self.cam.setGain.assert_called_once_with(Gain.G_15)
+        self.cam.setGain.assert_called_once_with(Gain.G_12)
