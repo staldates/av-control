@@ -36,7 +36,8 @@ class ExpandingButton(QToolButton):
             now = time.time()
             if now - self._lastClick < self.DEBOUNCE_DELAY or self._has_longpressed:
                 evt.ignore()
-                return False
+                self.setDown(False)
+                return True
             else:
                 self._lastClick = now
         return super(ExpandingButton, self).event(evt)
