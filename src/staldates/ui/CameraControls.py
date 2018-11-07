@@ -335,8 +335,8 @@ class AdvancedCameraControl(ScreenWithBackButton):
     def makeContent(self):
         layout = QHBoxLayout()
 
-        self.exposureControls = ExposureControl(self.camera)
-        layout.addWidget(self.exposureControls)
+        # self.exposureControls = ExposureControl(self.camera)
+        # layout.addWidget(self.exposureControls)
 
         whiteBalanceGrid = QGridLayout()
         wbTitle = QLabel("White Balance")
