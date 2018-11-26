@@ -4,26 +4,61 @@ from PySide.QtGui import QLabel, QToolButton, QSizePolicy, QVBoxLayout, QImage,\
 from PySide.QtCore import Qt, QSize, Signal, QEvent, QTimer
 from PySide.QtSvg import QSvgRenderer
 
+import time
 
-class ExpandingButton(QToolButton):
 
+class DebouncedButtonMixin(object):
+    DEBOUNCE_DELAY = 0.25
+
+    def __init__(self, *args, **kwargs):
+        super(DebouncedButtonMixin, self).__init__(*args, **kwargs)
+        self._lastClick = time.time()
+
+    def event(self, evt):
+        if evt.type() == QEvent.MouseButtonRelease:
+            now = time.time()
+            if now - self._lastClick < self.DEBOUNCE_DELAY:
+                evt.ignore()
+                self.setDown(False)
+                return True
+            else:
+                self._lastClick = now
+        return super(DebouncedButtonMixin, self).event(evt)
+
+
+class LongPressButtonMixin(object):
     longpress = Signal()
+
+    def __init__(self, *args, **kwargs):
+        super(LongPressButtonMixin, self).__init__(*args, **kwargs)
+        self.grabGesture(Qt.TapAndHoldGesture)
+        self._has_longpressed = False
+
+    def event(self, evt):
+        if evt.type() == QEvent.Gesture and self.isEnabled():
+            gesture = evt.gesture(Qt.TapAndHoldGesture)
+            if gesture:
+                if gesture.state() == Qt.GestureState.GestureFinished:
+                    self.longpress.emit()
+                    self._has_longpressed = True
+                    return True
+        elif evt.type() == QEvent.MouseButtonPress:
+            self._has_longpressed = False
+        elif evt.type() == QEvent.MouseButtonRelease:
+            if self._has_longpressed:
+                evt.ignore()
+                self.setDown(False)
+                return True
+        return super(LongPressButtonMixin, self).event(evt)
+
+
+class ExpandingButton(DebouncedButtonMixin, QToolButton):
 
     def __init__(self, parent=None):
         super(ExpandingButton, self).__init__(parent)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setIconSize(QSize(48, 48))
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        self.grabGesture(Qt.TapAndHoldGesture)
-
-    def event(self, evt):
-        if evt.type() == QEvent.Gesture:
-            gesture = evt.gesture(Qt.TapAndHoldGesture)
-            if gesture:
-                if gesture.state() == Qt.GestureState.GestureFinished:
-                    self.longpress.emit()
-                    return True
-        return super(ExpandingButton, self).event(evt)
 
 
 def _add_line_breaks(text, every_n=10):
@@ -44,7 +79,7 @@ def _add_line_breaks(text, every_n=10):
     return '\n'.join(lines)
 
 
-class InputButton(ExpandingButton):
+class InputButton(LongPressButtonMixin, ExpandingButton):
 
     def __init__(self, myInput, parent=None):
         super(InputButton, self).__init__(parent)
@@ -108,7 +143,7 @@ class IDedButton(ExpandingButton):
         self.ID = ID
 
 
-class OutputButton(ExpandingButton):
+class OutputButton(LongPressButtonMixin, ExpandingButton):
 
     def __init__(self, myOutput, parent=None):
         super(OutputButton, self).__init__(parent)

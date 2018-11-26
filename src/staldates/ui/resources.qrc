@@ -27,6 +27,7 @@
         <file alias="preferences-desktop-screensaver">resources/icons/preferences-desktop-screensaver.svg</file>
         <file alias="preferences-system-windows">resources/icons/preferences-system-windows.svg</file>
         <file alias="process-stop">resources/icons/process-stop.svg</file>
+        <file alias="refresh">resources/icons/view-refresh.svg</file>
         <file alias="screens">resources/icons/screens.svg</file>
         <file alias="spinner">resources/icons/spinner.gif</file>
         <file alias="status-ok">resources/icons/status-ok.svg</file>

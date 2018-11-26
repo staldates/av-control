@@ -1,4 +1,4 @@
-from avx.devices.serial.VISCACamera import Aperture, Shutter, Gain
+from avx.devices.datavideo import Aperture, Shutter, Gain
 from enum import Enum
 from PySide.QtGui import QButtonGroup, QGridLayout, QLabel, QWidget, QIcon, QHBoxLayout, QComboBox,\
     QSizePolicy
@@ -335,8 +335,8 @@ class AdvancedCameraControl(ScreenWithBackButton):
     def makeContent(self):
         layout = QHBoxLayout()
 
-        self.exposureControls = ExposureControl(self.camera)
-        layout.addWidget(self.exposureControls)
+        # self.exposureControls = ExposureControl(self.camera)
+        # layout.addWidget(self.exposureControls)
 
         whiteBalanceGrid = QGridLayout()
         wbTitle = QLabel("White Balance")

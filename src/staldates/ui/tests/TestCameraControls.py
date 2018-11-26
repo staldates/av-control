@@ -4,11 +4,11 @@ Created on 15 Apr 2013
 @author: jrem
 '''
 from avx.devices.Device import Device
-from avx.devices.serial.VISCACamera import Shutter, Aperture, Gain
+from avx.devices.datavideo import Shutter, Aperture, Gain
 from mock import MagicMock
 from PySide.QtCore import Qt
 from PySide.QtTest import QTest
-from staldates.ui.CameraControls import CameraControl, AdvancedCameraControl
+from staldates.ui.CameraControls import CameraControl, AdvancedCameraControl, ExposureControl
 from staldates.ui.tests.GuiTest import GuiTest
 
 
@@ -156,30 +156,28 @@ class Test(GuiTest):
         self.cam.whiteBalanceOnePushTrigger.assert_called_once_with()
 
     def testExposureControls(self):
-        self.acc = AdvancedCameraControl("Test", self.cam, self.mockMainWindow)
+        ecs = ExposureControl(self.cam)
 
-        ecs = self.acc.exposureControls
-
-        self.assertTrue(self.findButton(self.acc, "Full Auto").isEnabled())
+        self.assertTrue(self.findButton(ecs, "Full Auto").isEnabled())
         self.assertFalse(ecs.aperture.isEnabled())
         self.assertFalse(ecs.shutter.isEnabled())
         self.assertFalse(ecs.gain.isEnabled())
 
-        self.findButton(self.acc, "Tv").click()
+        self.findButton(ecs, "Tv").click()
         self.assertTrue(ecs.shutter.isEnabled())
         self.cam.setShutterPriority.assert_called_once_with()
         ecs.shutter.setCurrentIndex(1)
-        self.cam.setShutter.assert_called_once_with(Shutter.T60)
+        self.cam.setShutter.assert_called_once_with(Shutter.T2)
 
-        self.findButton(self.acc, "Av").click()
+        self.findButton(ecs, "Av").click()
         self.assertFalse(ecs.shutter.isEnabled())
         self.assertTrue(ecs.aperture.isEnabled())
         self.cam.setAperturePriority.assert_called_once_with()
         ecs.aperture.setCurrentIndex(4)
-        self.cam.setAperture.assert_called_once_with(Aperture.F16)
+        self.cam.setAperture.assert_called_once_with(Aperture.F8)
 
-        self.findButton(self.acc, "M").click()
+        self.findButton(ecs, "M").click()
         self.assertTrue(ecs.gain.isEnabled())
         self.cam.setManualExposure.assert_called_once_with()
         ecs.gain.setCurrentIndex(6)
-        self.cam.setGain.assert_called_once_with(Gain.G_15)
+        self.cam.setGain.assert_called_once_with(Gain.G_12)
