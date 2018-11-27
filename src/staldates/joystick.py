@@ -188,7 +188,7 @@ class CameraJoystickAdapter(Thread):
 
             if direction != Direction.STOP or zoom_dir != Zoom.STOP:
                 self._on_move()
-        except PyroError:
+        except Exception:
             pass
 
 
