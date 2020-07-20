@@ -100,7 +100,7 @@ class VideoSwitcher(QWidget):
         self.blackBtn.clicked.connect(self.preview)
         self.blackBtn.clicked.connect(self.displayPanel)
         self.blackBtn.clicked.connect(deselectCamera)
-        self.ftb = FadeToBlackControl(self.switcherState.ftb, self.atem)
+        self.ftb = FadeToBlackControl(self.switcherState.ftb, self.atem, self.me)
         self.blackBtn.setProperty("panel", self.ftb)
         self.blackBtn.flashing = self.switcherState.ftb.active
         self.switcherState.ftb.activeChanged.connect(self.blackBtn.setFlashing)

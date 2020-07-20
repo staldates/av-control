@@ -5,10 +5,11 @@ from PySide.QtCore import Qt
 
 
 class FadeToBlackControl(QWidget):
-    def __init__(self, ftb, atem, parent=None):
+    def __init__(self, ftb, atem, me=1, parent=None):
         super(FadeToBlackControl, self).__init__(parent)
         self.atem = atem
         self.ftb = ftb
+        self.me = me
 
         layout = QGridLayout()
 
@@ -31,8 +32,8 @@ class FadeToBlackControl(QWidget):
         self.ftb.activeChanged.connect(self.btnFade.setChecked)
 
         if self.atem:
-            self.rate.valueChanged.connect(self.atem.setFadeToBlackRate)
-            self.btnFade.clicked.connect(self.atem.performFadeToBlack)
+            self.rate.valueChanged.connect(lambda v: self.atem.setFadeToBlackRate(v, me=self.me))
+            self.btnFade.clicked.connect(lambda: self.atem.performFadeToBlack(me=self.me))
 
         layout.setRowStretch(0, 1)
         layout.setRowStretch(1, 1)
