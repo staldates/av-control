@@ -13,13 +13,14 @@ from staldates.ui.widgets.FadeToBlackControl import FadeToBlackControl
 
 class VideoSwitcher(QWidget):
 
-    def __init__(self, controller, mainWindow, switcherState, joystickAdapter=None):
+    def __init__(self, controller, mainWindow, switcherState, me=1, joystickAdapter=None):
         super(VideoSwitcher, self).__init__()
         self.mainWindow = mainWindow
         self.atem = controller['ATEM']
         self.controller = controller
         self.switcherState = switcherState
         self.joystickAdapter = joystickAdapter
+        self.me = me
         self.setupUi()
 
     def setupUi(self):
@@ -137,18 +138,26 @@ class VideoSwitcher(QWidget):
         if checkedButton and checkedButton.input:
             self.og.setAuxesEnabled(True)
             if self.atem:
-                self.atem.setPreview(checkedButton.input.source)
+                self.atem.setPreview(checkedButton.input.source, me=self.me)
         else:
             self.og.setAuxesEnabled(False)
 
     @with_atem
     def cut(self):
-        self.atem.performCut()
+        self.atem.performCut(me=self.me)
 
     @with_atem
     def take(self):
-        self.atem.setNextTransition(TransitionStyle.MIX, bkgd=True, key1=False, key2=False, key3=False, key4=False)
-        self.atem.performAutoTake()
+        self.atem.setNextTransition(
+            TransitionStyle.MIX,
+            bkgd=True,
+            key1=False,
+            key2=False,
+            key3=False,
+            key4=False,
+            me=self.me
+        )
+        self.atem.performAutoTake(me=self.me)
 
     @with_atem
     def sendToAux(self, auxIndex):
@@ -164,12 +173,17 @@ class VideoSwitcher(QWidget):
 
     @with_atem
     def sendMainToAux(self, auxIndex):
-        self.atem.setAuxSource(auxIndex + 1, VideoSource.ME_1_PROGRAM)
+        self.atem.setAuxSource(auxIndex + 1, self.mainMixSource)
 
     @with_atem
     def sendMainToAllAuxes(self):
         for aux in self.switcherState.outputs.keys():
-            self.atem.setAuxSource(aux + 1, VideoSource.ME_1_PROGRAM)
+            self.atem.setAuxSource(aux + 1, self.mainMixSource)
+
+    @property
+    def mainMixSource(self):
+        source_name = "ME_{}_PROGRAM".format(self.me)
+        return getattr(VideoSource, source_name)
 
     def displayPanel(self):
         panel = self.inputs.checkedButton().property("panel")

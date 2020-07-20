@@ -161,9 +161,10 @@ class SwitcherState(QObject):
     inputsChanged = Signal()
     connectionChanged = Signal(bool)
 
-    def __init__(self, atem):
+    def __init__(self, atem, me=1):
         super(SwitcherState, self).__init__()
         self.atem = atem
+        self.me = me
         self.inputs = _default_inputs()
         self.outputs = _default_outputs()
         self.dsks = {0: DSK(1), 1: DSK(2)}
@@ -181,9 +182,9 @@ class SwitcherState(QObject):
                 self.updateTally(self.atem.getTally())
                 self.updateOutputs(self.atem.getAuxState())
                 self.updateDSKs(self.atem.getDSKState())
-                self.updateFTBState(self.atem.getFadeToBlackState(me=1))
-                self.updateFTBRate(self.atem.getFadeToBlackProperties(me=1)['rate'])
-                self.updateMixTransitionProps(self.atem.getMixTransitionProps(me=1))
+                self.updateFTBState(self.atem.getFadeToBlackState(me=self.me))
+                self.updateFTBRate(self.atem.getFadeToBlackProperties(me=self.me)['rate'])
+                self.updateMixTransitionProps(self.atem.getMixTransitionProps(me=self.me))
             except NotInitializedException:
                 pass
 

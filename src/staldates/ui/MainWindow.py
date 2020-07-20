@@ -13,6 +13,7 @@ from staldates.ui.widgets.LightingControl import LightingControl
 from staldates.ui.widgets.Status import SystemStatus
 from staldates.VisualsSystem import SwitcherState, HyperdeckState
 from staldates import MessageTypes
+from staldates.preferences import Preferences
 from staldates.ui.StringConstants import StringConstants
 from staldates.ui.widgets.RecorderControl import RecorderControl
 from avx.devices.net.hyperdeck import TransportState
@@ -29,9 +30,16 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(QIcon(":icons/video-display"))
 
         atem = controller['ATEM']
-        self.switcherState = SwitcherState(atem)
+        me = Preferences.get('atem_me', 1)
+        self.switcherState = SwitcherState(atem, me)
 
-        self.mainScreen = VideoSwitcher(controller, self, self.switcherState, joystickAdapter)
+        self.mainScreen = VideoSwitcher(
+            controller,
+            self,
+            self.switcherState,
+            me,
+            joystickAdapter
+        )
 
         # This is possibly a bad / too complicated idea...
         # self.mainScreen.setEnabled(self.switcherState.connected)
