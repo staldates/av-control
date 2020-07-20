@@ -240,6 +240,10 @@ class SwitcherState(QObject):
         if 'rate' in props:
             self.mixTransition.set_rate(props['rate'])
 
+    @property
+    def me_index(self):
+        return self.me - 1
+
     def handleMessage(self, msgType, data):
         if msgType == ATEMMessageTypes.TALLY:
             self.updateTally(data)
@@ -250,14 +254,14 @@ class SwitcherState(QObject):
         elif msgType == ATEMMessageTypes.INPUTS_CHANGED:
             self.updateInputs(self.atem.getInputs())
         elif msgType == ATEMMessageTypes.FTB_CHANGED:
-            if 0 in data:
-                self.updateFTBState(data[0])
+            if self.me_index in data:
+                self.updateFTBState(data[self.me_index])
         elif msgType == ATEMMessageTypes.FTB_RATE_CHANGED:
-            if 0 in data:
-                self.updateFTBRate(data[0])
+            if self.me_index in data:
+                self.updateFTBRate(data[self.me_index])
         elif msgType == ATEMMessageTypes.TRANSITION_MIX_PROPERTIES_CHANGED:
-            if 0 in data:
-                self.updateMixTransitionProps(data[0])
+            if self.me_index in data:
+                self.updateMixTransitionProps(data[self.me_index])
         elif msgType == ATEMMessageTypes.ATEM_CONNECTED:
             self._initFromAtem()
         elif msgType == ATEMMessageTypes.ATEM_DISCONNECTED:
