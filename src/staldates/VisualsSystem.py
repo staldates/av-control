@@ -54,7 +54,10 @@ def _default_inputs():
         (VideoSource.INPUT_5, "Visuals PC", QIcon(":icons/computer")),
         (VideoSource.INPUT_6, "PC Video", QIcon(":icons/video-display")),
         (VideoSource.BLACK, "Black", QIcon(":icons/blackscreen")),
-        (VideoSource.ME_1_PROGRAM, "Main mix", None),
+        (VideoSource.ME_1_PROGRAM, "Stream mix", None),
+        (VideoSource.ME_1_PREVIEW, "Stream preview", None),
+        (VideoSource.ME_2_PROGRAM, "Main mix", None),
+        (VideoSource.ME_2_PREVIEW, "Preview", None),
     ]}
 
 
