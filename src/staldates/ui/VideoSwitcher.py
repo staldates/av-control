@@ -107,7 +107,7 @@ class VideoSwitcher(QWidget):
 
         layout.addLayout(inputs_grid, 0, 0, 1, 7)
 
-        self.og = OutputsGrid(self.switcherState)
+        self.og = OutputsGrid(self.switcherState, self.me)
 
         self.og.take.connect(self.take)
         self.og.cut.connect(self.cut)

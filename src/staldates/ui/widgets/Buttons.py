@@ -145,9 +145,10 @@ class IDedButton(ExpandingButton):
 
 class OutputButton(LongPressButtonMixin, ExpandingButton):
 
-    def __init__(self, myOutput, parent=None):
+    def __init__(self, myOutput, main_me=VideoSource.ME_1_PROGRAM, parent=None):
         super(OutputButton, self).__init__(parent)
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)  # Sneakily hide our actual text
+        self._main_me = main_me
 
         self.textDisplay = QLabel()
         self.stateDisplay = QLabel()
@@ -171,7 +172,8 @@ class OutputButton(LongPressButtonMixin, ExpandingButton):
 
         if self.output.source and hasattr(self.output.source, "label"):
             self.stateDisplay.setText(self.output.source.label)
-            self.stateDisplay.setProperty("highlight", (self.output.source.source != VideoSource.ME_1_PROGRAM))
+            # Highlight if this output is not showing the M/E we're controlling
+            self.stateDisplay.setProperty("highlight", (self.output.source.source != self._main_me))
         else:
             self.stateDisplay.setText("-")
             self.stateDisplay.setProperty("highlight", False)

@@ -1,6 +1,7 @@
 from PySide.QtGui import QFrame, QGridLayout, QLabel
 from staldates.ui.widgets.Buttons import OutputButton, ExpandingButton
 from PySide.QtCore import Signal, QSignalMapper, Qt
+from avx.devices.net.atem.constants import VideoSource
 
 
 class MainMixControl(QFrame):
@@ -39,8 +40,10 @@ class OutputsGrid(QFrame):
     selected = Signal(int)
     sendMain = Signal(int)
 
-    def __init__(self, switcherState, parent=None):
+    def __init__(self, switcherState, me=1, parent=None):
         super(OutputsGrid, self).__init__(parent)
+        me_name = 'ME_{}_PROGRAM'.format(me)
+        self.me = getattr(VideoSource, me_name)
 
         self.signalMapper = QSignalMapper(self)
         self.longPressSignalMapper = QSignalMapper(self)
@@ -56,7 +59,7 @@ class OutputsGrid(QFrame):
         self.aux_buttons = []
 
         for idx, output in switcherState.outputs.iteritems():
-            ob = OutputButton(output)
+            ob = OutputButton(output, self.me)
             layout.addWidget(ob, 1 + (idx / 2), idx % 2)
             ob.clicked.connect(self.signalMapper.map)
             self.signalMapper.setMapping(ob, idx)
