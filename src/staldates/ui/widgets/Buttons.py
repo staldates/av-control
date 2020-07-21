@@ -180,7 +180,6 @@ class OutputButton(LongPressButtonMixin, ExpandingButton):
 
     def setText(self, text):
         self.textDisplay.setText(text)
-        super(OutputButton, self).setText(text)
 
 
 class OptionButton(ExpandingButton):
