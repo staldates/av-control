@@ -81,8 +81,9 @@ def _add_line_breaks(text, every_n=10):
 
 class InputButton(LongPressButtonMixin, ExpandingButton):
 
-    def __init__(self, myInput, parent=None):
+    def __init__(self, myInput, main_me=1, parent=None):
         super(InputButton, self).__init__(parent)
+        self.main_me = main_me
         self.setCheckable(True)
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         self.input = None
@@ -106,16 +107,18 @@ class InputButton(LongPressButtonMixin, ExpandingButton):
         else:
             self.setIcon(QIcon())
 
-        self.setProperty("isLive", self.input.isLive)
-        self.setProperty("isPreview", self.input.isPreview)
+        me_tally = self.input.tally.get(self.main_me - 1, {'pgm': False, 'pvw': False})
+
+        self.setProperty("isLive", me_tally['pgm'])
+        self.setProperty("isPreview", me_tally['pvw'])
 
         self.style().unpolish(self)
         self.style().polish(self)
 
 
 class FlashingInputButton(InputButton):
-    def __init__(self, myInput, parent=None):
-        super(FlashingInputButton, self).__init__(myInput, parent)
+    def __init__(self, myInput, main_me=1, parent=None):
+        super(FlashingInputButton, self).__init__(myInput, main_me, parent)
         self.flashing = False
         self._flashState = 0
         self._timer = QTimer()

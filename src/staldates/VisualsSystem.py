@@ -28,6 +28,7 @@ class Input(QObject):
         self.isLive = False
         self.isPreview = False
         self.canBeUsed = True
+        self.tally = {}
 
     def set_label(self, new_label):
         if new_label != self.label:
@@ -43,6 +44,12 @@ class Input(QObject):
         if isPreview != self.isPreview:
             self.isPreview = isPreview
             self.changedState.emit()
+
+    def set_tally(self, tally):
+        for me, sources in tally.iteritems():
+            self.tally.setdefault(me, {})['pgm'] = self.source in sources['pgm']
+            self.tally.setdefault(me, {})['pvw'] = self.source in sources['pvw']
+        self.changedState.emit()
 
 
 def _default_inputs():
@@ -240,6 +247,10 @@ class SwitcherState(QObject):
         if 'rate' in props:
             self.mixTransition.set_rate(props['rate'])
 
+    def updateFullTally(self, tally):
+        for ip in self.inputs.itervalues():
+            ip.set_tally(tally)
+
     @property
     def me_index(self):
         return self.me - 1
@@ -247,6 +258,8 @@ class SwitcherState(QObject):
     def handleMessage(self, msgType, data):
         if msgType == ATEMMessageTypes.TALLY:
             self.updateTally(data)
+        elif msgType == ATEMMessageTypes.FULL_TALLY:
+            self.updateFullTally(data)
         elif msgType == ATEMMessageTypes.AUX_OUTPUT_MAPPING:
             self.updateOutputs(data)
         elif msgType == ATEMMessageTypes.DSK_STATE:

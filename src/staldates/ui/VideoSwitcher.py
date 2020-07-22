@@ -66,7 +66,7 @@ class VideoSwitcher(QWidget):
 
         for source, panel, adv_panel, on_select_func in self.input_buttons_config:
             if source:
-                btn = InputButton(self.switcherState.inputs[source])
+                btn = InputButton(self.switcherState.inputs[source], main_me=self.me)
                 btn.setProperty("panel", panel)
                 btn.setProperty("adv_panel", adv_panel)
                 btn.clicked.connect(self.preview)
