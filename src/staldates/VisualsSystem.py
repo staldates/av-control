@@ -104,6 +104,21 @@ def _default_outputs():
     }
 
 
+class USK(QObject):
+    changedState = Signal()
+
+    def __init__(self, me_index, keyer_index):
+        super(USK, self).__init__()
+        self.me_index = me_index
+        self.keyer_index = keyer_index
+        self.onAir = False
+
+    def set_on_air(self, onAir):
+        if self.onAir != onAir:
+            self.onAir = onAir
+            self.changedState.emit()
+
+
 class DSK(QObject):
 
     changedState = Signal()
@@ -177,6 +192,7 @@ class SwitcherState(QObject):
         self.me = me
         self.inputs = _default_inputs()
         self.outputs = _default_outputs()
+        self.usks = {}
         self.dsks = {0: DSK(1), 1: DSK(2)}
         self.ftb = FadeToBlack()
         self.mixTransition = MixTransition()
@@ -191,6 +207,7 @@ class SwitcherState(QObject):
                 self.updateInputs(self.atem.getInputs())
                 self.updateTally(self.atem.getTally())
                 self.updateOutputs(self.atem.getAuxState())
+                self.updateUSKs(self.atem.getUSKState())
                 self.updateDSKs(self.atem.getDSKState())
                 self.updateFTBState(self.atem.getFadeToBlackState(me=self.me))
                 self.updateFTBRate(self.atem.getFadeToBlackProperties(me=self.me)['rate'])
@@ -230,6 +247,14 @@ class SwitcherState(QObject):
                     print "BAD THINGS"
                     self.outputs[aux].set_source(source)
 
+    def updateUSKs(self, uskMap):
+        for me_index, keyers in uskMap.iteritems():
+            meks = self.usks.setdefault(me_index, {})
+            for key_index, keyer in keyers.iteritems():
+                if key_index not in meks:
+                    meks[key_index] = USK(me_index, key_index)
+                meks[key_index].set_on_air(keyer.get('on_air', False))
+
     def updateDSKs(self, dskMap):
         for idx, dsk in dskMap.iteritems():
             if idx in self.dsks:
@@ -262,6 +287,8 @@ class SwitcherState(QObject):
             self.updateFullTally(data)
         elif msgType == ATEMMessageTypes.AUX_OUTPUT_MAPPING:
             self.updateOutputs(data)
+        elif msgType == ATEMMessageTypes.USK_STATE:
+            self.updateUSKs(data)
         elif msgType == ATEMMessageTypes.DSK_STATE:
             self.updateDSKs(data)
         elif msgType == ATEMMessageTypes.INPUTS_CHANGED:
