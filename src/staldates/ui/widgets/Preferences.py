@@ -97,10 +97,15 @@ class PreferencesWidget(QWidget):
         layout = QGridLayout()
 
         mixRate = FrameRateTouchSpinner()
-        mixRate.setValue(transition.rate)
         mixRate.setMaximum(250)
         mixRate.setMinimum(1)
         mixRate.valueChanged.connect(self.setMixRate)
+
+        def update_from_transition():
+            mixRate.setValue(transition.rate)
+
+        transition.changedProps.connect(update_from_transition)
+        update_from_transition()
 
         layout.addWidget(QLabel('Mix rate'), 0, 0)
         layout.addWidget(mixRate, 0, 1)
