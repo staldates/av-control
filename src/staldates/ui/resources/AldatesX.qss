@@ -54,6 +54,14 @@ OutputButton>#stateDisplay[highlight="true"] {
   color: black;
 }
 
+InputButton {
+  border: 3px solid #1693A5;
+}
+
+InputButton:pressed, InputButton:checked {
+  border-color: #E4E4FF;
+}
+
 QToolButton[isPreview="true"] {
   border: 3px solid #50FF50;
 }
