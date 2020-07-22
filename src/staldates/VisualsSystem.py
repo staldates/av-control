@@ -192,7 +192,16 @@ class SwitcherState(QObject):
         self.me = me
         self.inputs = _default_inputs()
         self.outputs = _default_outputs()
-        self.usks = {}
+        self.usks = {
+            0: {
+                0: USK(0, 0),
+                1: USK(0, 1),
+            },
+            1: {
+                0: USK(1, 0),
+                1: USK(1, 1),
+            },
+        }
         self.dsks = {0: DSK(1), 1: DSK(2)}
         self.ftb = FadeToBlack()
         self.mixTransition = MixTransition()
