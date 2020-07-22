@@ -1,6 +1,6 @@
 from avx.devices.net.atem.constants import VideoSource
 from PySide.QtGui import QLabel, QToolButton, QSizePolicy, QVBoxLayout, QImage,\
-    QPainter, QPixmap, QIcon
+    QPainter, QPixmap, QIcon, QHBoxLayout
 from PySide.QtCore import Qt, QSize, Signal, QEvent, QTimer
 from PySide.QtSvg import QSvgRenderer
 
@@ -86,6 +86,24 @@ class InputButton(LongPressButtonMixin, ExpandingButton):
         self.main_me = main_me
         self.setCheckable(True)
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+
+        layout = QHBoxLayout()
+        self.previewDot = QLabel()
+        self.previewDot.setPixmap(pixmap_from_svg(':icons/preview_dot', 16, 16))
+        self.previewDot.setVisible(False)
+        layout.addWidget(self.previewDot)
+        layout.setAlignment(self.previewDot, Qt.AlignTop)
+
+        layout.addStretch()
+
+        self.liveDot = QLabel()
+        self.liveDot.setPixmap(pixmap_from_svg(':icons/live_dot', 16, 16))
+        self.liveDot.setVisible(False)
+        layout.addWidget(self.liveDot)
+        layout.setAlignment(self.liveDot, Qt.AlignTop)
+
+        self.setLayout(layout)
+
         self.input = None
         self.setInput(myInput)
 
@@ -111,6 +129,17 @@ class InputButton(LongPressButtonMixin, ExpandingButton):
 
         self.setProperty("isLive", me_tally['pgm'])
         self.setProperty("isPreview", me_tally['pvw'])
+
+        isPreviewElsewhere = False
+        isLiveElsewhere = False
+        for me, tally in self.input.tally.iteritems():
+            if me != self.main_me - 1:
+                if tally['pvw']:
+                    isPreviewElsewhere = True
+                if tally['pgm']:
+                    isLiveElsewhere = True
+        self.previewDot.setVisible(isPreviewElsewhere)
+        self.liveDot.setVisible(isLiveElsewhere)
 
         self.style().unpolish(self)
         self.style().polish(self)
@@ -198,12 +227,15 @@ class OptionButton(ExpandingButton):
 class SvgButton(ExpandingButton):
     def __init__(self, svgImage, width, height, parent=None):
         super(SvgButton, self).__init__(parent)
-        svg_renderer = QSvgRenderer(svgImage)
-        image = QImage(width, height, QImage.Format_ARGB32)
-        # Set the ARGB to 0 to prevent rendering artifacts
-        image.fill(0x00000000)
-        svg_renderer.render(QPainter(image))
-        pixmap = QPixmap.fromImage(image)
-        icon = QIcon(pixmap)
+        icon = QIcon(pixmap_from_svg(svgImage, width, height))
         self.setIcon(icon)
         self.setIconSize(QSize(width, height))
+
+
+def pixmap_from_svg(svgImage, width, height):
+    svg_renderer = QSvgRenderer(svgImage)
+    image = QImage(width, height, QImage.Format_ARGB32)
+    # Set the ARGB to 0 to prevent rendering artifacts
+    image.fill(0x00000000)
+    svg_renderer.render(QPainter(image))
+    return QPixmap.fromImage(image)
