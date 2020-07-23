@@ -64,7 +64,6 @@ class OverlayControl(QWidget):
         self.onAirButton.style().polish(self.onAirButton)
 
     def update_from_mix_transition(self):
-        print self.mixTransition
         self.rate.setValue(self.mixTransition.rate)
 
     @with_atem
