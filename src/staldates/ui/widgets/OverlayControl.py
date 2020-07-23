@@ -1,4 +1,4 @@
-from avx.devices.net.atem.constants import VideoSource
+from avx.devices.net.atem.constants import TransitionStyle, VideoSource
 from PySide.QtCore import Qt
 from PySide.QtGui import QWidget, QGridLayout, QLabel
 from staldates.ui.widgets.Buttons import ExpandingButton
@@ -90,9 +90,9 @@ class OverlayControl(QWidget):
             key2=self.usk.keyer_index == 1,
             key3=self.usk.keyer_index == 2,
             key4=self.usk.keyer_index == 3,
-            me=self.me
+            me=self.usk.me_index + 1
         )
-        self.atem.performAutoTake(me=self.me)
+        self.atem.performAutoTake(me=self.usk.me_index + 1)
 
     @with_atem
     def resetParams(self):
