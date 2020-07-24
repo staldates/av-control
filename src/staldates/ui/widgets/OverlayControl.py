@@ -106,7 +106,7 @@ class OverlayControl(QWidget):
             self.usk.keyer_index + 1,
             VideoSource.INPUT_5
         )
-        self.atem.setUSKParams(
+        self.atem.setUSKLumaParams(
             self.usk.me_index + 1,
             self.usk.keyer_index + 1,
             preMultiplied=False,
