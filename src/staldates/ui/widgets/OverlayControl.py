@@ -93,6 +93,15 @@ class OverlayControl(QWidget):
             me=self.usk.me_index + 1
         )
         self.atem.performAutoTake(me=self.usk.me_index + 1)
+        self.atem.setNextTransition(
+            TransitionStyle.MIX,
+            bkgd=True,
+            key1=False,
+            key2=False,
+            key3=False,
+            key4=False,
+            me=self.usk.me_index + 1
+        )
 
     @with_atem
     def resetParams(self):
