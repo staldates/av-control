@@ -93,7 +93,7 @@ class VideoSwitcher(QWidget):
         # without actually showing a menu when pressed.
         self.extrasBtn.setMenu(QMenu())
 
-        self.allInputs = AllInputsPanel(self.switcherState)
+        self.allInputs = AllInputsPanel(self.switcherState, self.me)
         self.extrasBtn.setProperty("panel", self.allInputs)
 
         self.allInputs.inputSelected.connect(self.setExtraInput)
