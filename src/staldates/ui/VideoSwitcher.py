@@ -83,7 +83,7 @@ class VideoSwitcher(QWidget):
                 self.inputs.addButton(btn)
                 inputs_grid.addWidget(btn)
 
-        self.extrasBtn = InputButton(None)
+        self.extrasBtn = InputButton(None, main_me=self.me)
         self.inputs.addButton(self.extrasBtn)
         self.extrasBtn.clicked.connect(self.preview)
         self.extrasBtn.clicked.connect(self.displayPanel)
