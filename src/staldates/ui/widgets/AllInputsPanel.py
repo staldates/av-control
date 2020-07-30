@@ -41,9 +41,12 @@ class AllInputsPanel(QWidget):
 
         self.setLayout(self.layout)
 
-        self.switcherState.inputsChanged.connect(self.setSources)
-        self.setSources()
-        self.displayInputs()
+        def handle_inputs_changed():
+            self.setSources()
+            self.displayInputs()
+
+        self.switcherState.inputsChanged.connect(handle_inputs_changed)
+        handle_inputs_changed()
 
     def setSources(self):
         self.sources = [vs for vs in VideoSource if vs in self.switcherState.inputs.keys()]
