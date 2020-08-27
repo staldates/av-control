@@ -299,6 +299,7 @@ class Camera(QObject):
         self._attr_cache = {}
         self._uuid = uuid4()
         self.is_controlled = False
+        self._timer = None
 
     def __getattr__(self, name):
         proxied_attr = getattr(self._camera, name)
@@ -321,7 +322,12 @@ class Camera(QObject):
     def control(self):
         self.is_controlled = True
         self.controlled.emit()
-        QTimer.singleShot(5000, self.uncontrol)
+        if self._timer:
+            self._timer.stop()
+        self._timer = QTimer()
+        self._timer.setSingleShot(True)
+        self._timer.timeout.connect(self.uncontrol)
+        self._timer.start(5000)
 
     def uncontrol(self):
         self.is_controlled = False
