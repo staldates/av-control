@@ -1,9 +1,11 @@
 from avx.devices.net.atem import VideoSource, MessageTypes as ATEMMessageTypes
 from avx.devices.net.atem.utils import NotInitializedException
 from avx.devices.net.hyperdeck import TransportState, MessageTypes as HyperDeckMessageTypes
-from PySide.QtCore import QObject, Signal
+from PySide.QtCore import QObject, Signal, QTimer
 from PySide.QtGui import QIcon
+from staldates import MessageTypes
 from staldates.ui.widgets.Dialogs import errorBox
+from uuid import uuid4
 
 
 def with_atem(func):
@@ -284,3 +286,43 @@ class HyperdeckState(QObject):
         if msgType == HyperDeckMessageTypes.CLIP_LISTING:
             self.clip_listing = data
             self.clipsListChange.emit(data)
+
+
+class Camera(QObject):
+    controlled = Signal()
+    uncontrolled = Signal()
+
+    def __init__(self, camera_id, camera_device):
+        super(Camera, self).__init__()
+        self._camera = camera_device
+        self.id = camera_id
+        self._attr_cache = {}
+        self._uuid = uuid4()
+        self.is_controlled = False
+
+    def __getattr__(self, name):
+        proxied_attr = getattr(self._camera, name)
+        if callable(proxied_attr):
+            if name not in self._attr_cache:
+                def prox_callable(*args, **kwargs):
+                    self._camera.broadcast(MessageTypes.CAMERA_CONTROLLED, self._uuid)
+                    proxied_attr(*args, **kwargs)
+                self._attr_cache[name] = prox_callable
+            return self._attr_cache[name]
+        else:
+            return proxied_attr
+
+    def handleMessage(self, msgType, sourceDeviceID, data):
+        if msgType == MessageTypes.CAMERA_CONTROLLED:
+            if sourceDeviceID == self.id:  # Match camera device
+                if data != self._uuid:  # Exclude our own controlling
+                    self.control()
+
+    def control(self):
+        self.is_controlled = True
+        self.controlled.emit()
+        QTimer.singleShot(5000, self.uncontrol)
+
+    def uncontrol(self):
+        self.is_controlled = False
+        self.uncontrolled.emit()
