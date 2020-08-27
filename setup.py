@@ -25,7 +25,8 @@ setup(
         'enum34',
         "Pyro4>=4.20,!=4.45",
         'PySide',
-        'simplejson'
+        'simplejson',
+        'uuid'
     ],
     setup_requires=['nose>=1.0'],
     tests_require = ['mock'],
