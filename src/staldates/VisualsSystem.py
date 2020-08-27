@@ -292,6 +292,8 @@ class Camera(QObject):
     controlled = Signal()
     uncontrolled = Signal()
 
+    CONTROL_TIMEOUT = 2500
+
     def __init__(self, camera_id, camera_device):
         super(Camera, self).__init__()
         self._camera = camera_device
@@ -327,7 +329,7 @@ class Camera(QObject):
         self._timer = QTimer()
         self._timer.setSingleShot(True)
         self._timer.timeout.connect(self.uncontrol)
-        self._timer.start(5000)
+        self._timer.start(self.CONTROL_TIMEOUT)
 
     def uncontrol(self):
         self.is_controlled = False
