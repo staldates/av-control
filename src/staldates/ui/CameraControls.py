@@ -1,7 +1,7 @@
 from avx.devices.datavideo import Aperture, Shutter, Gain
 from enum import Enum
 from PySide.QtGui import QButtonGroup, QGridLayout, QLabel, QWidget, QIcon, QHBoxLayout, QComboBox,\
-    QSizePolicy
+    QSizePolicy, QStackedLayout, QVBoxLayout, QPushButton
 from PySide.QtCore import QSize, Qt
 from staldates.preferences import Preferences
 from staldates.ui.widgets.Buttons import ExpandingButton, OptionButton
@@ -85,32 +85,31 @@ class CameraControl(QWidget):
         self.zoomSpeed = 6
 
     def initUI(self):
-        layout = QGridLayout()
-        self.setLayout(layout)
+        control_layout = QGridLayout()
 
         self.btnUp = CameraButton()
-        layout.addWidget(self.btnUp, 0, 1, 2, 1)
+        control_layout.addWidget(self.btnUp, 0, 1, 2, 1)
         _safelyConnect(self.btnUp.pressed, lambda: self.camera.moveUp(self.panSpeed, self.tiltSpeed))
         _safelyConnect(self.btnUp.released, self.camera.stop)
         _safelyConnect(self.btnUp.clicked, self.deselectPreset)
         self.btnUp.setIcon(QIcon(":icons/go-up"))
 
         self.btnLeft = CameraButton()
-        layout.addWidget(self.btnLeft, 1, 0, 2, 1)
+        control_layout.addWidget(self.btnLeft, 1, 0, 2, 1)
         _safelyConnect(self.btnLeft.pressed, lambda: self.camera.moveLeft(self.panSpeed, self.tiltSpeed))
         _safelyConnect(self.btnLeft.released, self.camera.stop)
         _safelyConnect(self.btnLeft.clicked, self.deselectPreset)
         self.btnLeft.setIcon(QIcon(":icons/go-previous"))
 
         self.btnDown = CameraButton()
-        layout.addWidget(self.btnDown, 2, 1, 2, 1)
+        control_layout.addWidget(self.btnDown, 2, 1, 2, 1)
         _safelyConnect(self.btnDown.pressed, lambda: self.camera.moveDown(self.panSpeed, self.tiltSpeed))
         _safelyConnect(self.btnDown.released, self.camera.stop)
         _safelyConnect(self.btnDown.clicked, self.deselectPreset)
         self.btnDown.setIcon(QIcon(":icons/go-down"))
 
         self.btnRight = CameraButton()
-        layout.addWidget(self.btnRight, 1, 2, 2, 1)
+        control_layout.addWidget(self.btnRight, 1, 2, 2, 1)
         _safelyConnect(self.btnRight.pressed, lambda: self.camera.moveRight(self.panSpeed, self.tiltSpeed))
         _safelyConnect(self.btnRight.released, self.camera.stop)
         _safelyConnect(self.btnRight.clicked, self.deselectPreset)
@@ -124,7 +123,7 @@ class CameraControl(QWidget):
         _safelyConnect(zoomInOut.downButton.released, self.camera.zoomStop)
         _safelyConnect(zoomInOut.downButton.clicked, self.deselectPreset)
 
-        layout.addWidget(zoomInOut, 0, 3, 4, 1)
+        control_layout.addWidget(zoomInOut, 0, 3, 4, 1)
 
         focus = PlusMinusAutoButtons("Focus")
         _safelyConnect(focus.upButton.pressed, self.camera.focusFar)
@@ -138,13 +137,13 @@ class CameraControl(QWidget):
             self.camera.focusAuto()
             self.deselectPreset()
         _safelyConnect(focus.autoButton.clicked, autoFocusAndDeselect)
-        layout.addWidget(focus, 0, 4, 4, 1)
+        control_layout.addWidget(focus, 0, 4, 4, 1)
 
         brightness = PlusMinusAutoButtons("Bright")
         _safelyConnect(brightness.upButton.clicked, self.camera.brighter)
         _safelyConnect(brightness.downButton.clicked, self.camera.darker)
         _safelyConnect(brightness.autoButton.clicked, self.camera.setAutoExposure)
-        layout.addWidget(brightness, 0, 5, 4, 1)
+        control_layout.addWidget(brightness, 0, 5, 4, 1)
 
         presets = QGridLayout()
         presets.setRowStretch(0, 2)
@@ -167,7 +166,32 @@ class CameraControl(QWidget):
         Preferences.subscribe(self._update_from_preferences)
         self._update_from_preferences()
 
-        layout.addLayout(presets, 4, 0, 3, 6)
+        control_layout.addLayout(presets, 4, 0, 3, 6)
+
+        control = QWidget()
+        control.setLayout(control_layout)
+
+        uncontrollable_layout = QVBoxLayout()
+        uncontrol = QWidget()
+        uncontrol.setLayout(uncontrollable_layout)
+
+        lbl_controlled = QLabel('Camera is being controlled by another user')
+        lbl_controlled.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        uncontrollable_layout.addWidget(lbl_controlled)
+
+        btn_uncontrol = QPushButton('Ignore')
+        btn_uncontrol.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+        btn_uncontrol.clicked.connect(self.camera.uncontrol)
+        uncontrollable_layout.addWidget(btn_uncontrol)
+
+        master_layout = QStackedLayout()
+        master_layout.addWidget(control)
+        master_layout.addWidget(uncontrol)
+
+        self.setLayout(master_layout)
+
+        self.camera.controlled.connect(lambda: master_layout.setCurrentIndex(1))
+        self.camera.uncontrolled.connect(lambda: master_layout.setCurrentIndex(0))
 
     def _update_from_preferences(self):
         preset_bank = Preferences.get('camera.presets.bank', 0)
