@@ -179,7 +179,7 @@ class CameraControl(QWidget):
         lbl_controlled.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         uncontrollable_layout.addWidget(lbl_controlled)
 
-        btn_uncontrol = QPushButton('Ignore')
+        btn_uncontrol = QPushButton('Dismiss')
         btn_uncontrol.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         btn_uncontrol.clicked.connect(self.camera.uncontrol)
         uncontrollable_layout.addWidget(btn_uncontrol)
