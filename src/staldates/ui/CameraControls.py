@@ -198,7 +198,6 @@ class CameraControl(QWidget):
     def storePreset(self, index):
         preset_bank = Preferences.get('camera.presets.bank', 0)
         preset_index = (6 * preset_bank) + index
-        print "Storing preset " + str(preset_index)
         result = self.camera.storePreset(preset_index)
         self.presetGroup.buttons()[index - 1].setChecked(True)
         return result
@@ -206,11 +205,7 @@ class CameraControl(QWidget):
     @handlePyroErrors
     def recallPreset(self, index):
         preset_bank = Preferences.get('camera.presets.bank', 0)
-        print('Preset bank: {}'.format(preset_bank))
         preset_index = (6 * preset_bank) + index
-        print "Recalling preset {} = {}".format(
-            index, preset_index
-        )
         return self.camera.recallPreset(preset_index)
 
     def deselectPreset(self):
