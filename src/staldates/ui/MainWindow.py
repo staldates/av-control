@@ -103,7 +103,7 @@ class MainWindow(QMainWindow):
         self.advMenu = AdvancedMenu(self.controller, self.switcherState.mixTransition, atem, self)
 
         adv = ExpandingButton()
-        adv.setText("Advanced")
+        adv.setText("Preferences")
         adv.setIcon(QIcon(":icons/applications-system"))
         adv.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         adv.clicked.connect(lambda: self.showScreen(self.advMenu))

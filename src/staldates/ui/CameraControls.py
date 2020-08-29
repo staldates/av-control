@@ -163,6 +163,8 @@ class CameraControl(QWidget):
             presets.addWidget(btnPresetSet, 1, i, 1, 1)
             btnPresetSet.setText("Set")
             _safelyConnect(btnPresetSet.clicked, lambda i=i: self.storePreset(i))
+
+        Preferences.subscribe(self._update_from_preferences)
         self._update_from_preferences()
 
         layout.addLayout(presets, 4, 0, 3, 6)

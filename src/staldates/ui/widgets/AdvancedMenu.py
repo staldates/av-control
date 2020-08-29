@@ -18,33 +18,36 @@ class AdvancedMenu(ScreenWithBackButton):
         self.mainWindow = mainWindow
         self.transition = transition
         self.atem = atem
-        super(AdvancedMenu, self).__init__("Advanced Options", mainWindow)
+        super(AdvancedMenu, self).__init__("Preferences", mainWindow)
 
     def makeContent(self):
-        layout = QHBoxLayout()
+        layout = QVBoxLayout()
 
         prefs = PreferencesWidget(self.controller, self.transition)
-        layout.addWidget(prefs, 1)
-
-        rhs = QVBoxLayout()
-
-        lblVersion = QLabel()
-        lblVersion.setText("av-control version {0} (avx version {1})".format(_ui_version, _avx_version))
-        rhs.addWidget(lblVersion)
+        layout.addWidget(prefs)
 
         self.lv = LogViewer(self.controller, self.mainWindow)
+
+        bottom_row = QHBoxLayout()
+
+        lblVersion = QLabel()
+        lblVersion.setText("av-control version {0}\navx version {1}".format(_ui_version, _avx_version))
+        bottom_row.addWidget(lblVersion)
 
         log = ExpandingButton()
         log.setText("Log")
         log.clicked.connect(self.showLog)
-        rhs.addWidget(log)
+        bottom_row.addWidget(log)
 
         btnQuit = ExpandingButton()
         btnQuit.setText("Exit AV Control")
         btnQuit.clicked.connect(self.mainWindow.close)
-        rhs.addWidget(btnQuit)
+        bottom_row.addWidget(btnQuit)
 
-        layout.addLayout(rhs, 1)
+        for i in range(3):
+            bottom_row.setStretch(i, 1)
+
+        layout.addLayout(bottom_row)
 
         return layout
 
