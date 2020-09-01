@@ -20,7 +20,14 @@ setup(
     author='James Muscat',
     author_email='jamesremuscat@gmail.com',
     url='https://github.com/staldates/av-control',
-    install_requires=['avx>=1.3.0.dev0', "Pyro4>=4.20,!=4.45", 'PySide', 'simplejson'],
+    install_requires=[
+        'avx>=1.3.0.dev0',
+        'enum34',
+        "Pyro4>=4.20,!=4.45",
+        'PySide',
+        'simplejson',
+        'uuid'
+    ],
     setup_requires=['nose>=1.0'],
     tests_require = ['mock'],
     packages=find_packages('src', exclude=["*.tests"]),
