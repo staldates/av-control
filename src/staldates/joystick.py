@@ -125,6 +125,7 @@ class CameraJoystickAdapter(Thread):
         self.daemon = True
         if js:
             js.add_axis_handler(self._handle_axis)
+            js.add_button_handler(self._handle_button)
         self._axes = [0, 0, 0, 0, 0]
         self.set_camera(None)
         self.set_on_move(None)
@@ -142,6 +143,14 @@ class CameraJoystickAdapter(Thread):
                 'focus': 3
             }
         )
+        self._button_mapping = Preferences.get(
+            'joystick.mapping.buttons',
+            {
+                0: 'focusAuto',
+                1: 'darker',
+                2: 'brighter'
+            }
+        )
 
     def set_camera(self, camera):
         self._camera = camera
@@ -155,6 +164,12 @@ class CameraJoystickAdapter(Thread):
     def _on_move(self):
         if self._on_move_inner:
             self._on_move_inner()
+
+    def _handle_button(self, button, value):
+        if button in self._button_mapping and value == 1:
+            camera_function = self._button_mapping[button]
+            if hasattr(self._camera, camera_function):
+                getattr(self._camera, camera_function)()
 
     def _handle_axis(self, axis, value):
         if axis == self._axis_mapping['focus']:
