@@ -21,7 +21,7 @@ class TouchSpinner(QWidget):
         layout.addWidget(self.btnMinus, 1)
 
         self.lblValue = QLabel(self.formattedValue(self._value))
-        self.lblValue.setAlignment(Qt.AlignHCenter)
+        self.lblValue.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         layout.addWidget(self.lblValue, 1)
 
         self.btnPlus = ExpandingButton()

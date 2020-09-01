@@ -44,27 +44,44 @@ class JoystickInvertPreference(QWidget):
         Preferences.set('joystick.invert_y', self.btnInvert.isChecked())
 
 
-class SensitivityPreference(QWidget):
-    def __init__(self, preference_name, label, parent=None):
-        super(SensitivityPreference, self).__init__(parent)
+class NumericPreference(QWidget):
+    def __init__(self, preference_name, label, min, max, default, parent=None):
+        super(NumericPreference, self).__init__(parent)
         self.preference_name = preference_name
+        self.default = default
 
         layout = QHBoxLayout()
 
         label = QLabel(label)
-        label.setAlignment(Qt.AlignRight)
+        label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         layout.addWidget(label, 1)
 
         self.spinner = TouchSpinner()
-        self.spinner.setMaximum(10)
-        self.spinner.setMinimum(1)
+        self.spinner.setMaximum(max)
+        self.spinner.setMinimum(min)
 
         self.update_from_preferences()
         Preferences.subscribe(self.update_from_preferences)
-        self.spinner.valueChanged.connect(lambda v: Preferences.set(preference_name, float(v) / 10))
+        self.spinner.valueChanged.connect(self.update_from_ui)
         layout.addWidget(self.spinner, 2)
 
         self.setLayout(layout)
+
+    def update_from_ui(self, value):
+        Preferences.set(self.preference_name, value)
+
+    def update_from_preferences(self):
+        self.spinner.setValue(
+            Preferences.get(self.preference_name, self.default)
+        )
+
+
+class SensitivityPreference(NumericPreference):
+    def __init__(self, preference_name, label, parent=None):
+        super(SensitivityPreference, self).__init__(preference_name, label, 1, 10, 0.5, parent)
+
+    def update_from_ui(self, value):
+        Preferences.set(preference_name, float(value) / 10)
 
     def update_from_preferences(self):
         self.spinner.setValue(int(Preferences.get(self.preference_name, 0.5) * 10))
@@ -79,24 +96,33 @@ class PreferencesWidget(QWidget):
 
         layout = QGridLayout()
 
-        layout.addWidget(TitleLabel('Preferences'), 0, 0, 1, 0)
-
         mixRate = FrameRateTouchSpinner()
         mixRate.setValue(transition.rate)
         mixRate.setMaximum(250)
         mixRate.setMinimum(1)
         mixRate.valueChanged.connect(self.setMixRate)
 
-        layout.addWidget(QLabel('Mix rate'), 1, 0)
-        layout.addWidget(mixRate, 1, 1)
+        layout.addWidget(QLabel('Mix rate'), 0, 0)
+        layout.addWidget(mixRate, 0, 1)
 
-        layout.addWidget(QLabel('Joystick forward\nmeans'), 2, 0)
-        layout.addWidget(JoystickInvertPreference(), 2, 1)
+        layout.addWidget(QLabel('Joystick forward\nmeans'), 1, 0)
+        layout.addWidget(JoystickInvertPreference(), 1, 1)
 
-        layout.addWidget(QLabel('Joystick sensitivity'), 3, 0)
-        layout.addWidget(SensitivityPreference('joystick.sensitivity.pan', 'Pan'), 3, 1)
-        layout.addWidget(SensitivityPreference('joystick.sensitivity.zoom', 'Zoom'), 4, 0)
-        layout.addWidget(SensitivityPreference('joystick.sensitivity.tilt', 'Tilt'), 4, 1)
+        lblBank = QLabel('Camera preset bank')
+        lblBank.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        layout.addWidget(lblBank, 2, 0)
+        layout.addWidget(
+            NumericPreference('camera.presets.bank', '', 0, 7, 0),
+            2,
+            1
+        )
+
+        lblSensitivity = QLabel('Joystick sensitivity')
+        lblSensitivity.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        layout.addWidget(lblSensitivity, 0, 2)
+        layout.addWidget(SensitivityPreference('joystick.sensitivity.pan', 'Pan'), 0, 3)
+        layout.addWidget(SensitivityPreference('joystick.sensitivity.zoom', 'Zoom'), 1, 3)
+        layout.addWidget(SensitivityPreference('joystick.sensitivity.tilt', 'Tilt'), 2, 3)
 
         self.setLayout(layout)
 

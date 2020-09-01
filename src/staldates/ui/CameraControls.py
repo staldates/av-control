@@ -3,6 +3,7 @@ from enum import Enum
 from PySide.QtGui import QButtonGroup, QGridLayout, QLabel, QWidget, QIcon, QHBoxLayout, QComboBox,\
     QSizePolicy
 from PySide.QtCore import QSize, Qt
+from staldates.preferences import Preferences
 from staldates.ui.widgets.Buttons import ExpandingButton, OptionButton
 from staldates.ui.widgets.Screens import ScreenWithBackButton
 from staldates.ui.widgets.Dialogs import handlePyroErrors
@@ -154,7 +155,6 @@ class CameraControl(QWidget):
         for i in range(1, 7):
             btnPresetRecall = CameraButton()
             presets.addWidget(btnPresetRecall, 0, i, 1, 1)
-            btnPresetRecall.setText(str(i))
             _safelyConnect(btnPresetRecall.clicked, lambda i=i: self.recallPreset(i))
             btnPresetRecall.setCheckable(True)
             self.presetGroup.addButton(btnPresetRecall, i)
@@ -164,7 +164,15 @@ class CameraControl(QWidget):
             btnPresetSet.setText("Set")
             _safelyConnect(btnPresetSet.clicked, lambda i=i: self.storePreset(i))
 
+        Preferences.subscribe(self._update_from_preferences)
+        self._update_from_preferences()
+
         layout.addLayout(presets, 4, 0, 3, 6)
+
+    def _update_from_preferences(self):
+        preset_bank = Preferences.get('camera.presets.bank', 0)
+        for i, button in enumerate(self.presetGroup.buttons()):
+            button.setText(str((6 * preset_bank) + i + 1))
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Left:
@@ -188,15 +196,17 @@ class CameraControl(QWidget):
 
     @handlePyroErrors
     def storePreset(self, index):
-        print "Storing preset " + str(index)
-        result = self.camera.storePreset(index)
+        preset_bank = Preferences.get('camera.presets.bank', 0)
+        preset_index = (6 * preset_bank) + index
+        result = self.camera.storePreset(preset_index)
         self.presetGroup.buttons()[index - 1].setChecked(True)
         return result
 
     @handlePyroErrors
     def recallPreset(self, index):
-        print "Recalling preset " + str(index)
-        return self.camera.recallPreset(index)
+        preset_bank = Preferences.get('camera.presets.bank', 0)
+        preset_index = (6 * preset_bank) + index
+        return self.camera.recallPreset(preset_index)
 
     def deselectPreset(self):
         if self.presetGroup.checkedId() >= 0:
