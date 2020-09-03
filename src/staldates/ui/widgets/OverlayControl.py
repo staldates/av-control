@@ -5,6 +5,8 @@ from staldates.ui.widgets.Buttons import ExpandingButton
 from staldates.VisualsSystem import with_atem
 from staldates.ui.widgets.TouchSpinner import FrameRateTouchSpinner
 
+from time import sleep
+
 
 class OverlayControl(QWidget):
 
@@ -93,6 +95,7 @@ class OverlayControl(QWidget):
             me=self.usk.me_index + 1
         )
         self.atem.performAutoTake(me=self.usk.me_index + 1)
+        sleep(0.1)
         self.atem.setNextTransition(
             TransitionStyle.MIX,
             bkgd=True,
