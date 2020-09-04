@@ -81,7 +81,7 @@ class SensitivityPreference(NumericPreference):
         super(SensitivityPreference, self).__init__(preference_name, label, 1, 10, 0.5, parent)
 
     def update_from_ui(self, value):
-        Preferences.set(preference_name, float(value) / 10)
+        Preferences.set(self.preference_name, float(value) / 10)
 
     def update_from_preferences(self):
         self.spinner.setValue(int(Preferences.get(self.preference_name, 0.5) * 10))

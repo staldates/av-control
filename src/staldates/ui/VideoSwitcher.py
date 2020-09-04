@@ -7,7 +7,7 @@ from staldates.ui.CameraControls import CameraControl, AdvancedCameraControl
 from staldates.ui.StringConstants import StringConstants
 from staldates.ui.widgets.AllInputsPanel import AllInputsPanel
 from staldates.ui.widgets.OverlayControl import OverlayControl
-from staldates.VisualsSystem import with_atem
+from staldates.VisualsSystem import with_atem, Camera
 from staldates.ui.widgets.FadeToBlackControl import FadeToBlackControl
 
 
@@ -21,6 +21,7 @@ class VideoSwitcher(QWidget):
         self.switcherState = switcherState
         self.joystickAdapter = joystickAdapter
         self.me = me
+        self._camera_proxies = {}
         self.setupUi()
 
     def setupUi(self):
@@ -41,12 +42,14 @@ class VideoSwitcher(QWidget):
 
         def makeCamera(videoSource, cameraID):
             cam = self.controller[cameraID]
-            cc = CameraControl(cam)
+            cam_proxy = Camera(cameraID, cam)
+            cc = CameraControl(cam_proxy)
+            self._camera_proxies[cameraID] = cam_proxy
 
             return (
                 videoSource,
                 cc,
-                AdvancedCameraControl(cameraID, cam, self.mainWindow),
+                AdvancedCameraControl(cameraID, cam_proxy, self.mainWindow),
                 lambda: setCamera(cam, cc)
             )
 
@@ -215,3 +218,7 @@ class VideoSwitcher(QWidget):
         panel = self.sender().property("adv_panel")
         if panel:
             self.mainWindow.showScreen(panel)
+
+    def handleMessage(self, msgType, sourceDeviceID, data):
+        for cp in self._camera_proxies.values():
+            cp.handleMessage(msgType, sourceDeviceID, data)

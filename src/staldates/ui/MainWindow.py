@@ -175,3 +175,5 @@ class MainWindow(QMainWindow):
             self.switcherState.handleMessage(msgType, data)
         elif sourceDeviceID == "Recorder":
             self.hyperdeckState.handleMessage(msgType, data)
+        else:
+            self.mainScreen.handleMessage(msgType, sourceDeviceID, data)

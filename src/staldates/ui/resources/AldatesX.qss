@@ -21,7 +21,7 @@ MainMixControl > QLabel {
   font-size: 12pt;
 }
 
-InputButton, OutputButton, OptionButton, ExpandingButton, QComboBox, QListView {
+InputButton, OutputButton, OptionButton, ExpandingButton, QComboBox, QListView, CameraControl QPushButton {
   background-color: #1693A5;
   color: white;
   border-radius: 5px;
@@ -34,7 +34,7 @@ ExpandingButton.mainMix {
   color: black;
 }
 
-ExpandingButton:pressed, ExpandingButton:checked {
+ExpandingButton:pressed, ExpandingButton:checked, CameraControl QPushButton:pressed {
   background-color: #E4E4FF;
   color: black;
 }
