@@ -174,8 +174,7 @@ class CameraJoystickAdapter(Thread):
     def _handle_axis(self, axis, value):
         if axis == self._axis_mapping['focus']:
             # Focus - direct
-
-            visca_value = VISCA_MAX_FOCUS * (value + JOYSTICK_MAX) / (2 * JOYSTICK_MAX)
+            visca_value = VISCA_MAX_FOCUS * (JOYSTICK_MAX - value) / (2 * JOYSTICK_MAX)
             self._axes[self._axis_mapping['focus']] = visca_value
         elif axis < len(self._axes):
             self._axes[axis] = value
@@ -234,6 +233,7 @@ class CameraJoystickAdapter(Thread):
             if self._last_sent_focus != self._axes[self._axis_mapping['focus']]:
                 self._camera.focusDirect(self._axes[self._axis_mapping['focus']])
                 self._last_sent_focus = self._axes[self._axis_mapping['focus']]
+                # print self._last_sent_focus
 
         except Exception:
             pass
