@@ -202,13 +202,19 @@ class CameraJoystickAdapter(Thread):
     def _update_camera(self):
         if self._camera is None:
             return
+
+        pan_value = self._axes[self._axis_mapping['pan']]
+        tilt_value = self._axes[self._axis_mapping['tilt']]
+        zoom_value = self._axes[self._axis_mapping['zoom']]
+        focus_value = self._axes[self._axis_mapping['focus']]
+
         direction = Direction.from_axes(
-            self._axes[self._axis_mapping['pan']],
-            self._axes[self._axis_mapping['tilt']],
+            pan_value,
+            tilt_value,
             invert_y=self.invert_y
         )
-        pan_speed = self.map_pan(self._axis_mapping['pan'])
-        tilt_speed = self.map_tilt(self._axis_mapping['tilt'])
+        pan_speed = self.map_pan(pan_value)
+        tilt_speed = self.map_tilt(tilt_value)
 
         try:
             if (direction, pan_speed, tilt_speed) != self._last_sent_pan_tilt:
@@ -216,8 +222,8 @@ class CameraJoystickAdapter(Thread):
                 self._last_sent_pan_tilt = (direction, pan_speed, tilt_speed)
                 # print self._last_sent_pan_tilt
 
-            zoom_dir = Zoom.from_axis(self._axes[self._axis_mapping['zoom']])
-            zoom_speed = self.map_zoom(self._axes[self._axis_mapping['zoom']])
+            zoom_dir = Zoom.from_axis(zoom_value)
+            zoom_speed = self.map_zoom(zoom_value)
 
             if (zoom_dir, zoom_speed) != self._last_sent_zoom:
                 if zoom_dir == Zoom.STOP:
@@ -230,9 +236,9 @@ class CameraJoystickAdapter(Thread):
             if direction != Direction.STOP or zoom_dir != Zoom.STOP:
                 self._on_move()
 
-            if self._last_sent_focus != self._axes[self._axis_mapping['focus']]:
-                self._camera.focusDirect(self._axes[self._axis_mapping['focus']])
-                self._last_sent_focus = self._axes[self._axis_mapping['focus']]
+            if self._last_sent_focus != focus_value:
+                self._camera.focusDirect(focus_value)
+                self._last_sent_focus = focus_value
                 # print self._last_sent_focus
 
         except Exception:
