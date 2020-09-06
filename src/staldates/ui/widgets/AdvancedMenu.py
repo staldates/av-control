@@ -6,6 +6,7 @@ from staldates.ui.widgets.Preferences import PreferencesWidget
 from staldates.ui.widgets.Screens import ScreenWithBackButton
 from staldates.ui._version import __version__ as _ui_version
 from staldates.VisualsSystem import with_atem
+from staldates.preferences import Preferences
 
 
 class AdvancedMenu(ScreenWithBackButton):
@@ -31,7 +32,13 @@ class AdvancedMenu(ScreenWithBackButton):
         bottom_row = QHBoxLayout()
 
         lblVersion = QLabel()
-        lblVersion.setText("av-control version {0}\navx version {1}".format(_ui_version, _avx_version))
+        lblVersion.setText(
+            "av-control version {}\navx version {}\nControlling M/E bus {}".format(
+                _ui_version,
+                _avx_version,
+                Preferences.get('atem_me', 1)
+            )
+        )
         bottom_row.addWidget(lblVersion)
 
         log = ExpandingButton()

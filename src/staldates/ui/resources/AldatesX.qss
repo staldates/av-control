@@ -43,26 +43,23 @@ InputButton:disabled, OutputButton:disabled, OptionButton:disabled, ExpandingBut
   background-color: #9FA5A5;
 }
 
-OutputButton {
-  color: #1693A5;
-}
-
-OutputButton:disabled {
-  color: #9FA5A5;
-}
-
-OutputButton:pressed {
-  color: #E4E4FF;
-}
-
 OutputButton>#stateDisplay {
   font-size: 12pt;
   border-radius: 5px;
+  color: white;
 }
 
 OutputButton>#stateDisplay[highlight="true"] {
   background-color: #E4E4FF;
   color: black;
+}
+
+InputButton {
+  border: 3px solid #1693A5;
+}
+
+InputButton:pressed, InputButton:checked {
+  border-color: #E4E4FF;
 }
 
 QToolButton[isPreview="true"] {

@@ -1,6 +1,6 @@
 from avx.devices.net.atem.constants import VideoSource
 from PySide.QtGui import QLabel, QToolButton, QSizePolicy, QVBoxLayout, QImage,\
-    QPainter, QPixmap, QIcon
+    QPainter, QPixmap, QIcon, QHBoxLayout
 from PySide.QtCore import Qt, QSize, Signal, QEvent, QTimer
 from PySide.QtSvg import QSvgRenderer
 
@@ -81,10 +81,29 @@ def _add_line_breaks(text, every_n=10):
 
 class InputButton(LongPressButtonMixin, ExpandingButton):
 
-    def __init__(self, myInput, parent=None):
+    def __init__(self, myInput, main_me=1, parent=None):
         super(InputButton, self).__init__(parent)
+        self.main_me = main_me
         self.setCheckable(True)
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+
+        layout = QHBoxLayout()
+        self.previewDot = QLabel()
+        self.previewDot.setPixmap(pixmap_from_svg(':icons/preview_dot', 16, 16))
+        self.previewDot.setVisible(False)
+        layout.addWidget(self.previewDot)
+        layout.setAlignment(self.previewDot, Qt.AlignTop)
+
+        layout.addStretch()
+
+        self.liveDot = QLabel()
+        self.liveDot.setPixmap(pixmap_from_svg(':icons/live_dot', 16, 16))
+        self.liveDot.setVisible(False)
+        layout.addWidget(self.liveDot)
+        layout.setAlignment(self.liveDot, Qt.AlignTop)
+
+        self.setLayout(layout)
+
         self.input = None
         self.setInput(myInput)
 
@@ -106,16 +125,29 @@ class InputButton(LongPressButtonMixin, ExpandingButton):
         else:
             self.setIcon(QIcon())
 
-        self.setProperty("isLive", self.input.isLive)
-        self.setProperty("isPreview", self.input.isPreview)
+        me_tally = self.input.tally.get(self.main_me - 1, {'pgm': False, 'pvw': False})
+
+        self.setProperty("isLive", me_tally['pgm'])
+        self.setProperty("isPreview", me_tally['pvw'])
+
+        isPreviewElsewhere = False
+        isLiveElsewhere = False
+        for me, tally in self.input.tally.iteritems():
+            if me != self.main_me - 1:
+                if tally['pvw']:
+                    isPreviewElsewhere = True
+                if tally['pgm']:
+                    isLiveElsewhere = True
+        self.previewDot.setVisible(isPreviewElsewhere)
+        self.liveDot.setVisible(isLiveElsewhere)
 
         self.style().unpolish(self)
         self.style().polish(self)
 
 
 class FlashingInputButton(InputButton):
-    def __init__(self, myInput, parent=None):
-        super(FlashingInputButton, self).__init__(myInput, parent)
+    def __init__(self, myInput, main_me=1, parent=None):
+        super(FlashingInputButton, self).__init__(myInput, main_me, parent)
         self.flashing = False
         self._flashState = 0
         self._timer = QTimer()
@@ -145,9 +177,10 @@ class IDedButton(ExpandingButton):
 
 class OutputButton(LongPressButtonMixin, ExpandingButton):
 
-    def __init__(self, myOutput, parent=None):
+    def __init__(self, myOutput, main_me=VideoSource.ME_1_PROGRAM, parent=None):
         super(OutputButton, self).__init__(parent)
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)  # Sneakily hide our actual text
+        self._main_me = main_me
 
         self.textDisplay = QLabel()
         self.stateDisplay = QLabel()
@@ -171,7 +204,8 @@ class OutputButton(LongPressButtonMixin, ExpandingButton):
 
         if self.output.source and hasattr(self.output.source, "label"):
             self.stateDisplay.setText(self.output.source.label)
-            self.stateDisplay.setProperty("highlight", (self.output.source.source != VideoSource.ME_1_PROGRAM))
+            # Highlight if this output is not showing the M/E we're controlling
+            self.stateDisplay.setProperty("highlight", (self.output.source.source != self._main_me))
         else:
             self.stateDisplay.setText("-")
             self.stateDisplay.setProperty("highlight", False)
@@ -180,7 +214,6 @@ class OutputButton(LongPressButtonMixin, ExpandingButton):
 
     def setText(self, text):
         self.textDisplay.setText(text)
-        super(OutputButton, self).setText(text)
 
 
 class OptionButton(ExpandingButton):
@@ -194,12 +227,15 @@ class OptionButton(ExpandingButton):
 class SvgButton(ExpandingButton):
     def __init__(self, svgImage, width, height, parent=None):
         super(SvgButton, self).__init__(parent)
-        svg_renderer = QSvgRenderer(svgImage)
-        image = QImage(width, height, QImage.Format_ARGB32)
-        # Set the ARGB to 0 to prevent rendering artifacts
-        image.fill(0x00000000)
-        svg_renderer.render(QPainter(image))
-        pixmap = QPixmap.fromImage(image)
-        icon = QIcon(pixmap)
+        icon = QIcon(pixmap_from_svg(svgImage, width, height))
         self.setIcon(icon)
         self.setIconSize(QSize(width, height))
+
+
+def pixmap_from_svg(svgImage, width, height):
+    svg_renderer = QSvgRenderer(svgImage)
+    image = QImage(width, height, QImage.Format_ARGB32)
+    # Set the ARGB to 0 to prevent rendering artifacts
+    image.fill(0x00000000)
+    svg_renderer.render(QPainter(image))
+    return QPixmap.fromImage(image)

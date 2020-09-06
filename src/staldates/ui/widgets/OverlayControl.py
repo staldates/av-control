@@ -1,19 +1,22 @@
-from avx.devices.net.atem.constants import VideoSource
+from avx.devices.net.atem.constants import TransitionStyle, VideoSource
 from PySide.QtCore import Qt
 from PySide.QtGui import QWidget, QGridLayout, QLabel
 from staldates.ui.widgets.Buttons import ExpandingButton
 from staldates.VisualsSystem import with_atem
 from staldates.ui.widgets.TouchSpinner import FrameRateTouchSpinner
 
+from time import sleep
+
 
 class OverlayControl(QWidget):
 
-    def __init__(self, dsk, atem, parent=None):
+    def __init__(self, usk, mixTransition, atem, parent=None):
         super(OverlayControl, self).__init__(parent)
         self.atem = atem
-        self.dsk = dsk
+        self.usk = usk
+        self.mixTransition = mixTransition
 
-        dsk.changedState.connect(self.update_from_dsk)
+        usk.changedState.connect(self.update_from_usk)
 
         layout = QGridLayout()
 
@@ -34,15 +37,15 @@ class OverlayControl(QWidget):
 
         layout.addWidget(self.autoButton, 2, 1, 2, 1)
 
-        lblRate = QLabel("Rate:")
+        lblRate = QLabel("Fade rate:")
         lblRate.setAlignment(Qt.AlignHCenter | Qt.AlignBottom)
         layout.addWidget(lblRate, 2, 0)
 
         self.rate = FrameRateTouchSpinner()
         self.rate.setMinimum(1)
         self.rate.setMaximum(250)
-        self.rate.setValue(25)
         self.rate.valueChanged.connect(self.setRate)
+        self.mixTransition.changedProps.connect(self.update_from_mix_transition)
         layout.addWidget(self.rate, 3, 0)
 
         layout.setRowStretch(0, 1)
@@ -51,31 +54,75 @@ class OverlayControl(QWidget):
         layout.setRowStretch(3, 1)
 
         self.resetParams()
-        self.update_from_dsk()
+        self.update_from_usk()
+        self.update_from_mix_transition()
 
         self.setLayout(layout)
 
-    def update_from_dsk(self):
-        self.onAirButton.setChecked(self.dsk.onAir)
-        self.onAirButton.setProperty("isLive", self.dsk.onAir)
+    def update_from_usk(self):
+        self.onAirButton.setChecked(self.usk.onAir)
+        self.onAirButton.setProperty("isLive", self.usk.onAir)
         self.onAirButton.style().unpolish(self.onAirButton)
         self.onAirButton.style().polish(self.onAirButton)
-        self.rate.setValue(self.dsk.rate)
 
-    @with_atem
-    def setOnAir(self):
-        self.atem.setDSKOnAir(self.dsk.idx, self.onAirButton.isChecked())
-
-    @with_atem
-    def takeAuto(self):
-        self.atem.performDSKAuto(self.dsk.idx)
+    def update_from_mix_transition(self):
+        self.rate.setValue(self.mixTransition.rate)
 
     @with_atem
     def setRate(self, rate):
-        self.atem.setDSKRate(self.dsk.idx, rate)
+        self.atem.setMixTransitionRate(
+            rate,
+            self.usk.me_index + 1
+        )
+
+    @with_atem
+    def setOnAir(self):
+        self.atem.setUSKOnAir(
+            self.usk.me_index + 1,
+            self.usk.keyer_index + 1,
+            self.onAirButton.isChecked()
+        )
+
+    @with_atem
+    def takeAuto(self):
+        self.atem.setNextTransition(
+            TransitionStyle.MIX,
+            bkgd=False,
+            key1=self.usk.keyer_index == 0,
+            key2=self.usk.keyer_index == 1,
+            key3=self.usk.keyer_index == 2,
+            key4=self.usk.keyer_index == 3,
+            me=self.usk.me_index + 1
+        )
+        self.atem.performAutoTake(me=self.usk.me_index + 1)
+        sleep(0.1)
+        self.atem.setNextTransition(
+            TransitionStyle.MIX,
+            bkgd=True,
+            key1=False,
+            key2=False,
+            key3=False,
+            key4=False,
+            me=self.usk.me_index + 1
+        )
 
     @with_atem
     def resetParams(self):
-            self.atem.setDSKFillSource(self.dsk.idx, VideoSource.INPUT_5)
-            self.atem.setDSKKeySource(self.dsk.idx, VideoSource.INPUT_5)
-            self.atem.setDSKParams(self.dsk.idx, preMultiplied=False, gain=500, clip=210)
+        self.atem.setUSKFillSource(
+            self.usk.me_index + 1,
+            self.usk.keyer_index + 1,
+            VideoSource.INPUT_5
+        )
+        self.atem.setUSKKeySource(
+            self.usk.me_index + 1,
+            self.usk.keyer_index + 1,
+            VideoSource.INPUT_5
+        )
+        self.atem.setUSKLumaParams(
+            self.usk.me_index + 1,
+            self.usk.keyer_index + 1,
+            preMultiplied=False,
+            gain=500,
+            clip=210,
+            invert=False
+        )

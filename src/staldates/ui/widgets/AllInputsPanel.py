@@ -9,9 +9,8 @@ class AllInputsPanel(QWidget):
 
     inputSelected = Signal(Input)
 
-    def __init__(self, switcherState, parent=None):
+    def __init__(self, switcherState, me=1, parent=None):
         super(AllInputsPanel, self).__init__(parent)
-
         self.switcherState = switcherState
         self.selectedInput = None
         self.page = 0
@@ -33,7 +32,7 @@ class AllInputsPanel(QWidget):
         for col in range(5):
             self.layout.setColumnStretch(col, 1)
             for row in range(3):
-                btn = InputButton(None)
+                btn = InputButton(None, main_me=me)
                 self.layout.addWidget(btn, row * 2, col, 2, 1)
                 self.input_buttons.addButton(btn)
                 btn.clicked.connect(self.selectInput)
@@ -41,9 +40,12 @@ class AllInputsPanel(QWidget):
 
         self.setLayout(self.layout)
 
-        self.switcherState.inputsChanged.connect(self.setSources)
-        self.setSources()
-        self.displayInputs()
+        def handle_inputs_changed():
+            self.setSources()
+            self.displayInputs()
+
+        self.switcherState.inputsChanged.connect(handle_inputs_changed)
+        handle_inputs_changed()
 
     def setSources(self):
         self.sources = [vs for vs in VideoSource if vs in self.switcherState.inputs.keys()]

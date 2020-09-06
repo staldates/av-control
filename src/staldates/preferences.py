@@ -74,7 +74,10 @@ class _PrefsInstance(QObject):
 
 
 class Preferences(object):
-    """Preferences are accessed statically e.g. `Preferences.my_setting`. Don't instantiate the class."""
+    """
+    Preferences are accessed statically e.g. `Preferences.get(my_setting)`.
+    Don't instantiate the class.
+    """
     _instance = _PrefsInstance()
 
     def __init__(self):
