@@ -237,6 +237,7 @@ class CameraJoystickAdapter(Thread):
                 self._on_move()
 
             if self._last_sent_focus != focus_value:
+                self._camera.focusManual()
                 self._camera.focusDirect(focus_value)
                 self._last_sent_focus = focus_value
                 # print self._last_sent_focus
