@@ -50,7 +50,7 @@ class VideoSwitcher(QWidget):
                 videoSource,
                 cc,
                 AdvancedCameraControl(cameraID, cam_proxy, self.mainWindow),
-                lambda: setCamera(cam, cc)
+                lambda: setCamera(cam_proxy, cc)
             )
 
         def deselectCamera():
