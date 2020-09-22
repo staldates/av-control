@@ -108,6 +108,16 @@ class Zoom(Enum):
 
 PREFS_INVERT_Y = 'joystick.invert_y'
 
+JOYSTICK_MAX = 32767
+JOYSTICK_HALF = JOYSTICK_MAX / 2
+
+PAN_AXIS = 0
+TILT_AXIS = 1
+ZOOM_AXIS = 2
+FOCUS_AXIS = 3
+
+VISCA_MAX_FOCUS = 0xF000
+
 
 class CameraJoystickAdapter(Thread):
     def __init__(self, js=None):
@@ -115,7 +125,8 @@ class CameraJoystickAdapter(Thread):
         self.daemon = True
         if js:
             js.add_axis_handler(self._handle_axis)
-        self._axes = [0, 0, 0, 0]
+            js.add_button_handler(self._handle_button)
+        self._axes = [0, 0, 0, 0, 0]
         self.set_camera(None)
         self.set_on_move(None)
         self.update_preferences()
@@ -123,11 +134,29 @@ class CameraJoystickAdapter(Thread):
 
     def update_preferences(self):
         self.invert_y = Preferences.get(PREFS_INVERT_Y, False)
+        self._axis_mapping = Preferences.get(
+            'joystick.mapping.axes',
+            {
+                'pan': 0,
+                'tilt': 1,
+                'zoom': 2,
+                'focus': 3
+            }
+        )
+        self._button_mapping = Preferences.get(
+            'joystick.mapping.buttons',
+            {
+                0: 'focusAuto',
+                1: 'darker',
+                2: 'brighter'
+            }
+        )
 
     def set_camera(self, camera):
         self._camera = camera
         self._last_sent_pan_tilt = None
         self._last_sent_zoom = (Zoom.STOP, 2)
+        self._last_sent_focus = None
 
     def set_on_move(self, on_move):
         self._on_move_inner = on_move
@@ -136,11 +165,19 @@ class CameraJoystickAdapter(Thread):
         if self._on_move_inner:
             self._on_move_inner()
 
-    def _handle_axis(self, axis, value):
-        if axis > 3:
-            return
+    def _handle_button(self, button, value):
+        if button in self._button_mapping and value == 1:
+            camera_function = self._button_mapping[button]
+            if hasattr(self._camera, camera_function):
+                getattr(self._camera, camera_function)()
 
-        self._axes[axis] = value
+    def _handle_axis(self, axis, value):
+        if axis == self._axis_mapping['focus']:
+            # Focus - direct
+            visca_value = VISCA_MAX_FOCUS * (JOYSTICK_MAX - value) / (2 * JOYSTICK_MAX)
+            self._axes[self._axis_mapping['focus']] = visca_value
+        elif axis < len(self._axes):
+            self._axes[axis] = value
 
     def run(self):
         while True:
@@ -150,24 +187,34 @@ class CameraJoystickAdapter(Thread):
     def map_pan(self, axis):
         """Should return a value between 1 and 24 inclusive."""
         raw = abs(axis)
-        return int(1 + math.ceil(23 * raw / 32767))
+        return int(1 + math.ceil(23 * raw / JOYSTICK_MAX))
 
     def map_tilt(self, axis):
         """Should return a value between 1 and 20 inclusive."""
         raw = abs(axis)
-        return int(1 + math.ceil(19 * raw / 32767))
+        return int(1 + math.ceil(19 * raw / JOYSTICK_MAX))
 
     def map_zoom(self, axis):
         """Should return a value between 2 and 7 inclusive."""
         raw = abs(axis)
-        return int(2 + math.ceil(5 * raw / 32767))
+        return int(2 + math.ceil(5 * raw / JOYSTICK_MAX))
 
     def _update_camera(self):
         if self._camera is None:
             return
-        direction = Direction.from_axes(self._axes[0], self._axes[1], invert_y=self.invert_y)
-        pan_speed = self.map_pan(self._axes[0])
-        tilt_speed = self.map_tilt(self._axes[1])
+
+        pan_value = self._axes[self._axis_mapping['pan']]
+        tilt_value = self._axes[self._axis_mapping['tilt']]
+        zoom_value = self._axes[self._axis_mapping['zoom']]
+        focus_value = self._axes[self._axis_mapping['focus']]
+
+        direction = Direction.from_axes(
+            pan_value,
+            tilt_value,
+            invert_y=self.invert_y
+        )
+        pan_speed = self.map_pan(pan_value)
+        tilt_speed = self.map_tilt(tilt_value)
 
         try:
             if (direction, pan_speed, tilt_speed) != self._last_sent_pan_tilt:
@@ -175,8 +222,8 @@ class CameraJoystickAdapter(Thread):
                 self._last_sent_pan_tilt = (direction, pan_speed, tilt_speed)
                 # print self._last_sent_pan_tilt
 
-            zoom_dir = Zoom.from_axis(self._axes[3])
-            zoom_speed = self.map_zoom(self._axes[3])
+            zoom_dir = Zoom.from_axis(zoom_value)
+            zoom_speed = self.map_zoom(zoom_value)
 
             if (zoom_dir, zoom_speed) != self._last_sent_zoom:
                 if zoom_dir == Zoom.STOP:
@@ -188,12 +235,15 @@ class CameraJoystickAdapter(Thread):
 
             if direction != Direction.STOP or zoom_dir != Zoom.STOP:
                 self._on_move()
+
+            if self._last_sent_focus != focus_value:
+                self._camera.focusManual()
+                self._camera.focusDirect(focus_value)
+                self._last_sent_focus = focus_value
+                # print self._last_sent_focus
+
         except Exception:
             pass
-
-
-JOYSTICK_MAX = 32767
-JOYSTICK_HALF = JOYSTICK_MAX / 2
 
 
 def _linear_interp(raw, max_value, sensitivity):
