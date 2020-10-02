@@ -123,6 +123,7 @@ class CameraJoystickAdapter(Thread):
     def __init__(self, js=None):
         super(CameraJoystickAdapter, self).__init__()
         self.daemon = True
+        self._last_sent_focus = None
         if js:
             js.add_axis_handler(self._handle_axis)
             js.add_button_handler(self._handle_button)
@@ -156,7 +157,6 @@ class CameraJoystickAdapter(Thread):
         self._camera = camera
         self._last_sent_pan_tilt = None
         self._last_sent_zoom = (Zoom.STOP, 2)
-        self._last_sent_focus = None
 
     def set_on_move(self, on_move):
         self._on_move_inner = on_move
