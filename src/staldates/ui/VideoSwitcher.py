@@ -68,7 +68,7 @@ class VideoSwitcher(QWidget):
             ifDevice("Camera 1", lambda: makeCamera(VideoSource.INPUT_1, "Camera 1")),
             ifDevice("Camera 2", lambda: makeCamera(VideoSource.INPUT_2, "Camera 2")),
             ifDevice("Camera 3", lambda: makeCamera(VideoSource.INPUT_3, "Camera 3")),
-            (VideoSource.INPUT_4, QLabel(StringConstants.noDevice), None, deselectCamera),
+            (VideoSource.INPUT_8, QLabel(StringConstants.noDevice), None, deselectCamera),
             (VideoSource.INPUT_5, overlayControl, None, deselectCamera),
             (VideoSource.INPUT_6, QLabel(StringConstants.noDevice), None, deselectCamera)
         ]
