@@ -206,7 +206,7 @@ class CameraJoystickAdapter(Thread):
         pan_value = self._axes[self._axis_mapping['pan']]
         tilt_value = self._axes[self._axis_mapping['tilt']]
         zoom_value = self._axes[self._axis_mapping['zoom']]
-        focus_value = self._axes[self._axis_mapping['focus']]
+        focus_value = self._axes[self._axis_mapping['focus']] if self._axis_mapping['focus'] else None
 
         direction = Direction.from_axes(
             pan_value,
