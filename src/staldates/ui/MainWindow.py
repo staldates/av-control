@@ -89,7 +89,7 @@ class MainWindow(QMainWindow):
         if controller.hasDevice("Recorder"):
             hyperdeck = controller['Recorder']
             self.hyperdeckState = HyperdeckState(hyperdeck)
-            self.recorderScreen = RecorderControl(hyperdeck, atem, self.hyperdeckState, self)
+            self.recorderScreen = RecorderControl(hyperdeck, atem, self.hyperdeckState, self, me)
             recorder = ExpandingButton()
             recorder.setText("Recorder")
             recorder.setIcon(QIcon(":icons/drive-optical"))

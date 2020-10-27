@@ -107,11 +107,12 @@ class RecorderClipSelectionScreen(QWidget):
 
 
 class RecorderControl(ScreenWithBackButton):
-    def __init__(self, hyperdeck, atem, state, mainWindow):
+    def __init__(self, hyperdeck, atem, state, mainWindow, me=1):
         self.hyperdeck = hyperdeck
         self.atem = atem
         self.state = state
         self.mainWindow = mainWindow
+        self.me = me
         super(RecorderControl, self).__init__("Recorder", mainWindow)
         self.state.transportChange.connect(self.updateState)
         if self.hyperdeck:
@@ -137,7 +138,7 @@ class RecorderControl(ScreenWithBackButton):
 
         self.btnSetPreview = ExpandingButton()
         self.btnSetPreview.setText("To preview")
-        self.btnSetPreview.clicked.connect(lambda: self.atem.setPreview(VideoSource.INPUT_7))
+        self.btnSetPreview.clicked.connect(lambda: self.atem.setPreview(VideoSource.INPUT_7, me=self.me))
         layout.addWidget(self.btnSetPreview, 0, 4)
 
         btnClearPeaks = ExpandingButton()
