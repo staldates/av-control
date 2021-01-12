@@ -123,9 +123,6 @@ def main():
         client.setDaemon(True)
         client.start()
         client.started.wait()
-        atexit.register(lambda: controller.unregisterClient(client.uri))
-
-        controller.registerClient(client.uri)
 
         if args.fullscreen:
             QApplication.setOverrideCursor(Qt.BlankCursor)
