@@ -62,6 +62,8 @@ def _default_inputs():
         (VideoSource.INPUT_4, "DVD", QIcon(":icons/media-optical")),
         (VideoSource.INPUT_5, "Visuals PC", QIcon(":icons/computer")),
         (VideoSource.INPUT_6, "PC Video", QIcon(":icons/video-display")),
+        (VideoSource.INPUT_8, "Camera 4", QIcon(":icons/camera-video")),
+        (VideoSource.INPUT_9, "Camera 5", QIcon(":icons/camera-video")),
         (VideoSource.BLACK, "Black", QIcon(":icons/blackscreen")),
         (VideoSource.ME_1_PROGRAM, "Stream mix", QIcon(':icons/stream')),
         (VideoSource.ME_1_PREVIEW, "Stream preview", None),
