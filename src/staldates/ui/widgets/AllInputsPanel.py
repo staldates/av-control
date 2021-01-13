@@ -29,14 +29,16 @@ class AllInputsPanel(QWidget):
         self.btnPageDown.clicked.connect(lambda: self.setPage(self.page + 1))
         self.layout.addWidget(self.btnPageDown, 3, 5, 3, 1)
 
+        self.layout.setColumnStretch(5, 2)
+
         for col in range(5):
-            self.layout.setColumnStretch(col, 1)
+            self.layout.setColumnStretch(col, 3)
             for row in range(3):
                 btn = InputButton(None, main_me=me)
                 self.layout.addWidget(btn, row * 2, col, 2, 1)
                 self.input_buttons.addButton(btn)
                 btn.clicked.connect(self.selectInput)
-                btn.setFixedWidth(120)
+                # btn.setFixedWidth(120)
 
         self.setLayout(self.layout)
 
