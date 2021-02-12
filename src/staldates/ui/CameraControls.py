@@ -1,4 +1,5 @@
 from avx.devices.datavideo import Aperture, Shutter, Gain
+from avx.Sequencer import DeviceEvent, SleepEvent
 from enum import Enum
 from PySide.QtGui import QButtonGroup, QGridLayout, QLabel, QWidget, QIcon, QHBoxLayout, QComboBox,\
     QSizePolicy, QStackedLayout, QVBoxLayout, QPushButton
@@ -362,9 +363,11 @@ class ExposureControl(QWidget):
 
 class AdvancedCameraControl(ScreenWithBackButton):
 
-    def __init__(self, title, camera, mainScreen):
+    def __init__(self, cameraID, camera, controller, mainScreen):
+        self.cameraID = cameraID
         self.camera = camera
-        super(AdvancedCameraControl, self).__init__(title, mainScreen)
+        self.controller = controller
+        super(AdvancedCameraControl, self).__init__(cameraID, mainScreen)
 
     def makeContent(self):
         layout = QHBoxLayout()
@@ -411,5 +414,21 @@ class AdvancedCameraControl(ScreenWithBackButton):
         self.wbOpts.buttonClicked.connect(lambda: btnOnePushTrigger.setEnabled(self.wbOpts.checkedId() == 4))
 
         layout.addLayout(whiteBalanceGrid)
+        layout.setStretchFactor(whiteBalanceGrid, 3)
+
+        btnReconnect = ExpandingButton()
+        btnReconnect.setText('Force reconnect')
+        btnReconnect.clicked.connect(self.force_reconnect)
+
+        layout.addWidget(btnReconnect)
+        layout.setStretchFactor(btnReconnect, 1)
 
         return layout
+
+    @handlePyroErrors
+    def force_reconnect(self):
+        self.controller.sequence(
+            DeviceEvent(self.cameraID, 'deinitialise'),
+            SleepEvent(1),
+            DeviceEvent(self.cameraID, 'initialise')
+        )

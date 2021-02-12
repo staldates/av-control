@@ -49,7 +49,7 @@ class VideoSwitcher(QWidget):
             return (
                 videoSource,
                 cc,
-                AdvancedCameraControl(cameraID, cam_proxy, self.mainWindow),
+                AdvancedCameraControl(cameraID, cam_proxy, self.controller, self.mainWindow),
                 lambda: setCamera(cam_proxy, cc)
             )
 
