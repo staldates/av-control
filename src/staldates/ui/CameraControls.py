@@ -140,9 +140,9 @@ class CameraControl(QWidget):
         _safelyConnect(focus.autoButton.clicked, autoFocusAndDeselect)
         control_layout.addWidget(focus, 0, 4, 4, 1)
 
-        brightness = PlusMinusAutoButtons("Bright")
-        _safelyConnect(brightness.upButton.clicked, self.camera.brighter)
-        _safelyConnect(brightness.downButton.clicked, self.camera.darker)
+        brightness = PlusMinusAutoButtons("Gain")
+        _safelyConnect(brightness.upButton.clicked, self.camera.gainUp)
+        _safelyConnect(brightness.downButton.clicked, self.camera.gainDown)
         _safelyConnect(brightness.autoButton.clicked, self.camera.setAutoExposure)
         control_layout.addWidget(brightness, 0, 5, 4, 1)
 
