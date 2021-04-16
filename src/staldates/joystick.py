@@ -148,8 +148,8 @@ class CameraJoystickAdapter(Thread):
             'joystick.mapping.buttons',
             {
                 0: 'focusAuto',
-                1: 'darker',
-                2: 'brighter'
+                1: 'gainUp',
+                2: 'gainDown'
             }
         )
 
