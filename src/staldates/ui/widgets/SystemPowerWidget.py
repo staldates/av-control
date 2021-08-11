@@ -80,6 +80,7 @@ class SystemPowerWidget(ScreenWithBackButton):
             DeviceEvent("Power", "off", 2),
             SleepEvent(3),
             DeviceEvent("Power", "off", 1),
+            DeviceEvent("bridge", "deinitialise"),
             BroadcastEvent(MessageTypes.HIDE_POWER, "Client", None),
             LogEvent(logging.INFO, "Power off sequence complete")
         )
